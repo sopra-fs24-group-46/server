@@ -1,8 +1,9 @@
-package ch.uzh.ifi.hase.soprafs24.entity;
-
-import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+package ch.uzh.ifi.hase.soprafs24.user.entity;
 
 import javax.persistence.*;
+
+import ch.uzh.ifi.hase.soprafs24.user.constant.UserStatus;
+
 import java.io.Serializable;
 
 /**
