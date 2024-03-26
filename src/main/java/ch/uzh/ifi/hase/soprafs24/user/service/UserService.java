@@ -40,8 +40,10 @@ public class UserService {
   }
 
   public User createUser(User newUser) {
+    validateUsernameUniqueness(newUser.getUsername());
+    validatePasswordLength(newUser.getPassword());
     newUser.setToken(UUID.randomUUID().toString());
-    checkIfUserExists(newUser);
+
     // saves the given entity but data is only persisted in the database once
     // flush() is called
     newUser = userRepository.save(newUser);
@@ -49,6 +51,12 @@ public class UserService {
 
     log.debug("Created Information for User: {}", newUser);
     return newUser;
+  }
+
+  private void validatePasswordLength(String password) {
+    if (password.length() < 6) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The password is too short. It must be at least 8 characters long.");
+    }
   }
 
   /**
@@ -61,12 +69,12 @@ public class UserService {
    * @throws org.springframework.web.server.ResponseStatusException
    * @see User
    */
-  private void checkIfUserExists(User userToBeCreated) {
-    User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
+  private void validateUsernameUniqueness(String username) {
+    User existingUser = userRepository.findByUsername(username);
 
-    String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
-  if (userByUsername != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
+    if (existingUser != null) {
+      String errorMessage = "The username is already taken. Please choose a different one.";
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
     }
   }
 }
