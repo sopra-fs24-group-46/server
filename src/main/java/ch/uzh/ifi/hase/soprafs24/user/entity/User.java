@@ -2,7 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.user.entity;
 
 import javax.persistence.*;
 
-import ch.uzh.ifi.hase.soprafs24.user.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs24.game.entity.Player;
 
 import java.io.Serializable;
 
@@ -18,16 +18,13 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "USER")
-public class User implements Serializable {
+public class User implements Serializable, Player {
 
   private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue
   private Long id;
-
-  @Column(nullable = false)
-  private String name;
 
   @Column(nullable = false, unique = true)
   private String username;
@@ -36,7 +33,15 @@ public class User implements Serializable {
   private String token;
 
   @Column(nullable = false)
-  private UserStatus status;
+  private String password;
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
   public Long getId() {
     return id;
@@ -44,14 +49,6 @@ public class User implements Serializable {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 
   public String getUsername() {
@@ -70,11 +67,8 @@ public class User implements Serializable {
     this.token = token;
   }
 
-  public UserStatus getStatus() {
-    return status;
-  }
-
-  public void setStatus(UserStatus status) {
-    this.status = status;
+  @Override
+  public String getDisplayName() {
+    return getUsername();
   }
 }
