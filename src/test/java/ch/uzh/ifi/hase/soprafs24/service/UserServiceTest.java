@@ -32,6 +32,7 @@ public class UserServiceTest {
     testUser = new User();
     testUser.setId(1L);
     testUser.setUsername("testUsername");
+    testUser.setPassword("password");
 
     // when -> any object is being save in the userRepository -> return the dummy
     // testUser
@@ -58,7 +59,7 @@ public class UserServiceTest {
     userService.createUser(testUser);
 
     // when -> setup additional mocks for UserRepository
-    Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
+    Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
 
     // then -> attempt to create second user with same user -> check that an error
     // is thrown
