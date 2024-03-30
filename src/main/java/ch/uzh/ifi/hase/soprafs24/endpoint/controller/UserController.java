@@ -3,11 +3,15 @@ package ch.uzh.ifi.hase.soprafs24.endpoint.controller;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper.DTOMapper;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.LoginResponseDTO;
+
 import ch.uzh.ifi.hase.soprafs24.user.entity.User;
 import ch.uzh.ifi.hase.soprafs24.user.service.UserService;
 
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,5 +58,30 @@ public class UserController {
     User createdUser = userService.createUser(userInput);
     // convert internal representation of user back to API
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+  }
+
+  
+  @PostMapping("/login")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public LoginResponseDTO login(@RequestBody UserPostDTO userPostDTO) {
+      // retrieve the user by username
+      User user = userService.getUserByUsername(userPostDTO.getUsername());
+      if (user == null || !user.getPassword().equals(userPostDTO.getPassword())) {
+          throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
+      }
+
+      //userService.updateUserStatus(user.getId(), UserStatus.ONLINE); //status ONLINE
+
+  
+      // Convert user to API representation
+      UserGetDTO userDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+      
+      // Create a LoginResponseDTO object containing both the user DTO and the token
+      LoginResponseDTO response = new LoginResponseDTO();
+      response.setUser(userDTO);
+      response.setToken(user.getToken()); 
+      
+      return response;
   }
 }

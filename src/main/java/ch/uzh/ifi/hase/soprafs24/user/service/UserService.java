@@ -30,7 +30,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    @Autowired
+    //@Autowired
     public UserService(@Qualifier("userRepository") UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -38,6 +38,10 @@ public class UserService {
     public List<User> getUsers() {
         return this.userRepository.findAll();
     }
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }   
 
     public User createUser(User newUser) {
         validateUsernameUniqueness(newUser.getUsername());
