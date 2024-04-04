@@ -84,4 +84,14 @@ public class UserController {
       
       return response;
   }
+
+
+  @PutMapping("/users")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+      // Check if the request body contains the status field
+
+          userService.updateUser(id, updatedUser);
+      }
+  
 }

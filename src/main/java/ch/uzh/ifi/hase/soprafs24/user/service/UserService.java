@@ -179,4 +179,19 @@ public class UserService {
                     "The password is too short. It must be at least 8 characters long.");
         }
     }
+
+    public User updateUser(Long id, User updatedUser) {
+        // Get the user from the database
+        User existingUser = userRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+      
+        // Update the user's birth date and username
+        existingUser.setUsername(updatedUser.getUsername());
+      
+        // Save the updated user to the database
+        User savedUser = userRepository.save(existingUser);
+      
+        // Return the updated user
+        return savedUser;
+      }
 }
