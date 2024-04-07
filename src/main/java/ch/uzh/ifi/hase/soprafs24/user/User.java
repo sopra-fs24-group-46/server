@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs24.user.entity;
+package ch.uzh.ifi.hase.soprafs24.user;
 
 import javax.persistence.*;
 

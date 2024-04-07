@@ -1,7 +1,4 @@
-package ch.uzh.ifi.hase.soprafs24.user.service;
-
-import ch.uzh.ifi.hase.soprafs24.user.entity.User;
-import ch.uzh.ifi.hase.soprafs24.user.repository.UserRepository;
+package ch.uzh.ifi.hase.soprafs24.user;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

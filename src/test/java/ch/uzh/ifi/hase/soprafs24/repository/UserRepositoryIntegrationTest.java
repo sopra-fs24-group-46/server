@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.repository;
 
-import ch.uzh.ifi.hase.soprafs24.user.entity.User;
-import ch.uzh.ifi.hase.soprafs24.user.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs24.user.User;
+import ch.uzh.ifi.hase.soprafs24.user.UserRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

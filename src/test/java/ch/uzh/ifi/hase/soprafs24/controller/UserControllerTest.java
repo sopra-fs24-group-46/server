@@ -2,8 +2,8 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.endpoint.controller.UserController;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.UserPostDTO;
-import ch.uzh.ifi.hase.soprafs24.user.entity.User;
-import ch.uzh.ifi.hase.soprafs24.user.service.UserService;
+import ch.uzh.ifi.hase.soprafs24.user.User;
+import ch.uzh.ifi.hase.soprafs24.user.UserService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
