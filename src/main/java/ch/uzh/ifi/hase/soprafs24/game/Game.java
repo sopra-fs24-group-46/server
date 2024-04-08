@@ -25,8 +25,12 @@ public class Game implements Serializable {
     @GeneratedValue
     private Long id;
 
+    // For the moment don't save Infos in the database
+    @Transient
     private Settings settings;
+    @Transient
     private GameModel gameModel;
+    @Transient
     private GameEngine gameEngine;
 
     // Public constructor allows creation of new games which can be stored to the
@@ -70,6 +74,7 @@ public class Game implements Serializable {
     }
 
     public Boolean startGame() {
+        gameEngine.startGame(gameModel);
         // todo implement method
         throw new UnsupportedOperationException("Unimplemented method 'startGame'");
     }

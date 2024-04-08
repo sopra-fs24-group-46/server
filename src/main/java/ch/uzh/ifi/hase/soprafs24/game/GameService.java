@@ -1,6 +1,10 @@
 //this provides functions for the endpoints and takes care of navigating traffic to the right place
 package ch.uzh.ifi.hase.soprafs24.game;
 
+import javax.transaction.Transactional;
+
+import org.springframework.stereotype.Service;
+
 import ch.uzh.ifi.hase.soprafs24.game.View.GameModelView;
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
@@ -8,6 +12,8 @@ import ch.uzh.ifi.hase.soprafs24.game.entity.GuestPlayer;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 
+@Service
+@Transactional
 public class GameService {
 
     private final GameRepository gameRepository;
