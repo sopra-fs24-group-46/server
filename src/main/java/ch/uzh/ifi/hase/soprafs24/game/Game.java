@@ -46,9 +46,14 @@ public class Game implements Serializable {
         return id;
     }
 
+    public Boolean openLobby() {
+        GameEngine.initGame(gameModel, settings);
+        return true;
+    }
+
     public Boolean deleteGame() {
-        // todo implement method
-        throw new UnsupportedOperationException("Unimplemented method 'deleteGame'");
+        gameEngine.deleteGame(gameModel, settings);
+        return true;
     }
 
     public Boolean updateSettings(Settings settings) {
@@ -74,14 +79,13 @@ public class Game implements Serializable {
     }
 
     public Boolean startGame() {
-        gameEngine.startGame(gameModel);
-        // todo implement method
-        throw new UnsupportedOperationException("Unimplemented method 'startGame'");
+        gameEngine.startGame(gameModel, settings);
+        return true;
     }
 
     public Boolean guess(Player player, Answer guess) {
-        // todo implement method
-        throw new UnsupportedOperationException("Unimplemented method 'guess'");
+        GameEngine.addAnswer(gameModel, guess, player);
+        return true;
     }
 
     public GameModelView getGameModelView() {

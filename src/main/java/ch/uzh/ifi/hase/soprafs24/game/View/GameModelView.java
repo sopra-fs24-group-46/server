@@ -13,12 +13,20 @@ import ch.uzh.ifi.hase.soprafs24.game.entity.Score;
 
 public interface GameModelView {
     public List<Player> getPlayers();
+
     public Map<Player, Score> getScores();
+
     public Map<Player, PowerUp> getPowerUps();
+
     public Map<Player, Answer> getAnswers();
+
     public GameState getGameState();
+
     public RoundState getRoundState();
+
     public int getCurrentRound();
+
     public List<Question> getQuestions();
-    
+
+    public Question getCurrentQuestion();
 }

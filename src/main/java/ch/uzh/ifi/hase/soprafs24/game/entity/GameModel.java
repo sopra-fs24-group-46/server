@@ -34,6 +34,12 @@ public class GameModel implements GameModelView {
         roundState = RoundState.QUESTION;
         currentRound = 0;
 
+        // init lists
+        this.players = new ArrayList<>();
+        this.scores = new HashMap<>();
+        this.powerUps = new HashMap<>();
+        this.answers = new HashMap<>();
+
     }
 
     public GameModel(List<Player> players, Map<Player, Score> scores, Map<Player, PowerUp> powerUps,
@@ -64,32 +70,31 @@ public class GameModel implements GameModelView {
         return players;
     }
 
-    public void setPlayers(List<Player> players) {
-        this.players = players;
-    }
-
     public Map<Player, Score> getScores() {
         return scores;
     }
 
-    public void setScores(Map<Player, Score> scores) {
-        this.scores = scores;
+    public void updateScore(Player player, int score, Double distance) {
+        Player playerFromList = playerFromList(player);
+        scores.get(playerFromList).addScore(score, distance);
     }
 
     public Map<Player, PowerUp> getPowerUps() {
         return powerUps;
     }
 
-    public void setPowerUps(Map<Player, PowerUp> powerUps) {
-        this.powerUps = powerUps;
+    public void setPowerUp(Player player, PowerUp powerUp) {
+        Player playerFromList = playerFromList(player);
+        powerUps.put(playerFromList, powerUp);
     }
 
     public Map<Player, Answer> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(Map<Player, Answer> answers) {
-        this.answers = answers;
+    public void setAnswer(Player player, Answer answer) {
+        Player playerFromList = playerFromList(player);
+        answers.put(playerFromList, answer);
     }
 
     public GameState getGameState() {
@@ -120,6 +125,14 @@ public class GameModel implements GameModelView {
         return questions;
     }
 
+    public Question getCurrentQuestion() {
+        Question question = questions.get(currentRound);
+        if (question == null) {
+            throw new IllegalStateException("No question for this round");
+        }
+        return question;
+    }
+
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
     }
@@ -131,12 +144,24 @@ public class GameModel implements GameModelView {
         if (players.stream().anyMatch(p -> p.getToken().equals(player.getToken()))) {
             throw new IllegalStateException("Player with this token already exists");
         }
+        if (gameState != GameState.LOBBY) {
+            throw new IllegalStateException(
+                    "You can only join games which are in Lobby state. Current state: " + gameState);
+        }
         players.add(player);
+        // init maps
+        scores.put(player, new Score());
+        powerUps.put(player, null);
+        answers.put(player, null);
     }
 
     public void removePlayer(Player player) {
-        Player playerFromList = players.stream().filter(p -> p.getToken().equals(player.getToken())).findFirst()
-                .orElseThrow(() -> new IllegalStateException("Player with this token not found is not in the game"));
+        Player playerFromList = playerFromList(player);
         players.remove(playerFromList);
+    }
+
+    private Player playerFromList(Player player) {
+        return players.stream().filter(p -> p.getToken().equals(player.getToken())).findFirst()
+                .orElseThrow(() -> new IllegalStateException("Player with this token not found is not in the game"));
     }
 }

@@ -64,6 +64,12 @@ public class GameService {
         findGameById(gameId).leaveGame(player);
     }
 
+    public Boolean openLobby(Long gameId, Player hostPlayer) {
+        Game game = findGameById(gameId);
+        game.verifyHost(hostPlayer);
+        return game.openLobby();
+    }
+
     // at this time Lobby info is also a GameModelView
     public GameModelView getLobbyView(Long gameId) {
         return findGameById(gameId).getGameModelView();
