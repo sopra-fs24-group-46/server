@@ -2,14 +2,23 @@ package ch.uzh.ifi.hase.soprafs24.game.entity;
 
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
 
-public class Settings implements SettingView{
+public class Settings implements SettingView {
 
+    private Player hostPlayer;
     private Integer maxPlayers;
     private Integer rounds;
     private Integer guessingTimePerRound;
-    //M2
-    //Difficulty
-    //Region
+    // M2
+    // Difficulty
+    // Region
+
+    public Player getHostPlayer() {
+        return hostPlayer;
+    }
+
+    public void setHostPlayer(Player hostPlayer) {
+        this.hostPlayer = hostPlayer;
+    }
 
     public Integer getRounds() {
         return rounds;

@@ -2,7 +2,6 @@
 //Data is stored in GameModel and Settings (Java Classes)
 //Logic is implemented in GameEngine
 
-
 package ch.uzh.ifi.hase.soprafs24.game;
 
 import javax.persistence.*;
@@ -30,9 +29,11 @@ public class Game implements Serializable {
     private GameModel gameModel;
     private GameEngine gameEngine;
 
-    //Public constructor allows creation of new games which can be stored to the database
-    public Game() {
+    // Public constructor allows creation of new games which can be stored to the
+    // database
+    public Game(Player hostPlayer) {
         settings = new Settings();
+        settings.setHostPlayer(hostPlayer);
         gameModel = new GameModel();
         gameEngine = new GameEngine();
     }
@@ -42,10 +43,9 @@ public class Game implements Serializable {
     }
 
     public Boolean deleteGame() {
-        //todo implement method
+        // todo implement method
         throw new UnsupportedOperationException("Unimplemented method 'deleteGame'");
     }
-
 
     public Boolean updateSettings(Settings settings) {
         this.settings.update(settings);
@@ -57,22 +57,25 @@ public class Game implements Serializable {
     }
 
     public Boolean joinGame(Player player) {
-        //todo implement method
-        throw new UnsupportedOperationException("Unimplemented method 'joinGame'");
+        if (gameModel.getPlayers().size() >= settings.getMaxPlayers()) {
+            throw new IllegalStateException("Game is full");
+        }
+        gameModel.addPlayer(player);
+        return true;
     }
 
     public Boolean leaveGame(Player player) {
-        //todo implement method
-        throw new UnsupportedOperationException("Unimplemented method 'leaveGame'");
+        gameModel.removePlayer(player);
+        return true;
     }
 
     public Boolean startGame() {
-        //todo implement method
+        // todo implement method
         throw new UnsupportedOperationException("Unimplemented method 'startGame'");
     }
 
     public Boolean guess(Player player, Answer guess) {
-        //todo implement method
+        // todo implement method
         throw new UnsupportedOperationException("Unimplemented method 'guess'");
     }
 
@@ -80,9 +83,16 @@ public class Game implements Serializable {
         return gameModel.getGameModelView();
     }
 
-    //M2
+    public void verifyHost(Player hostPlayer) {
+        var host = settings.getHostPlayer();
+        if (hostPlayer.getId() != host.getId()) {
+            throw new IllegalStateException("Host player does not match");
+        }
+    }
+
+    // M2
     // public Boolean usePowerUp(Player player, PowerUp powerUp) {
-    //     //implement method
-    //     throw new UnsupportedOperationException("Unimplemented method 'usePowerUp'");
+    // //implement method
+    // throw new UnsupportedOperationException("Unimplemented method 'usePowerUp'");
     // }
 }
