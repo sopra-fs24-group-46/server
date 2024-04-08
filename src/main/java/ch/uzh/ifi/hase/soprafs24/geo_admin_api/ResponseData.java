@@ -48,18 +48,17 @@ public class ResponseData {
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
-    public void filterByPolygon(List<JsonNode> json, double[][] polygon) {
-        data = json.stream().filter(
-            obj -> {
-                if (obj.get("geometry").get("rings") != null) {//filtering for polygons
-                    return false;
-                }
-                return isPointInsidePolygon(
-                    obj.get("geometry").get("points").get(0).get(0).asDouble(),
-                    obj.get("geometry").get("points").get(0).get(1).asDouble(),
-                    polygon);
-                }
-                ).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    public void filterByPolygon(double[][] polygon) {
+        data = data.stream().filter(
+                obj -> {
+                    if (obj.get("geometry").get("rings") != null) {// filtering for polygons
+                        return false;
+                    }
+                    return isPointInsidePolygon(
+                            obj.get("geometry").get("points").get(0).get(0).asDouble(),
+                            obj.get("geometry").get("points").get(0).get(1).asDouble(),
+                            polygon);
+                }).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
     public List<JsonNode> selectRandomElements(int numElements) {
@@ -110,20 +109,14 @@ public class ResponseData {
         var data2 = FetchData.readLocalJson("huegel.json");
         data.addAll(data2);
         double[][] polygon = new double[][] {
-            {688911, 260544},
-            {703344, 248102},
-            {721195, 258387},
-            {705567, 269337}
+                { 688911, 260544 },
+                { 703344, 248102 },
+                { 721195, 258387 },
+                { 705567, 269337 }
         };
         data.data.get(0).get("geometry").get("points").get(0).get(0).asDouble();
-        
-        var t = data.data.get(0);
-        var t2 = t.get("geometry");
-        var t3 = t2.get("points");
-        var t4 = t3.get(0);
-        var t5 = t4.get(0);
-        var t6 = t5.asDouble();
-        data.filterByPolygon(data.data, polygon);
+
+        data.filterByPolygon(polygon);
         data.filterByAttributes("sprachcode", "Hochdeutsch");
         var randomElements = data.selectRandomElements(10);
 
