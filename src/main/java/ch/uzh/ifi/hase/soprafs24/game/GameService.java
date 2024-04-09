@@ -21,7 +21,7 @@ public class GameService {
         this.gameRepository = gameRepository;
     }
 
-    public Long createGame(User userCredentials) {
+    public String createGame(User userCredentials) {
         // playerId for the host
         // todo automatically add host to game
         Game game = new Game(userCredentials);
