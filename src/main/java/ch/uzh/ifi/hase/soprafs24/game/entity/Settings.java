@@ -5,7 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.user.User;
 
 public class Settings implements SettingView {
 
-    private User hostPlayer;
+    private Long hostPlayerId;
     private Integer maxPlayers;
     private Integer rounds;
     private Integer guessingTimePerRound;
@@ -13,12 +13,12 @@ public class Settings implements SettingView {
     // Difficulty
     // Region
 
-    public User getHostPlayer() {
-        return hostPlayer;
+    public long getHostPlayerId() {
+        return hostPlayerId;
     }
 
     public void setHostPlayer(User hostPlayer) {
-        this.hostPlayer = hostPlayer;
+        this.hostPlayerId = hostPlayer.getId();
     }
 
     public Integer getRounds() {

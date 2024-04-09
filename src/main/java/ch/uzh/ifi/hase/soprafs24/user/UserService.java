@@ -2,7 +2,6 @@ package ch.uzh.ifi.hase.soprafs24.user;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    //@Autowired
+    // @Autowired
     public UserService(@Qualifier("userRepository") UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -38,7 +37,7 @@ public class UserService {
 
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username);
-    }   
+    }
 
     public User createUser(User newUser) {
         validateUsernameUniqueness(newUser.getUsername());
@@ -68,8 +67,8 @@ public class UserService {
         return user;
     }
 
-    public User updateUser(User credentails, User userInput) {
-        User user = authenticateUser(credentails);
+    public User updateUser(User credentials, User userInput) {
+        User user = authenticateUser(credentials);
         // user is authenticated
 
         // validating user input.
@@ -91,8 +90,8 @@ public class UserService {
         return user;
     }
 
-    public Boolean deleteUser(User credentails) {
-        User user = authenticateUser(credentails);
+    public Boolean deleteUser(User credentials) {
+        User user = authenticateUser(credentials);
         // valid input
 
         userRepository.delete(user);
@@ -100,8 +99,8 @@ public class UserService {
         return true;
     }
 
-    public Boolean logoutUser(User credentails) {
-        User user = authenticateUser(credentails);
+    public Boolean logoutUser(User credentials) {
+        User user = authenticateUser(credentials);
 
         user.setToken(""); // token no longer valid;
 
@@ -110,8 +109,8 @@ public class UserService {
         return true;
     }
 
-    public Boolean isValidUser(User credentails) {
-        User user = authenticateUser(credentails);
+    public Boolean isValidUser(User credentials) {
+        User user = authenticateUser(credentials);
         // valid input
         if (user == null) {// this should always be true
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -120,10 +119,9 @@ public class UserService {
         return true;
     }
 
-    private User authenticateUser(User credentails) {
-        validateUsernameExists(credentails.getUsername());
-        User user = userRepository.findByUsername(credentails.getUsername());
-        validateToken(user.getToken(), credentails.getToken());
+    private User authenticateUser(User credentials) {
+        User user = userRepository.findById(credentials.getId()).get();
+        validateToken(user.getToken(), credentials.getToken());
         // valid input
         return user;
     }
@@ -180,15 +178,15 @@ public class UserService {
     public User updateUser(Long id, User updatedUser) {
         // Get the user from the database
         User existingUser = userRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-      
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
         // Update the user's birth date and username
         existingUser.setUsername(updatedUser.getUsername());
-      
+
         // Save the updated user to the database
         User savedUser = userRepository.save(existingUser);
-      
+
         // Return the updated user
         return savedUser;
-      }
+    }
 }

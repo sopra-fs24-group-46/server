@@ -94,8 +94,8 @@ public class Game implements Serializable {
     }
 
     public void verifyHost(User hostPlayer) {
-        var host = settings.getHostPlayer();
-        if (hostPlayer.getId() != host.getId()) {
+        var hostId = settings.getHostPlayerId();
+        if (hostPlayer.getId() != hostId) {
             throw new IllegalStateException("Host player does not match");
         }
     }
