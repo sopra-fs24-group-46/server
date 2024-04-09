@@ -21,20 +21,22 @@ public class GameService {
         this.gameRepository = gameRepository;
     }
 
-    public Long createGame(User hostPlayer) {
-        Game game = new Game(hostPlayer);
+    public Long createGame(User userCredentials) {
+        // playerId for the host
+        // todo automatically add host to game
+        Game game = new Game(userCredentials);
         return gameRepository.save(game).getId();
     }
 
-    public void deleteGame(Long gameId, User hostPlayer) {
+    public void deleteGame(Long gameId, User userCredentials) {
         Game game = findGameById(gameId);
-        game.verifyHost(hostPlayer);
+        game.verifyHost(userCredentials);
         gameRepository.deleteById(gameId);
     }
 
-    public void updateSettings(Long gameId, Settings settings, User hostPlayer) {
+    public void updateSettings(Long gameId, Settings settings, User userCredentials) {
         Game game = findGameById(gameId);
-        game.verifyHost(hostPlayer);
+        game.verifyHost(userCredentials);
         game.updateSettings(settings);
     }
 
@@ -53,9 +55,9 @@ public class GameService {
         findGameById(gameId).leaveGame(playerId);
     }
 
-    public Boolean openLobby(Long gameId, User hostPlayer) {
+    public Boolean openLobby(Long gameId, User userCredentials) {
         Game game = findGameById(gameId);
-        game.verifyHost(hostPlayer);
+        game.verifyHost(userCredentials);
         return game.openLobby();
     }
 
@@ -64,9 +66,9 @@ public class GameService {
         return findGameById(gameId).getGameModelView();
     }
 
-    public void startGame(Long gameId, User hostPlayer) {
+    public void startGame(Long gameId, User userCredentials) {
         Game game = findGameById(gameId);
-        game.verifyHost(hostPlayer);
+        game.verifyHost(userCredentials);
         game.startGame();
     }
 
