@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.game.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class History {
     }
 
     // returns shallow copy
+    @JsonProperty("rounds")
     public List<Round> getRounds() {
         return new ArrayList<>(rounds);
     }

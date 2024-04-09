@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.PowerUp;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.RoundState;
@@ -188,5 +191,10 @@ public class GameModel implements GameModelView {
             throw new IllegalStateException("No question for this round");
         }
         return question;
+    }
+
+    @Override
+    public Map<String, History> getHistories() {
+        return histories;
     }
 }
