@@ -6,6 +6,8 @@ import ch.uzh.ifi.hase.soprafs24.endpoint.controller.UserController;
 import ch.uzh.ifi.hase.soprafs24.game.GameService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ch.uzh.ifi.hase.soprafs24.user.User;
+
 
 @RestController
 @RequestMapping("/game")
@@ -15,6 +17,12 @@ public class GameController {
 
     public GameController(GameService gameService) {
         this.gameService = gameService;
+    }
+
+    @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Long createGame(@RequestBody User hostPlayer) {
+        return gameService.createGame(hostPlayer);
     }
 
     // @PutMapping("/start")

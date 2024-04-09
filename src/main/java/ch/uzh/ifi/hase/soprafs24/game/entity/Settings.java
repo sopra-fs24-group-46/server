@@ -13,7 +13,7 @@ public class Settings implements SettingView {
     // Difficulty
     // Region
 
-    public long getHostPlayerId() {
+    public Long getHostPlayerId() {
         return hostPlayerId;
     }
 
