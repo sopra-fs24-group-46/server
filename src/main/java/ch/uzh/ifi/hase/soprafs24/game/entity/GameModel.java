@@ -27,6 +27,7 @@ public class GameModel implements GameModelView {
     // general
     private List<Question> questions; // one question for each round. Use current round as Index to get current
                                       // question.
+    private int serialPlayerNumber; // used to assign player numbers
 
     public GameModel() {
 
@@ -34,6 +35,7 @@ public class GameModel implements GameModelView {
         gameState = GameState.SETUP;
         roundState = RoundState.QUESTION;
         currentRound = 0;
+        serialPlayerNumber = 0;
 
         // init lists
         this.players = new ArrayList<>();
@@ -140,7 +142,8 @@ public class GameModel implements GameModelView {
             throw new IllegalStateException(
                     "You can only join games which are in Lobby state. Current state: " + gameState);
         }
-        String playerId = UUID.randomUUID().toString();
+        String playerId = serialPlayerNumber + UUID.randomUUID().toString();
+        serialPlayerNumber++;
 
         players.add(new Player(playerId, displayName));
         // init maps
