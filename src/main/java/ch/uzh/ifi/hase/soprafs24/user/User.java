@@ -67,7 +67,6 @@ public class User implements Serializable {
         this.token = token;
     }
 
-    @Override
     public String getDisplayName() {
         return getUsername();
     }

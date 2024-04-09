@@ -87,4 +87,10 @@ public class GameService {
         return gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalStateException("Game with id: " + gameId + " not found"));
     }
+
+    public static void main(String[] args) {
+        // Game game = new Game();
+        // String id = game.joinGame("test");
+        // game.leaveGame(id);
+    }
 }
