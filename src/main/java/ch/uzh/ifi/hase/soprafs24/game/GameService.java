@@ -8,9 +8,8 @@ import org.springframework.stereotype.Service;
 import ch.uzh.ifi.hase.soprafs24.game.View.GameModelView;
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
-import ch.uzh.ifi.hase.soprafs24.game.entity.GuestPlayer;
-import ch.uzh.ifi.hase.soprafs24.game.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
+import ch.uzh.ifi.hase.soprafs24.user.User;
 
 @Service
 @Transactional
@@ -22,18 +21,18 @@ public class GameService {
         this.gameRepository = gameRepository;
     }
 
-    public Long createGame(Player hostPlayer) {
+    public Long createGame(User hostPlayer) {
         Game game = new Game(hostPlayer);
         return gameRepository.save(game).getId();
     }
 
-    public void deleteGame(Long gameId, Player hostPlayer) {
+    public void deleteGame(Long gameId, User hostPlayer) {
         Game game = findGameById(gameId);
         game.verifyHost(hostPlayer);
         gameRepository.deleteById(gameId);
     }
 
-    public void updateSettings(Long gameId, Settings settings, Player hostPlayer) {
+    public void updateSettings(Long gameId, Settings settings, User hostPlayer) {
         Game game = findGameById(gameId);
         game.verifyHost(hostPlayer);
         game.updateSettings(settings);
@@ -44,27 +43,17 @@ public class GameService {
         return game.getSettings();
     }
 
-    public Boolean joinGameAsUser(Long gameId, Player player) {
+    public String joinGame(Long gameId, String displayName) {
         Game game = findGameById(gameId);
-        return game.joinGame(player);
+        String playerId = game.joinGame(displayName);
+        return playerId;
     }
 
-    public Player joinGameAsGuest(Long gameId, String name) {
-        Game game = findGameById(gameId);
-        GuestPlayer player = new GuestPlayer();
-        player.setNickname(name);
-        if (game.joinGame(player)) {
-            return player;
-        } else {
-            throw new IllegalStateException("Could not join game as guest");
-        }
+    public void leaveGame(Long gameId, String playerId) {
+        findGameById(gameId).leaveGame(playerId);
     }
 
-    public void leaveGame(Long gameId, Player player) {
-        findGameById(gameId).leaveGame(player);
-    }
-
-    public Boolean openLobby(Long gameId, Player hostPlayer) {
+    public Boolean openLobby(Long gameId, User hostPlayer) {
         Game game = findGameById(gameId);
         game.verifyHost(hostPlayer);
         return game.openLobby();
@@ -75,15 +64,15 @@ public class GameService {
         return findGameById(gameId).getGameModelView();
     }
 
-    public void startGame(Long gameId, Player hostPlayer) {
+    public void startGame(Long gameId, User hostPlayer) {
         Game game = findGameById(gameId);
         game.verifyHost(hostPlayer);
         game.startGame();
     }
 
-    public void submitAnswer(Long gameId, Player player, Answer answer) {
+    public void submitAnswer(Long gameId, String playerId, Answer answer) {
         Game game = findGameById(gameId);
-        game.guess(player, answer);
+        game.guess(playerId, answer);
     }
 
     public GameModelView getGameView(Long gameId) {

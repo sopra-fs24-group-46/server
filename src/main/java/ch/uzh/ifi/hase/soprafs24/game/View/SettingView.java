@@ -1,10 +1,10 @@
 //This is an immutable wrapper for the Settings Class
 package ch.uzh.ifi.hase.soprafs24.game.View;
 
-import ch.uzh.ifi.hase.soprafs24.game.entity.Player;
+import ch.uzh.ifi.hase.soprafs24.user.User;
 
 public interface SettingView {
-    public Player getHostPlayer();
+    public User getHostPlayer();
 
     public Integer getMaxPlayers();
 

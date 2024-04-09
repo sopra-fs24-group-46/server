@@ -1,10 +1,19 @@
 package ch.uzh.ifi.hase.soprafs24.game.entity;
 
-public interface Player {
+public class Player {
+    private String id;
+    private String displayName;
 
-    Long getId(); //used to identify the player
+    public Player(String id, String displayName) {
 
-    String getToken(); //used to verify/authenticate the player
+    }
 
-    String getDisplayName(); //used to display in frontend
+    public String getId() {
+        return id;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
 }

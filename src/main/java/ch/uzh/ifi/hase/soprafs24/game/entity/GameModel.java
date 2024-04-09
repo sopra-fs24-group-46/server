@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.PowerUp;
@@ -14,9 +15,9 @@ public class GameModel implements GameModelView {
 
     // for each player:
     private List<Player> players;
-    private Map<Player, Score> scores;
-    private Map<Player, PowerUp> powerUps; // this allows for only one PowerUp at a time
-    private Map<Player, Answer> answers;
+    private Map<String, Score> scores;
+    private Map<String, PowerUp> powerUps; // this allows for only one PowerUp at a time
+    private Map<String, Answer> answers;
 
     // game state
     private GameState gameState;
@@ -42,8 +43,8 @@ public class GameModel implements GameModelView {
 
     }
 
-    public GameModel(List<Player> players, Map<Player, Score> scores, Map<Player, PowerUp> powerUps,
-            Map<Player, Answer> answers, GameState gameState, RoundState roundState, int currentRound,
+    public GameModel(List<Player> players, Map<String, Score> scores, Map<String, PowerUp> powerUps,
+            Map<String, Answer> answers, GameState gameState, RoundState roundState, int currentRound,
             List<Question> questions) {
         // set default values
         gameState = GameState.SETUP;
@@ -70,31 +71,28 @@ public class GameModel implements GameModelView {
         return players;
     }
 
-    public Map<Player, Score> getScores() {
+    public Map<String, Score> getScores() {
         return scores;
     }
 
-    public void updateScore(Player player, int score, Double distance) {
-        Player playerFromList = playerFromList(player);
-        scores.get(playerFromList).addScore(score, distance);
+    public void updateScore(String playerId, int score, Double distance) {
+        scores.get(playerId).addScore(score, distance);
     }
 
-    public Map<Player, PowerUp> getPowerUps() {
+    public Map<String, PowerUp> getPowerUps() {
         return powerUps;
     }
 
-    public void setPowerUp(Player player, PowerUp powerUp) {
-        Player playerFromList = playerFromList(player);
-        powerUps.put(playerFromList, powerUp);
+    public void setPowerUp(String playerId, PowerUp powerUp) {
+        powerUps.put(playerId, powerUp);
     }
 
-    public Map<Player, Answer> getAnswers() {
+    public Map<String, Answer> getAnswers() {
         return answers;
     }
 
-    public void setAnswer(Player player, Answer answer) {
-        Player playerFromList = playerFromList(player);
-        answers.put(playerFromList, answer);
+    public void setAnswer(String playerId, Answer answer) {
+        answers.put(playerId, answer);
     }
 
     public GameState getGameState() {
@@ -137,31 +135,24 @@ public class GameModel implements GameModelView {
         this.questions = questions;
     }
 
-    public void addPlayer(Player player) {
-        if (players.stream().anyMatch(p -> p.getDisplayName() == player.getDisplayName())) {
-            throw new IllegalStateException("Player with this name already exists");
-        }
-        if (players.stream().anyMatch(p -> p.getToken().equals(player.getToken()))) {
-            throw new IllegalStateException("Player with this token already exists");
-        }
+    public String addPlayer(String displayName) {
         if (gameState != GameState.LOBBY) {
             throw new IllegalStateException(
                     "You can only join games which are in Lobby state. Current state: " + gameState);
         }
-        players.add(player);
+        String playerId = UUID.randomUUID().toString();
+
+        players.add(new Player(playerId, displayName));
         // init maps
-        scores.put(player, new Score());
-        powerUps.put(player, null);
-        answers.put(player, null);
+        scores.put(displayName, new Score());
+        powerUps.put(displayName, null);
+        answers.put(displayName, null);
+        return playerId;
     }
 
-    public void removePlayer(Player player) {
-        Player playerFromList = playerFromList(player);
+    public void removePlayer(String playerId) {
+        Player playerFromList = players.stream().filter(player -> player.getId().equals(playerId)).findFirst().get();
         players.remove(playerFromList);
     }
 
-    private Player playerFromList(Player player) {
-        return players.stream().filter(p -> p.getToken().equals(player.getToken())).findFirst()
-                .orElseThrow(() -> new IllegalStateException("Player with this token not found is not in the game"));
-    }
 }

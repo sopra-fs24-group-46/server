@@ -8,7 +8,6 @@ import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.RoundState;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
 import ch.uzh.ifi.hase.soprafs24.game.entity.GameModel;
-import ch.uzh.ifi.hase.soprafs24.game.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import ch.uzh.ifi.hase.soprafs24.geo_admin_api.APIService;
 
@@ -59,18 +58,18 @@ public class GameEngine {
         gameModel.setRoundState(RoundState.LEADERBOARD);
     }
 
-    public static void addAnswer(GameModel gameModel, Answer answer, Player player) {
+    public static void addAnswer(GameModel gameModel, Answer answer, String playerId) {
         if (gameModel.getRoundState() != RoundState.GUESSING) {
             throw new IllegalStateException(
                     "Answers are only allowed during guessing. Current state: " + gameModel.getRoundState());
         }
-        gameModel.setAnswer(player, answer);
+        gameModel.setAnswer(playerId, answer);
     }
 
     private static void evaluateAnswers(GameModel gameModel) {
         // iterates over map of answers
-        for (Map.Entry<Player, Answer> entry : gameModel.getAnswers().entrySet()) {
-            Player player = entry.getKey();
+        for (Map.Entry<String, Answer> entry : gameModel.getAnswers().entrySet()) {
+            String playerId = entry.getKey();
             Answer answer = entry.getValue();
 
             var question = gameModel.getCurrentQuestion();
@@ -85,7 +84,7 @@ public class GameEngine {
                 score = (int) (1000 / Math.pow(distance, 2));
             }
 
-            gameModel.updateScore(player, score, distance);
+            gameModel.updateScore(playerId, score, distance);
         }
     }
 

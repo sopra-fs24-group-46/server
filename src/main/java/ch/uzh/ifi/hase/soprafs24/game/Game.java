@@ -10,8 +10,8 @@ import ch.uzh.ifi.hase.soprafs24.game.View.GameModelView;
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
 import ch.uzh.ifi.hase.soprafs24.game.entity.GameModel;
-import ch.uzh.ifi.hase.soprafs24.game.entity.Player;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
+import ch.uzh.ifi.hase.soprafs24.user.User;
 
 import java.io.Serializable;
 
@@ -35,7 +35,7 @@ public class Game implements Serializable {
 
     // Public constructor allows creation of new games which can be stored to the
     // database
-    public Game(Player hostPlayer) {
+    public Game(User hostPlayer) {
         settings = new Settings();
         settings.setHostPlayer(hostPlayer);
         gameModel = new GameModel();
@@ -65,16 +65,17 @@ public class Game implements Serializable {
         return settings;
     }
 
-    public Boolean joinGame(Player player) {
+    public String joinGame(String displayName) {
         if (gameModel.getPlayers().size() >= settings.getMaxPlayers()) {
             throw new IllegalStateException("Game is full");
         }
-        gameModel.addPlayer(player);
-        return true;
+        String playerId = gameModel.addPlayer(displayName);
+        return playerId;
+
     }
 
-    public Boolean leaveGame(Player player) {
-        gameModel.removePlayer(player);
+    public Boolean leaveGame(String playerId) {
+        gameModel.removePlayer(playerId);
         return true;
     }
 
@@ -83,8 +84,8 @@ public class Game implements Serializable {
         return true;
     }
 
-    public Boolean guess(Player player, Answer guess) {
-        GameEngine.addAnswer(gameModel, guess, player);
+    public Boolean guess(String playerId, Answer guess) {
+        GameEngine.addAnswer(gameModel, guess, playerId);
         return true;
     }
 
@@ -92,7 +93,7 @@ public class Game implements Serializable {
         return gameModel.getGameModelView();
     }
 
-    public void verifyHost(Player hostPlayer) {
+    public void verifyHost(User hostPlayer) {
         var host = settings.getHostPlayer();
         if (hostPlayer.getId() != host.getId()) {
             throw new IllegalStateException("Host player does not match");
