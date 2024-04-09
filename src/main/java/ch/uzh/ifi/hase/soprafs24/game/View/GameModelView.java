@@ -14,8 +14,6 @@ import ch.uzh.ifi.hase.soprafs24.game.entity.Score;
 public interface GameModelView {
     public List<Player> getPlayers();
 
-    public Map<String, Score> getScores();
-
     public Map<String, PowerUp> getPowerUps();
 
     public Map<String, Answer> getAnswers();
@@ -29,4 +27,8 @@ public interface GameModelView {
     public List<Question> getQuestions();
 
     public Question getCurrentQuestion();
+
+    public Map<String, Score> getCurrentScores();
+
+    public Map<String, Score> getCumulativeScores();
 }

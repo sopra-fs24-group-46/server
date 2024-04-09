@@ -84,7 +84,9 @@ public class GameEngine {
                 score = (int) (1000 / Math.pow(distance, 2));
             }
 
-            gameModel.updateScore(playerId, score, distance);
+            gameModel.setScore(playerId, score, distance);
+            gameModel.pushHistory(); // this seals the deal. No more changes to round.
+                                     // cumulative scores are
         }
     }
 
