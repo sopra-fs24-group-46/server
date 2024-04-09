@@ -13,6 +13,16 @@ public class Settings implements SettingView {
     // Difficulty
     // Region
 
+    public Settings(int maxPlayers, int rounds, int guessingTimePerRound) {
+        this.maxPlayers = maxPlayers;
+        this.rounds = rounds;
+        this.guessingTimePerRound = guessingTimePerRound;
+    }
+
+    public Settings() {
+        // TODO Auto-generated constructor stub
+    }
+
     public long getHostPlayerId() {
         return hostPlayerId;
     }

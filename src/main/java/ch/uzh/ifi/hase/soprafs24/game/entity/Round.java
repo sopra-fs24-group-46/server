@@ -10,7 +10,7 @@ public class Round {
     private Answer answer;
     private Score score;
 
-    public Round(int roundNumber, PowerUp powerUp, Question question, Answer answer, Score score) {
+    public Round(int roundNumber, Question question, PowerUp powerUp, Answer answer, Score score) {
         this.roundNumber = roundNumber;
         this.powerUp = powerUp;
         this.question = question;

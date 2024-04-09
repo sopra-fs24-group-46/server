@@ -53,47 +53,31 @@ public class GameModel implements GameModelView {
         this.cumulativeScores = new HashMap<>();
     }
 
-    public GameModel(List<Player> players, Map<String, Score> scores, Map<String, PowerUp> powerUps,
-            Map<String, Answer> answers, GameState gameState, RoundState roundState, int currentRound,
-            List<Question> questions, Map<String, History> histories) {
-        // set default values
-        gameState = GameState.SETUP;
-        roundState = RoundState.QUESTION;
-        currentRound = 0;
-    }
-
-    public GameModelView getGameModelView() {
-        // this creates shallow copies of Lists and Maps
-        // and returns a GameModelView
-        // this helps with immutability
-        return new GameModel(
-                new ArrayList<>(players),
-                new HashMap<>(scores),
-                new HashMap<>(powerUps),
-                new HashMap<>(answers),
-                gameState,
-                roundState,
-                currentRound,
-                new ArrayList<>(questions),
-                new HashMap<>(histories));
-    }
-
     public void pushHistory() {
         for (Player player : players) {
 
             var oldCumulativeScore = cumulativeScores.get(player.getId());
+            if (oldCumulativeScore == null) {
+                oldCumulativeScore = new Score(0, 0.0);
+            }
             var currentScore = scores.get(player.getId());
-            var newScore = new Score(oldCumulativeScore.getScore() + currentScore.getScore(),
-                    oldCumulativeScore.getDistance() + currentScore.getDistance());
+            var newScore = oldCumulativeScore.add(currentScore);
 
             cumulativeScores.put(player.getId(), newScore);
 
-            histories.get(player.getId()).addRound(new Round(
+            var powerUp = powerUps.get(player.getId());
+            var answer = answers.get(player.getId());
+            var score = scores.get(player.getId());
+
+            var round = new Round(
                     currentRound,
-                    powerUps.get(player.getId()),
                     getCurrentQuestion(),
-                    answers.get(player.getId()),
-                    scores.get(player.getId())));
+                    powerUp,
+                    answer,
+                    score);
+
+            var history = histories.get(player.getId());
+            history.addRound(round);
             powerUps.put(player.getId(), null);
             answers.put(player.getId(), null);
             scores.put(player.getId(), null);
@@ -101,16 +85,16 @@ public class GameModel implements GameModelView {
     }
 
     public String addPlayer(String displayName) {
-        String playerId = serialPlayerNumber + UUID.randomUUID().toString();
+        String playerId = "player_id_" + serialPlayerNumber + "_" + UUID.randomUUID().toString().substring(0, 4);
         serialPlayerNumber++;
 
         players.add(new Player(playerId, displayName));
         // init maps
-        scores.put(displayName, null);
-        powerUps.put(displayName, null);
-        answers.put(displayName, null);
-        histories.put(displayName, new History());
-        cumulativeScores.put(displayName, new Score(0, 0.0));
+        scores.put(playerId, null);
+        powerUps.put(playerId, null);
+        answers.put(playerId, null);
+        histories.put(playerId, new History());
+        cumulativeScores.put(playerId, new Score(0, 0.0));
         return playerId;
     }
 
@@ -186,14 +170,16 @@ public class GameModel implements GameModelView {
     }
 
     public Question getCurrentQuestion() {
-        Question question = questions.get(currentRound);
+        if (currentRound > questions.size() || currentRound < 1) {
+            return null;
+        }
+        Question question = questions.get(currentRound - 1);
         if (question == null) {
             throw new IllegalStateException("No question for this round");
         }
         return question;
     }
 
-    @Override
     public Map<String, History> getHistories() {
         return histories;
     }

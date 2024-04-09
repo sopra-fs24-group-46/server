@@ -80,13 +80,16 @@ public class GameService {
         game.guess(playerId, answer);
     }
 
+    // for an example JSON string check:
+    // src\main\resources\GameModelView_gameEnded.json
     public String getGameView(Long gameId) {
         Game game = findGameById(gameId);
         GameModelView gameModelView = game.getGameModelView();
         ObjectMapper mapper = new ObjectMapper();
         String gameModelViewJson = null;
 
-        try {
+        try {// this handles the json conversion (DTO -> JSON) since i don't trust the DTO
+             // mappers to handle multilayer objects
             gameModelViewJson = mapper.writeValueAsString(gameModelView);
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Could not convert GameModelView to JSON string", e);
@@ -99,11 +102,5 @@ public class GameService {
     private Game findGameById(Long gameId) {
         return gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalStateException("Game with id: " + gameId + " not found"));
-    }
-
-    public static void main(String[] args) {
-        // Game game = new Game();
-        // String id = game.joinGame("test");
-        // game.leaveGame(id);
     }
 }

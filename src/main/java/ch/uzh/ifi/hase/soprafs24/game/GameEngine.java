@@ -16,46 +16,31 @@ public class GameEngine {
     public void startGame(GameModel gameModel, Settings settings) {
         // this starts the game and automatically goes to the next round after a certain
         // time
-        if (gameModel.getGameState() != GameState.LOBBY) {
-            throw new IllegalStateException(
-                    "Only games in Lobby State can be started. Current state: " + gameModel.getGameState());
-        }
-        gameModel.setGameState(GameState.PLAYING);
-        var numberOfRounds = settings.getRounds();
-
+        loadGame(gameModel, settings);
         // ---------------------------------------------------------------------
-        for (int i = 0; i < numberOfRounds; i++) {
+        var numberOfRounds = settings.getRounds();
+        for (int i = 1; i <= numberOfRounds; i++) {
             gameModel.setCurrentRound(i);
             startRound(gameModel, settings);
-            waitTime(5000);
         }
         // ---------------------------------------------------------------------
-
-        if (gameModel.getGameState() != GameState.PLAYING) {
-            throw new IllegalStateException(
-                    "Can't end the game. Something went wrong while Playing the game. Current state: "
-                            + gameModel.getGameState() + " but should be PLAYING");
-        }
-        gameModel.setGameState(GameState.ENDED);
+        endGame(gameModel, settings);
     }
 
     public void startRound(GameModel gameModel, Settings settings) {
         // this starts the game and automatically goes to the next round state after a
         // certain time
-        gameModel.setRoundState(RoundState.QUESTION);
-
+        nextRoundState(gameModel, RoundState.QUESTION);
         waitTime(5000); // 5 seconds
         // -------------------------------------------
-        gameModel.setRoundState(RoundState.GUESSING);
-
+        nextRoundState(gameModel, RoundState.GUESSING);
         waitTime(settings.getGuessingTimePerRound() * 1000);
         // -------------------------------------------
-        gameModel.setRoundState(RoundState.MAP_REVEAL);
-        evaluateAnswers(gameModel);
-
+        nextRoundState(gameModel, RoundState.MAP_REVEAL);
         waitTime(5000);
         // -------------------------------------------
-        gameModel.setRoundState(RoundState.LEADERBOARD);
+        nextRoundState(gameModel, RoundState.LEADERBOARD);
+        waitTime(5000);
     }
 
     public static void addAnswer(GameModel gameModel, Answer answer, String playerId) {
@@ -64,6 +49,53 @@ public class GameEngine {
                     "Answers are only allowed during guessing. Current state: " + gameModel.getRoundState());
         }
         gameModel.setAnswer(playerId, answer);
+    }
+
+    public void loadGame(GameModel gameModel, Settings settings) {
+
+        if (gameModel.getGameState() != GameState.LOBBY) {
+            throw new IllegalStateException(
+                    "Only games in Lobby State can be started. Current state: " + gameModel.getGameState());
+        }
+        gameModel.setGameState(GameState.PLAYING);
+    }
+
+    public void endGame(GameModel gameModel, Settings settings) {
+        if (gameModel.getGameState() != GameState.PLAYING) {
+            throw new IllegalStateException(
+                    "Can't end the game. Something went wrong while Playing the game. Current state: "
+                            + gameModel.getGameState() + " but should be PLAYING");
+        }
+        gameModel.setGameState(GameState.ENDED);
+    }
+
+    public void nextRoundState(GameModel gameModel, RoundState roundState) {
+        RoundState previousRoundState = gameModel.getRoundState();
+        // force stepping through states
+        switch (roundState) {
+            case QUESTION:
+                gameModel.setRoundState(RoundState.QUESTION);
+                break;
+            case GUESSING:
+                if (previousRoundState != RoundState.QUESTION) {
+                    throw new IllegalStateException("Round state is not QUESTION");
+                }
+                gameModel.setRoundState(RoundState.GUESSING);
+                break;
+            case MAP_REVEAL:
+                if (previousRoundState != RoundState.GUESSING) {
+                    throw new IllegalStateException("Round state is not GUESSING");
+                }
+                gameModel.setRoundState(RoundState.MAP_REVEAL);
+                evaluateAnswers(gameModel);// evaluate answers
+                break;
+            case LEADERBOARD:
+                if (previousRoundState != RoundState.MAP_REVEAL) {
+                    throw new IllegalStateException("Round state is not MAP_REVEAL");
+                }
+                gameModel.setRoundState(RoundState.LEADERBOARD);
+                break;
+        }
     }
 
     private static void evaluateAnswers(GameModel gameModel) {
@@ -108,10 +140,12 @@ public class GameEngine {
     }
 
     private void waitTime(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+        // disable for now
+
+        // try {
+        // Thread.sleep(millis);
+        // } catch (InterruptedException ex) {
+        // Thread.currentThread().interrupt();
+        // }
     }
 }

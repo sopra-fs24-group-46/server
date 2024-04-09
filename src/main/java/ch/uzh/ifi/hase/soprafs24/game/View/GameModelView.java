@@ -15,6 +15,17 @@ import ch.uzh.ifi.hase.soprafs24.game.entity.Question;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Score;
 
 public interface GameModelView {
+    @JsonProperty("gameState")
+    public GameState getGameState();
+
+    @JsonProperty("currentRound")
+    public int getCurrentRound();
+
+    @JsonProperty("roundState")
+    public RoundState getRoundState();
+
+    @JsonProperty("currentQuestion")
+    public Question getCurrentQuestion();
 
     @JsonProperty("players")
     public List<Player> getPlayers();
@@ -25,21 +36,6 @@ public interface GameModelView {
     @JsonProperty("answers")
     public Map<String, Answer> getAnswers();
 
-    @JsonProperty("gameState")
-    public GameState getGameState();
-
-    @JsonProperty("roundState")
-    public RoundState getRoundState();
-
-    @JsonProperty("currentRound")
-    public int getCurrentRound();
-
-    @JsonProperty("questions")
-    public List<Question> getQuestions();
-
-    @JsonProperty("currentQuestion")
-    public Question getCurrentQuestion();
-
     @JsonProperty("currentScores")
     public Map<String, Score> getCurrentScores();
 
@@ -48,4 +44,7 @@ public interface GameModelView {
 
     @JsonProperty("histories")
     public Map<String, History> getHistories();
+
+    @JsonProperty("questions")
+    public List<Question> getQuestions();
 }

@@ -7,7 +7,8 @@ public class Player {
     private String displayName;
 
     public Player(String id, String displayName) {
-
+        this.id = id;
+        this.displayName = displayName;
     }
 
     @JsonProperty("playerId")

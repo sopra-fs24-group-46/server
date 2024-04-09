@@ -50,7 +50,8 @@ public class FetchData {
                     Paths.get(
                             "C:\\Users\\seraf\\NoBackup\\Group SoPra 46\\server\\src\\main\\resources\\" + file_name)));
             // Use the JSON content String as needed
-            System.out.println("JSON content read from file as a String: " + jsonContent);
+            // System.out.println("JSON content read from file as a String: " +
+            // jsonContent);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -110,7 +111,7 @@ public class FetchData {
                 connection.disconnect();
                 return apiResponse;
             } else {
-                System.out.println("API request failed with response code: " + responseCode);
+                // System.out.println("API request failed with response code: " + responseCode);
                 connection.disconnect();
                 throw new RuntimeException("API request failed with response code: " + responseCode);
             }
@@ -131,4 +132,3 @@ public class FetchData {
         }
     }
 }
-
