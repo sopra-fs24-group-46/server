@@ -5,8 +5,8 @@
 package ch.uzh.ifi.hase.soprafs24.game;
 
 import javax.persistence.*;
-
 import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
+
 import ch.uzh.ifi.hase.soprafs24.game.View.GameModelView;
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
@@ -25,8 +25,9 @@ public class Game implements Serializable {
 
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
     private String publicId;
+
 
     // For the moment don't save Infos in the database
     @Transient
@@ -47,8 +48,8 @@ public class Game implements Serializable {
         publicId = UUID.randomUUID().toString().substring(0, 8);
     }
 
-    public String getId() {
-        return publicId;
+    public Long getId() {
+        return id;
     }
 
     public Boolean openLobby() {

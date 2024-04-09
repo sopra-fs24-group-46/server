@@ -5,9 +5,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ch.uzh.ifi.hase.soprafs24.game.View.GameModelView;
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
@@ -24,7 +21,7 @@ public class GameService {
         this.gameRepository = gameRepository;
     }
 
-    public String createGame(User userCredentials) {
+    public Long createGame(User userCredentials) {
         // playerId for the host
         // todo automatically add host to game
         Game game = new Game(userCredentials);
@@ -65,8 +62,8 @@ public class GameService {
     }
 
     // at this time Lobby info is also a GameModelView
-    public String getLobbyView(Long gameId) {
-        return getGameView(gameId);
+    public GameModelView getLobbyView(Long gameId) {
+        return findGameById(gameId).getGameModelView();
     }
 
     public void startGame(Long gameId, User userCredentials) {
@@ -80,19 +77,9 @@ public class GameService {
         game.guess(playerId, answer);
     }
 
-    public String getGameView(Long gameId) {
+    public GameModelView getGameView(Long gameId) {
         Game game = findGameById(gameId);
-        GameModelView gameModelView = game.getGameModelView();
-        ObjectMapper mapper = new ObjectMapper();
-        String gameModelViewJson = null;
-
-        try {
-            gameModelViewJson = mapper.writeValueAsString(gameModelView);
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Could not convert GameModelView to JSON string", e);
-        }
-
-        return gameModelViewJson;
+        return game.getGameModelView();
     }
 
     // Private functions-------------------------------------------------
