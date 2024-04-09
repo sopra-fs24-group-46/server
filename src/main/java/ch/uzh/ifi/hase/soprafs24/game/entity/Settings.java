@@ -23,7 +23,7 @@ public class Settings implements SettingView {
         // TODO Auto-generated constructor stub
     }
 
-    public long getHostPlayerId() {
+    public Long getHostPlayerId() {
         return hostPlayerId;
     }
 

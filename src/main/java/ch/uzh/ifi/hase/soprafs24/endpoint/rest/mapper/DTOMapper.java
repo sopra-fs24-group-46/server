@@ -3,6 +3,10 @@ package ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.user.User;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameSettingsDTO;
+import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
+
+
 
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -31,4 +35,10 @@ public interface DTOMapper {
   @Mapping(source = "username", target = "username")
   @Mapping(source = "token", target = "token")
   UserGetDTO convertEntityToUserGetDTO(User user);
+  
+  @Mapping(source = "maxPlayers", target = "maxPlayers")
+  @Mapping(source = "rounds", target = "rounds")
+  @Mapping(source = "guessingTime", target = "guessingTime")
+  @Mapping(source = "host", target = "host")
+  Settings convertGameSettingsDTOToEntity(GameSettingsDTO gameSettingsDTO);
 }
