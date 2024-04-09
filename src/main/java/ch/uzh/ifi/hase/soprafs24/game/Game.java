@@ -6,6 +6,7 @@ package ch.uzh.ifi.hase.soprafs24.game;
 
 import javax.persistence.*;
 
+import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
 import ch.uzh.ifi.hase.soprafs24.game.View.GameModelView;
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
@@ -14,6 +15,7 @@ import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import ch.uzh.ifi.hase.soprafs24.user.User;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @Entity
 @Table(name = "GAME")
@@ -23,7 +25,8 @@ public class Game implements Serializable {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private long id;
+    private String publicId;
 
     // For the moment don't save Infos in the database
     @Transient
@@ -40,10 +43,12 @@ public class Game implements Serializable {
         settings.setHostPlayer(hostPlayer);
         gameModel = new GameModel();
         gameEngine = new GameEngine();
+        // returns a random string of 8 characters
+        publicId = UUID.randomUUID().toString().substring(0, 8);
     }
 
-    public Long getId() {
-        return id;
+    public String getId() {
+        return publicId;
     }
 
     public Boolean openLobby() {
@@ -66,6 +71,10 @@ public class Game implements Serializable {
     }
 
     public String joinGame(String displayName) {
+        if (gameModel.getGameState() != GameState.SETUP && gameModel.getGameState() != GameState.LOBBY) {
+            throw new IllegalStateException(
+                    "You can only join games which are in Lobby state. Current state: " + gameModel.getGameState());
+        }
         if (gameModel.getPlayers().size() >= settings.getMaxPlayers()) {
             throw new IllegalStateException("Game is full");
         }
