@@ -94,7 +94,8 @@ public class UserService {
         User user = authenticateUser(credentials);
         // valid input
 
-        userRepository.delete(user);
+        // Delete the user by ID to avoid accidentally deleting the wrong user
+        userRepository.deleteById(credentials.getId());
         userRepository.flush();
         return true;
     }

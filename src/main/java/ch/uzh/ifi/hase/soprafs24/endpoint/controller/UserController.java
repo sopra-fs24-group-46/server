@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.LoginResponseDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.user.User;
 import ch.uzh.ifi.hase.soprafs24.user.UserService;
 
@@ -56,6 +57,13 @@ public class UserController {
     User createdUser = userService.createUser(userInput);
     // convert internal representation of user back to API
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+  }
+
+  @DeleteMapping("/users")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteUser(@RequestBody CredentialsDTO credentials) {
+    User userToDelete = DTOMapper.INSTANCE.convertCredentialsDTOtoEntity(credentials);
+    userService.deleteUser(userToDelete);
   }
 
   @PostMapping("/login")
