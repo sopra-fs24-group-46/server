@@ -75,6 +75,7 @@ public class GameController {
 
     // player can join
     @PostMapping("/{gameId}/join")
+    @ResponseStatus(HttpStatus.FOUND)
     public String joinGame(@PathVariable Long gameId, @RequestBody User user) {
         return gameService.joinGame(gameId, user.getDisplayName());
     }
