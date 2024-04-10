@@ -75,6 +75,7 @@ public class GameEngine {
         switch (roundState) {
             case QUESTION:
                 gameModel.setRoundState(RoundState.QUESTION);
+                gameModel.initRound();
                 break;
             case GUESSING:
                 if (previousRoundState != RoundState.QUESTION) {
@@ -113,7 +114,7 @@ public class GameEngine {
                 score = 0;
             } else {
                 distance = question.getLocation().getDistanceTo(answer.getLocation());
-                score = (int) (1000 / Math.pow(distance, 2));
+                score = (int) (1000 / Math.pow(distance / 10000, 2));
             }
 
             gameModel.setScore(playerId, score, distance);

@@ -54,6 +54,14 @@ public class GameModel implements GameModelView {
         this.questions = new ArrayList<>();
     }
 
+    public void initRound() {
+        for (Player player : players) {
+            powerUps.put(player.getId(), null);
+            answers.put(player.getId(), null);
+            scores.put(player.getId(), null);
+        }
+    }
+
     public void pushHistory() {
         for (Player player : players) {
 
@@ -79,9 +87,6 @@ public class GameModel implements GameModelView {
 
             var history = histories.get(player.getId());
             history.addRound(round);
-            powerUps.put(player.getId(), null);
-            answers.put(player.getId(), null);
-            scores.put(player.getId(), null);
         }
     }
 
@@ -101,6 +106,11 @@ public class GameModel implements GameModelView {
 
     public void removePlayer(String playerId) {
         Player playerFromList = players.stream().filter(player -> player.getId().equals(playerId)).findFirst().get();
+        scores.remove(playerId);
+        powerUps.remove(playerId);
+        answers.remove(playerId);
+        histories.remove(playerId);
+        cumulativeScores.remove(playerId);
         players.remove(playerFromList);
     }
 
