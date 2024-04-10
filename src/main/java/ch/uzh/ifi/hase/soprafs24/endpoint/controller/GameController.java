@@ -1,12 +1,14 @@
 //Endpoints for Game
 package ch.uzh.ifi.hase.soprafs24.endpoint.controller;
 
-import ch.uzh.ifi.hase.soprafs24.endpoint.controller.UserController;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameResponseDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PostGuessDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.game.GameService;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
 import ch.uzh.ifi.hase.soprafs24.game.entity.GeoLocation;
+import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,10 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ch.uzh.ifi.hase.soprafs24.user.User;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 //User credentials refer to a User object with valid id and token of the user. These are needed to do Host actions like create, start... a game
 //for joining a game no credentials are needed
+//todo move credentials to request parameters
 @RestController
 @RequestMapping("/game")
 public class GameController {
@@ -53,7 +55,7 @@ public class GameController {
      */
     @PutMapping("/{gameId}/leave")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void leaveGame(@PathVariable Long gameId,
+    public void leaveGame(@PathVariable String gameId,
             @RequestBody String playerId) {
         gameService.leaveGame(gameId, playerId);
     }
@@ -68,7 +70,7 @@ public class GameController {
      */
     @PostMapping("/{gameId}/join")
     @ResponseStatus(HttpStatus.FOUND)
-    public String joinGame(@PathVariable Long gameId,
+    public String joinGame(@PathVariable String gameId,
             @RequestBody String displayName) {
         return gameService.joinGame(gameId, displayName);
     }
@@ -108,7 +110,7 @@ public class GameController {
      */
     @PostMapping("/{gameId}/openLobby")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void openLobby(@PathVariable Long gameId,
+    public void openLobby(@PathVariable String gameId,
             @RequestBody User credentials) {
         // Open the lobby of the game for the player.
         gameService.openLobby(gameId, credentials);
@@ -122,7 +124,7 @@ public class GameController {
      */
     @PostMapping("/{gameId}/start")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void startGame(@PathVariable Long gameId,
+    public void startGame(@PathVariable String gameId,
             @RequestBody User credentials) {
         // Start the game.
         gameService.startGame(gameId, credentials);
@@ -137,7 +139,7 @@ public class GameController {
      */
     @PostMapping("/{gameId}/guess")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void makeGuess(@PathVariable Long gameId,
+    public void makeGuess(@PathVariable String gameId,
             @RequestBody PostGuessDTO postGuessDTO) {
         // Submit a guess for the game.
         gameService.submitAnswer(gameId, postGuessDTO.getPlayerId(),
@@ -152,9 +154,28 @@ public class GameController {
      */
     @GetMapping("/{gameId}/getView/")
     @ResponseStatus(HttpStatus.OK)
-    public String getGameView(@PathVariable Long gameId) {
+    public String getGameView(@PathVariable String gameId) {
         // Get the view of the game.
 
         return gameService.getGameView(gameId);
     }
+
+    /**
+     * Updates the settings of a game.
+     * 
+     * @param gameId      The ID of the game.
+     * @param settingsDTO The new settings of the game.
+     * @param credentials The credentials of the player.
+     */
+    @PutMapping("/{gameId}/updateSettings/")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateSettings(@PathVariable String gameId,
+            @RequestBody GameSettingsDTO settingsDTO,
+            @RequestParam User credentials) {
+        // Update the settings of the game.
+
+        Settings settings = DTOMapper.INSTANCE.gameSettingsDTOtoSettings(settingsDTO);
+        gameService.updateSettings(gameId, settings, credentials);
+    }
+
 }

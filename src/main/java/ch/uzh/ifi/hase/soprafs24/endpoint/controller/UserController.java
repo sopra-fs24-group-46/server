@@ -58,38 +58,33 @@ public class UserController {
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
   }
 
-  
   @PostMapping("/login")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public LoginResponseDTO login(@RequestBody UserPostDTO userPostDTO) {
-      // retrieve the user by username
-      User user = userService.getUserByUsername(userPostDTO.getUsername());
-      if (user == null || !user.getPassword().equals(userPostDTO.getPassword())) {
-          throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
-      }
+  public LoginResponseDTO login(@RequestBody UserPostDTO userPostDTO) {// let user service do that
+    // retrieve the user by username
+    User user = userService.getUserByUsername(userPostDTO.getUsername());
+    if (user == null || !user.getPassword().equals(userPostDTO.getPassword())) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
+    }
 
-      //userService.updateUserStatus(user.getId(), UserStatus.ONLINE); //status ONLINE
+    // userService.updateUserStatus(user.getId(), UserStatus.ONLINE); //status
+    // ONLINE
 
-  
-      // Convert user to API representation
-      UserGetDTO userDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
-      
-      // Create a LoginResponseDTO object containing both the user DTO and the token
-      LoginResponseDTO response = new LoginResponseDTO();
-      response.setUser(userDTO);
-      response.setToken(user.getToken()); 
-      
-      return response;
+    // Convert user to API representation
+    UserGetDTO userDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+
+    // Create a LoginResponseDTO object containing both the user DTO and the token
+    LoginResponseDTO response = new LoginResponseDTO();
+    response.setUser(userDTO);
+    response.setToken(user.getToken());
+
+    return response;
   }
 
-
-  @PutMapping("/users")
+  @PutMapping("/users/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-      // Check if the request body contains the status field
-
-          userService.updateUser(id, updatedUser);
-      }
-  
+    userService.updateUser(id, updatedUser);
+  }
 }

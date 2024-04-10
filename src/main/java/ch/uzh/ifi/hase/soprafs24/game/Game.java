@@ -53,8 +53,9 @@ public class Game implements Serializable {
         publicId = UUID.randomUUID().toString().substring(0, 8);
     }
 
+    @Deprecated
     public String getId() {
-        return publicId;
+        throw new UnsupportedOperationException("Use getPublicId instead");
     }
 
     public String getHostPlayerId() {
@@ -165,5 +166,9 @@ public class Game implements Serializable {
             e.printStackTrace();
             throw new IllegalStateException("Could not convert GameModelView to JSON string", e);
         }
+    }
+
+    public String getPublicId() {
+        return publicId;
     }
 }

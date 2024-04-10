@@ -39,4 +39,6 @@ public interface DTOMapper {
   @Mapping(source = "guessingTime", target = "guessingTimePerRound")
   // @Mapping(source = "host", target = "hostPlayer")
   Settings convertGameSettingsDTOToEntity(GameSettingsDTO gameSettingsDTO);
+
+  Settings gameSettingsDTOtoSettings(GameSettingsDTO settingsDTO);
 }

@@ -37,68 +37,68 @@ public class GameService {
         gameRepository.flush();
 
         CreateGameResponseDTO response = new CreateGameResponseDTO();
-        response.setGameId(game.getId());
+        response.setGameId(game.getPublicId());
         response.setPlayerId(game.getHostPlayerId());
         return response;
     }
 
-    public void deleteGame(Long gameId, User userCredentials) {
+    public void deleteGame(String gameId, User userCredentials) {
         userService.verifyUserCredentials(userCredentials);
-        Game game = findGameById(gameId);
+        Game game = findGameByPublicId(gameId);
         game.verifyHost(userCredentials);
-        gameRepository.deleteById(gameId);
+        gameRepository.deleteByPublicId(game.getPublicId());
     }
 
-    public void updateSettings(Long gameId, Settings settings, User userCredentials) {
+    public void updateSettings(String gameId, Settings settings, User userCredentials) {
         userService.verifyUserCredentials(userCredentials);
-        Game game = findGameById(gameId);
+        Game game = findGameByPublicId(gameId);
         game.verifyHost(userCredentials);
         game.updateSettings(settings);
     }
 
-    public SettingView getSettingsView(Long gameId) {
-        Game game = findGameById(gameId);
+    public SettingView getSettingsView(String gameId) {
+        Game game = findGameByPublicId(gameId);
         return game.getSettings();
     }
 
-    public String joinGame(Long gameId, String displayName) {
-        Game game = findGameById(gameId);
+    public String joinGame(String gameId, String displayName) {
+        Game game = findGameByPublicId(gameId);
         String playerId = game.joinGame(displayName);
         return playerId;
     }
 
-    public void leaveGame(Long gameId, String playerId) {
-        findGameById(gameId).leaveGame(playerId);
+    public void leaveGame(String gameId, String playerId) {
+        findGameByPublicId(gameId).leaveGame(playerId);
     }
 
-    public Boolean openLobby(Long gameId, User userCredentials) {
+    public Boolean openLobby(String gameId, User userCredentials) {
         userService.verifyUserCredentials(userCredentials);
-        Game game = findGameById(gameId);
+        Game game = findGameByPublicId(gameId);
         game.verifyHost(userCredentials);
         return game.openLobby();
     }
 
     // at this time Lobby info is also a GameModelView
-    public String getLobbyView(Long gameId) {
+    public String getLobbyView(String gameId) {
         return getGameView(gameId);
     }
 
-    public void startGame(Long gameId, User userCredentials) {
+    public void startGame(String gameId, User userCredentials) {
         userService.verifyUserCredentials(userCredentials);
-        Game game = findGameById(gameId);
+        Game game = findGameByPublicId(gameId);
         game.verifyHost(userCredentials);
         game.startGame();
     }
 
-    public void submitAnswer(Long gameId, String playerId, Answer answer) {
-        Game game = findGameById(gameId);
+    public void submitAnswer(String gameId, String playerId, Answer answer) {
+        Game game = findGameByPublicId(gameId);
         game.guess(playerId, answer);
     }
 
     // for an example JSON string check:
     // src\main\resources\GameModelView_gameEnded.json
-    public String getGameView(Long gameId) {
-        Game game = findGameById(gameId);
+    public String getGameView(String gameId) {
+        Game game = findGameByPublicId(gameId);
         GameModelView gameModelView = game.getGameModelView();
         ObjectMapper mapper = new ObjectMapper();
         String gameModelViewJson = null;
@@ -114,8 +114,9 @@ public class GameService {
     }
 
     // Private functions-------------------------------------------------
-    private Game findGameById(Long gameId) {
-        return gameRepository.findById(gameId)
-                .orElseThrow(() -> new IllegalStateException("Game with id: " + gameId + " not found"));
+    private Game findGameByPublicId(String gameId) {
+        return gameRepository.findByPublicId(gameId)
+                .orElseThrow(() -> new IllegalStateException("Game with publicId: " + gameId + " not found"));
     }
+
 }
