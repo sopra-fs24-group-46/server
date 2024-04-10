@@ -4,7 +4,7 @@ package ch.uzh.ifi.hase.soprafs24.game.View;
 import ch.uzh.ifi.hase.soprafs24.user.User;
 
 public interface SettingView {
-    public Long getHostPlayerId();
+    public Long getHostUserId();
 
     public Integer getMaxPlayers();
 

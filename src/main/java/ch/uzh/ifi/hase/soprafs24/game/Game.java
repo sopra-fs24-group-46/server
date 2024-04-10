@@ -47,6 +47,7 @@ public class Game implements Serializable {
         settings = new Settings();
         settings.setHostPlayer(hostPlayer);
         gameModel = new GameModel();
+        gameModel.addPlayer(hostPlayer.getDisplayName());
         gameEngine = new GameEngine();
         // returns a random string of 8 characters
         publicId = UUID.randomUUID().toString().substring(0, 8);
@@ -54,6 +55,10 @@ public class Game implements Serializable {
 
     public String getId() {
         return publicId;
+    }
+
+    public String getHostPlayerId() {
+        return gameModel.getHostPlayerId();
     }
 
     public Boolean openLobby() {
@@ -108,7 +113,7 @@ public class Game implements Serializable {
     }
 
     public void verifyHost(User hostPlayer) {
-        var hostId = settings.getHostPlayerId();
+        var hostId = settings.getHostUserId();
         if (hostPlayer.getId() != hostId) {
             throw new IllegalStateException("Host player does not match");
         }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameResponseDTO;
 import ch.uzh.ifi.hase.soprafs24.game.View.GameModelView;
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
@@ -24,11 +25,15 @@ public class GameService {
         this.gameRepository = gameRepository;
     }
 
-    public String createGame(User userCredentials) {
-        // playerId for the host
-        // todo automatically add host to game
+    public CreateGameResponseDTO createGame(User userCredentials) {
         Game game = new Game(userCredentials);
-        return gameRepository.save(game).getId();
+        gameRepository.save(game);
+        gameRepository.flush();
+
+        CreateGameResponseDTO response = new CreateGameResponseDTO();
+        response.setGameId(game.getId());
+        response.setPlayerId(game.getHostPlayerId());
+        return response;
     }
 
     public void deleteGame(Long gameId, User userCredentials) {

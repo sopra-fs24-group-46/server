@@ -183,4 +183,8 @@ public class GameModel implements GameModelView {
     public Map<String, History> getHistories() {
         return histories;
     }
+
+    public String getHostPlayerId() {
+        return players.get(0).getId();
+    }
 }
