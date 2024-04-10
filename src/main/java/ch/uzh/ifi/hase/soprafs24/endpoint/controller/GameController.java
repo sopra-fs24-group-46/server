@@ -2,6 +2,7 @@
 package ch.uzh.ifi.hase.soprafs24.endpoint.controller;
 
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameResponseDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PostGuessDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper.DTOMapper;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import ch.uzh.ifi.hase.soprafs24.user.User;
 import org.springframework.web.bind.annotation.GetMapping;
 
-//User credentials refer to a User object with valid id and token of the user. These are needed to do Host actions like create, start... a game
+//CredentialsD credentials refer to a User object with valid id and token of the user. These are needed to do Host actions like create, start... a game
 //for joining a game no credentials are needed
 //todo move credentials to request parameters and update the calls
 @RestController
@@ -42,8 +43,10 @@ public class GameController {
      */
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateGameResponseDTO createGame(@RequestBody User credentials) { // HTTP POST to /game/create
-        return gameService.createGame(credentials); // call the createGame method from GameService
+    public CreateGameResponseDTO createGame(@RequestBody CredentialsDTO credentials) { // HTTP POST to /game/create
+
+        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoEntity(credentials);
+        return gameService.createGame(userCredentials); // call the createGame method from GameService
     }
 
     /**
@@ -111,9 +114,10 @@ public class GameController {
     @PostMapping("/{gameId}/openLobby")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void openLobby(@PathVariable String gameId,
-            @RequestBody User credentials) {
+            @RequestBody CredentialsDTO credentials) {
         // Open the lobby of the game for the player.
-        gameService.openLobby(gameId, credentials);
+        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoEntity(credentials);
+        gameService.openLobby(gameId, userCredentials);
     }
 
     /**
@@ -125,9 +129,10 @@ public class GameController {
     @PostMapping("/{gameId}/start")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void startGame(@PathVariable String gameId,
-            @RequestBody User credentials) {
+            @RequestBody CredentialsDTO credentials) {
         // Start the game.
-        gameService.startGame(gameId, credentials);
+        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoEntity(credentials);
+        gameService.startGame(gameId, userCredentials);
     }
 
     /**
@@ -171,11 +176,12 @@ public class GameController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateSettings(@PathVariable String gameId,
             @RequestBody GameSettingsDTO settingsDTO,
-            @RequestParam User credentials) {
+            @RequestParam CredentialsDTO credentials) {
         // Update the settings of the game.
 
         Settings settings = DTOMapper.INSTANCE.gameSettingsDTOtoSettings(settingsDTO);
-        gameService.updateSettings(gameId, settings, credentials);
+        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoEntity(credentials);
+        gameService.updateSettings(gameId, settings, userCredentials);
     }
 
 }
