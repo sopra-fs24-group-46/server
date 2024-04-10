@@ -66,4 +66,11 @@ public class GameController {
         return jsonContent;
     }
 
+    // player can leave a game
+    @PutMapping("/{gameId}/leave")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void leaveGame(@PathVariable Long gameId, @RequestBody String player) {
+        gameService.leaveGame(gameId, player);
+    }
+
 }
