@@ -5,7 +5,7 @@ public class GameSettingsDTO {
     private int maxPlayers;
     private int rounds;
     private int guessingTime;
-    private long host;
+
     // Getters and Setters
     public int getMaxPlayers() {
         return maxPlayers;
@@ -30,13 +30,4 @@ public class GameSettingsDTO {
     public void setGuessingTime(int guessingTime) {
         this.guessingTime = guessingTime;
     }
-
-    public long getHost() {
-        return host;
-    }
-
-    public void setHost(int host) {
-        this.host = host;
-    }
-    
 }

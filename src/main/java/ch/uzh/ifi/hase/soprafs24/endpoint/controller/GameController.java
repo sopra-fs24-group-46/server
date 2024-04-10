@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 //User credentials refer to a User object with valid id and token of the user. These are needed to do Host actions like create, start... a game
 //for joining a game no credentials are needed
-//todo move credentials to request parameters
+//todo move credentials to request parameters and update the calls
 @RestController
 @RequestMapping("/game")
 public class GameController {
