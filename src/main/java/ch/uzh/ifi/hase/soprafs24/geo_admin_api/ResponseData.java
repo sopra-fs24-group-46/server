@@ -105,8 +105,8 @@ public class ResponseData {
     }
 
     public static void main(String[] args) {
-        ResponseData data = FetchData.readLocalJson("gipfel.json");
-        var data2 = FetchData.readLocalJson("huegel.json");
+        ResponseData data = FetchData.readLocalJson("gipfel");
+        var data2 = FetchData.readLocalJson("huegel");
         data.addAll(data2);
         double[][] polygon = new double[][] {
                 { 688911, 260544 },

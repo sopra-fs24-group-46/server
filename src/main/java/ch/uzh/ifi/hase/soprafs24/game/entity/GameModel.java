@@ -51,6 +51,7 @@ public class GameModel implements GameModelView {
         this.answers = new HashMap<>();
         this.histories = new HashMap<>();
         this.cumulativeScores = new HashMap<>();
+        this.questions = new ArrayList<>();
     }
 
     public void pushHistory() {

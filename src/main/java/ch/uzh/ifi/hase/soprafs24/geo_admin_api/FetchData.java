@@ -26,7 +26,6 @@ public class FetchData {
     public static void main(String[] args) {// this calls GeoAdmin and stores string into a json file.
         // Stored under src main resources
         String searchText = ""; // e.g see
-        String file_name = searchText + ".json";
 
         HashMap<String, String> params = new HashMap<>();
         params.put("layer", "ch.swisstopo.swissnames3d");
@@ -35,7 +34,7 @@ public class FetchData {
         params.put("conatins", "false");
         String json = callGeoAdminAPI("find", params);
         try (FileWriter fileWriter = new FileWriter(
-                "C:\\Users\\seraf\\NoBackup\\Group SoPra 46\\server\\src\\main\\resources\\" + file_name)) {
+                "src/main/resources/GeoAdminAPI/" + searchText + ".json")) { // use relative path
             fileWriter.write(json);
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,7 +47,7 @@ public class FetchData {
             // Read JSON file content as a String
             jsonContent = new String(Files.readAllBytes(
                     Paths.get(
-                            "C:\\Users\\seraf\\NoBackup\\Group SoPra 46\\server\\src\\main\\resources\\" + file_name)));
+                            "src/main/resources/GeoAdminAPI/" + file_name + ".json")));
             // Use the JSON content String as needed
             // System.out.println("JSON content read from file as a String: " +
             // jsonContent);

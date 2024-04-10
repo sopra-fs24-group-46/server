@@ -13,7 +13,7 @@ public class APIService {
     // for now returning alpine Gipfel in german names.
 
     public static List<Question> getQuestions(int amount) {
-        ResponseData data = FetchData.readLocalJson("alpiner gipfel.json");
+        ResponseData data = FetchData.readLocalJson("alpiner gipfel");
 
         // filtering the language check the function definition for more details
         data.filterByAttributes("sprachcode", "Hochdeutsch");

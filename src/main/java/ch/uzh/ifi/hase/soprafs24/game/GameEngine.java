@@ -117,9 +117,10 @@ public class GameEngine {
             }
 
             gameModel.setScore(playerId, score, distance);
-            gameModel.pushHistory(); // this seals the deal. No more changes to round.
-                                     // cumulative scores are
         }
+
+        gameModel.pushHistory(); // this seals the deal. No more changes to round.
+        // cumulative scores are
     }
 
     public static void initGame(GameModel gameModel, Settings settings) {
