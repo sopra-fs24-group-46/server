@@ -70,6 +70,7 @@ public class GameIntegrationTest {
 class TestGame extends Game {
     private String gameName;
     private int storedStateNumber = 0;
+    private final static boolean writeJSON = false; // set to true to write JSON files
 
     public TestGame(User hostPlayer, String gameName) {
         super(hostPlayer);
@@ -98,6 +99,9 @@ class TestGame extends Game {
     }
 
     private static void writeStringToFile(String content, String fileName) {
+        if (!writeJSON) {
+            return;
+        }
         try (FileWriter fileWriter = new FileWriter(
                 "src/main/resources/GameModelViews/" + fileName
                         + ".json")) {
