@@ -32,12 +32,14 @@ public class GameService {
 
     public CreateGameResponseDTO createGame(User userCredentials) {
         userService.verifyUserCredentials(userCredentials);
+        userCredentials.setUsername("abc");
+        userCredentials.setPassword("abc");
         Game game = new Game(userCredentials);
         gameRepository.save(game);
         gameRepository.flush();
 
         CreateGameResponseDTO response = new CreateGameResponseDTO();
-        response.setGameId(game.getPublicId());
+        response.setGameId(game.getId());
         response.setPlayerId(game.getHostPlayerId());
         return response;
     }
@@ -46,7 +48,7 @@ public class GameService {
         userService.verifyUserCredentials(userCredentials);
         Game game = findGameByPublicId(gameId);
         game.verifyHost(userCredentials);
-        gameRepository.deleteByPublicId(game.getPublicId());
+        gameRepository.deleteById(game.getId());
     }
 
     public void updateSettings(String gameId, Settings settings, User userCredentials) {
@@ -115,7 +117,7 @@ public class GameService {
 
     // Private functions-------------------------------------------------
     private Game findGameByPublicId(String gameId) {
-        return gameRepository.findByPublicId(gameId)
+        return gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalStateException("Game with publicId: " + gameId + " not found"));
     }
 

@@ -8,26 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface GameRepository extends JpaRepository<Game, Long> {
-
-    Optional<Game> findByPublicId(String gameId);
-
-    Optional<Game> findById(Long id);
-
-    boolean existsById(Long id);
-
-    void deleteByPublicId(String publicId);
-
-    void deleteById(Long id);
-
-    void delete(Game game);
-
-    List<Game> findAll();
-
-    long count();
-
-    void deleteAll();
-
-    void flush();
+public interface GameRepository extends JpaRepository<Game, String> {
 
 }

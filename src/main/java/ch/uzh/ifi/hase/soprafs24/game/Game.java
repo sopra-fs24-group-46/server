@@ -29,9 +29,8 @@ public class Game implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue
-    private long id;
-    private String publicId;
+    @Column(nullable = false, unique = true)
+    private String id;
 
     // For the moment don't save Infos in the database
     @Transient
@@ -50,12 +49,15 @@ public class Game implements Serializable {
         gameModel.addPlayer(hostPlayer.getDisplayName());
         gameEngine = new GameEngine();
         // returns a random string of 8 characters
-        publicId = UUID.randomUUID().toString().substring(0, 8);
+        id = UUID.randomUUID().toString().substring(0, 8);
     }
 
-    @Deprecated
+    public Game() {// needed for JPA
+
+    }
+
     public String getId() {
-        throw new UnsupportedOperationException("Use getPublicId instead");
+        return id;
     }
 
     public String getHostPlayerId() {
@@ -128,7 +130,7 @@ public class Game implements Serializable {
 
     public static void main(String[] args) {
         Game game = new Game(new User());
-        game.updateSettings(new Settings(2, 2, 2));
+        game.updateSettings(new Settings(3, 2, 2));
         game.openLobby();
         // lobby --------------------------
         String player1 = game.joinGame("player1");
@@ -168,7 +170,4 @@ public class Game implements Serializable {
         }
     }
 
-    public String getPublicId() {
-        return publicId;
-    }
 }

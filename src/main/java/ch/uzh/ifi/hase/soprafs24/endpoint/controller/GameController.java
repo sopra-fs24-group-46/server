@@ -46,7 +46,8 @@ public class GameController {
     public CreateGameResponseDTO createGame(@RequestBody CredentialsDTO credentials) { // HTTP POST to /game/create
 
         User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoEntity(credentials);
-        return gameService.createGame(userCredentials); // call the createGame method from GameService
+        CreateGameResponseDTO response = gameService.createGame(userCredentials);
+        return response;
     }
 
     /**
