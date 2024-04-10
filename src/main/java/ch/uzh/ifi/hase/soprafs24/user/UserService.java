@@ -189,4 +189,8 @@ public class UserService {
         // Return the updated user
         return savedUser;
     }
+
+    public void verifyUserCredentials(User userCredentials) {
+        authenticateUser(userCredentials);// throws exception if not valid
+    }
 }

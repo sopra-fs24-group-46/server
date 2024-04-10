@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs24.game;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,18 +15,23 @@ import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import ch.uzh.ifi.hase.soprafs24.user.User;
+import ch.uzh.ifi.hase.soprafs24.user.UserService;
 
 @Service
 @Transactional
 public class GameService {
 
     private final GameRepository gameRepository;
+    private final UserService userService;
 
-    public GameService(GameRepository gameRepository) {
+    @Autowired
+    public GameService(GameRepository gameRepository, UserService userService) {
         this.gameRepository = gameRepository;
+        this.userService = userService;
     }
 
     public CreateGameResponseDTO createGame(User userCredentials) {
+        userService.verifyUserCredentials(userCredentials);
         Game game = new Game(userCredentials);
         gameRepository.save(game);
         gameRepository.flush();
@@ -37,12 +43,14 @@ public class GameService {
     }
 
     public void deleteGame(Long gameId, User userCredentials) {
+        userService.verifyUserCredentials(userCredentials);
         Game game = findGameById(gameId);
         game.verifyHost(userCredentials);
         gameRepository.deleteById(gameId);
     }
 
     public void updateSettings(Long gameId, Settings settings, User userCredentials) {
+        userService.verifyUserCredentials(userCredentials);
         Game game = findGameById(gameId);
         game.verifyHost(userCredentials);
         game.updateSettings(settings);
@@ -64,6 +72,7 @@ public class GameService {
     }
 
     public Boolean openLobby(Long gameId, User userCredentials) {
+        userService.verifyUserCredentials(userCredentials);
         Game game = findGameById(gameId);
         game.verifyHost(userCredentials);
         return game.openLobby();
@@ -75,6 +84,7 @@ public class GameService {
     }
 
     public void startGame(Long gameId, User userCredentials) {
+        userService.verifyUserCredentials(userCredentials);
         Game game = findGameById(gameId);
         game.verifyHost(userCredentials);
         game.startGame();
