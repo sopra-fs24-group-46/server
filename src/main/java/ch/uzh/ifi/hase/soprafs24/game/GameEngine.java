@@ -144,13 +144,12 @@ public class GameEngine {
         // add cleanup here
     }
 
-    private void waitTime(long millis) {
-        // disable for now
-
-        // try {
-        // Thread.sleep(millis);
-        // } catch (InterruptedException ex) {
-        // Thread.currentThread().interrupt();
-        // }
+    private void waitTime(long millis) {// todo think about a proper solution Maybe open a thread in start game, which
+                                        // is independent from the request
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 }
