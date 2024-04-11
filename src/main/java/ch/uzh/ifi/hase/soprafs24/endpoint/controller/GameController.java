@@ -137,6 +137,21 @@ public class GameController {
     }
 
     /**
+     * Deletes a game.
+     * 
+     * @param gameId      The ID of the game.
+     * @param credentials The credentials of the player.
+     */
+    @DeleteMapping("/{gameId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGame(@PathVariable String gameId,
+            @RequestBody CredentialsDTO credentials) {
+        // Delete the game.
+        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoEntity(credentials);
+        gameService.deleteGame(gameId, userCredentials);
+    }
+
+    /**
      * Submits a guess for a game.
      * 
      * @param gameId       The ID of the game.
