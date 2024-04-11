@@ -4,12 +4,14 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.LoginResponseDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import ch.uzh.ifi.hase.soprafs24.user.User;
 import net.minidev.json.JSONArray;
 
@@ -47,11 +49,14 @@ public class GameControllerIntegrationTest {
     static TestUser testUser = null;
     static String gameId = null;
     static String playerId = null;
+    static GameView gameView = new GameView();
+    static SettingsView settingView = new SettingsView();
 
     // common requests
     static Request openLobby = null;
     static Request startGame = null;
     static Request getGameView = null;
+    static Request getSettings = null;
 
     @Test
     void assertTrue() {
@@ -71,6 +76,79 @@ public class GameControllerIntegrationTest {
         executeRequest(joinGame, 400, "Should not be able to join");
         executeRequest(openLobby, 204, "failed to open lobby");
         executeRequest(joinGame, 302, "failed to join");
+    }
+
+    @Test
+    void lobbyIntegration() throws InterruptedException {
+        Request joinGuest1 = new Request.Builder()
+                .url(serverURL + "/game/" + gameId + "/join")
+                .post(body("{ \"displayName\": \"guest1\" }"))
+                .build();
+        Request joinGuest2 = new Request.Builder()
+                .url(serverURL + "/game/" + gameId + "/join")
+                .post(body("{ \"displayName\": \"guest2\" }"))
+                .build();
+        Request joinGuest3 = new Request.Builder()
+                .url(serverURL + "/game/" + gameId + "/join")
+                .post(body("{ \"displayName\": \"guest3\" }"))
+                .build();
+
+        Request updateSettings = new Request.Builder()
+                .url(serverURL + "/game/" + gameId + "/updateSettings")
+                .put(body("{ \"maxPlayers\": 4, \"rounds\": 1, \"guessingTime\": 0 }"))
+                .header("userId", testUser.getId().toString())
+                .header("userToken", testUser.getToken())
+                .build();
+
+        gameView.update();
+        assertEquals("SETUP", gameView.getGameState());
+        executeRequest(updateSettings, 204, "failed to update settings");
+
+        settingView.update();
+        assertEquals(1, settingView.getRounds());
+
+        executeRequest(openLobby, 204, "failed to open lobby");
+        gameView.update();
+        assertEquals("LOBBY", gameView.getGameState());
+        gameView.update();
+        assertEquals(1, gameView.getNumberOfPlayers());
+        var playerId2 = executeRequest(joinGuest1, 302, "failed to join");
+        gameView.update();
+        assertEquals(2, gameView.getNumberOfPlayers());
+        var playerId3 = executeRequest(joinGuest2, 302, "failed to join");
+        gameView.update();
+        assertEquals(3, gameView.getNumberOfPlayers());
+        var playerId4 = executeRequest(joinGuest3, 302, "failed to join");
+        gameView.update();
+        assertEquals(4, gameView.getNumberOfPlayers());
+        executeRequest(joinGuest3, 400, "should have reached max players, but was able to join");
+
+        Request leaveGame = new Request.Builder()
+                .url(serverURL + "/game/" + gameId + "/leave")
+                .put(RequestBody.create(playerId4, MediaType.get("text/plain")))
+                .build();
+
+        executeRequest(leaveGame, 204, "failed to leave");
+        gameView.update();
+        assertEquals(3, gameView.getNumberOfPlayers());
+        playerId4 = executeRequest(joinGuest3, 302, "failed to join");
+        gameView.update();
+        assertEquals(4, gameView.getNumberOfPlayers());
+        // start game
+
+        try {
+            httpClient.newCall(startGame).execute();
+        } catch (IOException e) {
+            // fail("call failed"); //disable for now
+        }
+
+        gameView.update();
+        assertEquals("PLAYING", gameView.getGameState());
+
+        Thread.sleep(30000);// waiting for rounds to pass
+
+        gameView.update();
+        assertEquals("ENDED", gameView.getGameState());
     }
 
     @BeforeAll
@@ -154,6 +232,11 @@ public class GameControllerIntegrationTest {
                 .url(serverURL + "/game/" + gameId + "/getView")
                 .get()
                 .build();
+
+        getSettings = new Request.Builder()
+                .url(serverURL + "/game/" + gameId + "/settings")
+                .get()
+                .build();
     }
 
     @AfterEach
@@ -230,6 +313,60 @@ public class GameControllerIntegrationTest {
         } catch (Exception e) {
 
             fail("Server is not running"); // run local host to use this tests
+        }
+    }
+
+    static class GameView {
+        private JsonNode json;
+        ObjectMapper mapper = new ObjectMapper();
+
+        public GameView() {
+            json = null;
+        }
+
+        public Settings getSettings() {
+            return mapper.convertValue(json.get("settings"), Settings.class);
+        }
+
+        public void update() {
+            String string = executeRequest(getGameView, 200, "Failed to get game view");
+            try {
+                this.json = mapper.readValue(string, JsonNode.class);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Failed to parse GameView JSON: " + e.getMessage());
+            }
+            // System.out.println(string);
+        }
+
+        public int getNumberOfPlayers() {
+            return json.get("players").size();
+        }
+
+        public String getGameState() {
+            return json.get("gameState").asText();
+        }
+    }
+
+    static class SettingsView {
+        private JsonNode json;
+
+        public SettingsView() {
+
+        }
+
+        public void update() {
+            String string = executeRequest(getSettings, 200, "Failed to get game settings");
+            try {
+                this.json = mapper.readValue(string, JsonNode.class);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Failed to parse SettingsView JSON: " + e.getMessage());
+            }
+        }
+
+        public int getRounds() {
+            return json.get("rounds").asInt();
         }
     }
 }
