@@ -7,6 +7,7 @@ import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PostGuessDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.game.GameService;
+import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
 import ch.uzh.ifi.hase.soprafs24.game.entity.GeoLocation;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
@@ -173,12 +174,26 @@ public class GameController {
      * @param gameId The ID of the game.
      * @return The view of the game.
      */
-    @GetMapping("/{gameId}/getView/")
+    @GetMapping("/{gameId}/getView")
     @ResponseStatus(HttpStatus.OK)
     public String getGameView(@PathVariable String gameId) {
         // Get the view of the game.
 
         return gameService.getGameView(gameId);
+    }
+
+    /**
+     * Retrieves the settings of a game.
+     * 
+     * @param gameId The ID of the game.
+     * @return The settings of the game.
+     */
+    @GetMapping("/{gameId}/settings")
+    @ResponseStatus(HttpStatus.OK)
+    public GameSettingsDTO getSettings(@PathVariable String gameId) {
+        // Get the settings of the game.
+        SettingView settings = gameService.getSettingsView(gameId);
+        return DTOMapper.INSTANCE.convertSettingsToDTO(settings);
     }
 
     /**
@@ -188,13 +203,17 @@ public class GameController {
      * @param settingsDTO The new settings of the game.
      * @param credentials The credentials of the player.
      */
-    @PutMapping("/{gameId}/updateSettings/")
+    @PutMapping("/{gameId}/updateSettings") // todo discuss the right way for parameters
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateSettings(@PathVariable String gameId,
             @RequestBody GameSettingsDTO settingsDTO,
-            @RequestParam CredentialsDTO credentials) {
+            @RequestHeader(value = "userId") String userId,
+            @RequestHeader(value = "userToken") String userToken) {
         // Update the settings of the game.
 
+        CredentialsDTO credentials = new CredentialsDTO();
+        credentials.setId(Long.parseLong(userId));
+        credentials.setToken(userToken);
         Settings settings = DTOMapper.INSTANCE.gameSettingsDTOtoSettings(settingsDTO);
         User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoEntity(credentials);
         gameService.updateSettings(gameId, settings, userCredentials);
