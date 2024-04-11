@@ -4,6 +4,9 @@ package ch.uzh.ifi.hase.soprafs24.game;
 
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.RoundState;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
@@ -45,7 +48,7 @@ public class GameEngine {
 
     public static void addAnswer(GameModel gameModel, Answer answer, String playerId) {
         if (gameModel.getRoundState() != RoundState.GUESSING) {
-            throw new IllegalStateException(
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Answers are only allowed during guessing. Current state: " + gameModel.getRoundState());
         }
         gameModel.setAnswer(playerId, answer);
@@ -54,7 +57,7 @@ public class GameEngine {
     public void loadGame(GameModel gameModel, Settings settings) {
 
         if (gameModel.getGameState() != GameState.LOBBY) {
-            throw new IllegalStateException(
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Only games in Lobby State can be started. Current state: " + gameModel.getGameState());
         }
         gameModel.setGameState(GameState.PLAYING);
@@ -62,7 +65,7 @@ public class GameEngine {
 
     public void endGame(GameModel gameModel, Settings settings) {
         if (gameModel.getGameState() != GameState.PLAYING) {
-            throw new IllegalStateException(
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Can't end the game. Something went wrong while Playing the game. Current state: "
                             + gameModel.getGameState() + " but should be PLAYING");
         }
@@ -79,20 +82,20 @@ public class GameEngine {
                 break;
             case GUESSING:
                 if (previousRoundState != RoundState.QUESTION) {
-                    throw new IllegalStateException("Round state is not QUESTION");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Round state is not QUESTION");
                 }
                 gameModel.setRoundState(RoundState.GUESSING);
                 break;
             case MAP_REVEAL:
                 if (previousRoundState != RoundState.GUESSING) {
-                    throw new IllegalStateException("Round state is not GUESSING");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Round state is not GUESSING");
                 }
                 gameModel.setRoundState(RoundState.MAP_REVEAL);
                 evaluateAnswers(gameModel);// evaluate answers
                 break;
             case LEADERBOARD:
                 if (previousRoundState != RoundState.MAP_REVEAL) {
-                    throw new IllegalStateException("Round state is not MAP_REVEAL");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Round state is not MAP_REVEAL");
                 }
                 gameModel.setRoundState(RoundState.LEADERBOARD);
                 break;
@@ -128,7 +131,7 @@ public class GameEngine {
         var roundNumber = settings.getRounds();
         var questions = APIService.getQuestions(roundNumber);
         if (questions.size() < roundNumber) {
-            throw new IllegalArgumentException(
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Not enough questions (" + questions.size() + "). Consider lowering the round number ("
                             + roundNumber + ") or increasing region or removing some filter");
         }

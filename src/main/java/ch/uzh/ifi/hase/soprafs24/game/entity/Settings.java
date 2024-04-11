@@ -19,16 +19,19 @@ public class Settings implements SettingView {
         this.guessingTimePerRound = guessingTimePerRound;
     }
 
+    public Settings(Long hostUserId) {
+        this.hostUserId = hostUserId;
+        // default values
+        maxPlayers = 4;
+        rounds = 4;
+        guessingTimePerRound = 10;
+    }
+
     public Settings() {
-        // TODO Auto-generated constructor stub
     }
 
     public Long getHostUserId() {
         return hostUserId;
-    }
-
-    public void setHostPlayer(User hostPlayer) {
-        this.hostUserId = hostPlayer.getId();
     }
 
     public Integer getRounds() {

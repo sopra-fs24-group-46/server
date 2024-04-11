@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -186,7 +189,7 @@ public class GameModel implements GameModelView {
         }
         Question question = questions.get(currentRound - 1);
         if (question == null) {
-            throw new IllegalStateException("No question for this round");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No question for this round");
         }
         return question;
     }
