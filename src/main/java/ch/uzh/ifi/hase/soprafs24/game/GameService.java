@@ -1,10 +1,15 @@
 //this provides functions for the endpoints and takes care of navigating traffic to the right place
 package ch.uzh.ifi.hase.soprafs24.game;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,22 +26,19 @@ import ch.uzh.ifi.hase.soprafs24.user.UserService;
 @Transactional
 public class GameService {
 
-    private final GameRepository gameRepository;
+    private final Map<String, Game> gameRepository;
     private final UserService userService;
 
     @Autowired
-    public GameService(GameRepository gameRepository, UserService userService) {
-        this.gameRepository = gameRepository;
+    public GameService(UserService userService) {
+        this.gameRepository = new HashMap<>();
         this.userService = userService;
     }
 
     public CreateGameResponseDTO createGame(User userCredentials) {
         userService.verifyUserCredentials(userCredentials);
-        userCredentials.setUsername("abc");
-        userCredentials.setPassword("abc");
         Game game = new Game(userCredentials);
-        gameRepository.save(game);
-        gameRepository.flush();
+        gameRepository.put(game.getId(), game);
 
         CreateGameResponseDTO response = new CreateGameResponseDTO();
         response.setGameId(game.getId());
@@ -48,7 +50,7 @@ public class GameService {
         userService.verifyUserCredentials(userCredentials);
         Game game = findGameByPublicId(gameId);
         game.verifyHost(userCredentials);
-        gameRepository.deleteById(game.getId());
+        gameRepository.remove(game.getId());
     }
 
     public void updateSettings(String gameId, Settings settings, User userCredentials) {
@@ -109,7 +111,8 @@ public class GameService {
              // mappers to handle multilayer objects
             gameModelViewJson = mapper.writeValueAsString(gameModelView);
         } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Could not convert GameModelView to JSON string", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Could not convert GameModelView to JSON string", e);
         }
 
         return gameModelViewJson;
@@ -117,8 +120,11 @@ public class GameService {
 
     // Private functions-------------------------------------------------
     private Game findGameByPublicId(String gameId) {
-        return gameRepository.findById(gameId)
-                .orElseThrow(() -> new IllegalStateException("Game with publicId: " + gameId + " not found"));
+        Game game = gameRepository.get(gameId);
+        if (game == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game with publicId: " + gameId + " not found");
+        }
+        return game;
     }
 
 }

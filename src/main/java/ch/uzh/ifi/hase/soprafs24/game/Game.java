@@ -6,6 +6,9 @@ package ch.uzh.ifi.hase.soprafs24.game;
 
 import javax.persistence.*;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -22,29 +25,22 @@ import ch.uzh.ifi.hase.soprafs24.user.User;
 import java.io.Serializable;
 import java.util.UUID;
 
-@Entity
-@Table(name = "GAME")
 public class Game implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @Column(nullable = false, unique = true)
     private String id;
 
-    // For the moment don't save Infos in the database
-    @Transient
     protected Settings settings;
-    @Transient
+
     protected GameModel gameModel;
-    @Transient
+
     protected GameEngine gameEngine;
 
     // Public constructor allows creation of new games which can be stored to the
     // database
     public Game(User hostPlayer) {
-        settings = new Settings();
-        settings.setHostPlayer(hostPlayer);
+        settings = new Settings(hostPlayer.getId());
         gameModel = new GameModel();
         gameModel.addPlayer(hostPlayer.getDisplayName());
         gameEngine = new GameEngine();
@@ -84,12 +80,12 @@ public class Game implements Serializable {
     }
 
     public String joinGame(String displayName) {
-        if (gameModel.getGameState() != GameState.SETUP && gameModel.getGameState() != GameState.LOBBY) {
-            throw new IllegalStateException(
+        if (gameModel.getGameState() != GameState.LOBBY) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You can only join games which are in Lobby state. Current state: " + gameModel.getGameState());
         }
         if (gameModel.getPlayers().size() >= settings.getMaxPlayers()) {
-            throw new IllegalStateException("Game is full");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Game is full");
         }
         String playerId = gameModel.addPlayer(displayName);
         return playerId;
@@ -118,7 +114,7 @@ public class Game implements Serializable {
     public void verifyHost(User hostPlayer) {
         var hostId = settings.getHostUserId();
         if (hostPlayer.getId() != hostId) {
-            throw new IllegalStateException("Host player does not match");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Host player does not match");
         }
     }
 
@@ -166,7 +162,8 @@ public class Game implements Serializable {
             return mapper.writeValueAsString(gameModelView);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            throw new IllegalStateException("Could not convert GameModelView to JSON string", e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not convert GameModelView to JSON string",
+                    e);
         }
     }
 
