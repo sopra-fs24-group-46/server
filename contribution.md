@@ -1,4 +1,16 @@
-# Contributions
-#### Week 1
-- Serafin Adapting Register and Login to fit our application: [#3](/../sopra-fs24-group-46/server/issues/3) [#17](/../sopra-fs24-group-46/server/issues/17) [#18](/../sopra-fs24-group-46/server/issues/18) [#20](/../sopra-fs24-group-46/server/issues/20) [#22](/../sopra-fs24-group-46/server/issues/22) [#23](/../sopra-fs24-group-46/server/issues/23)
-- ...
+|Week  |Name    |Issue    |Description                                        |
+|------|--------|---------|---------------------------------------------------|
+|0     |Serafin |#3       |clsoed                                             |
+|0     |Serafin |#17      |clsoed                                             |
+|0     |Serafin |#18      |closed                                             |
+|0     |Serafin |#20      |closed                                             |
+|0     |Serafin |#22      |closed                                             |
+|0     |Serafin |#23      |closed                                             |
+|0     |Serafin |#52      |closed                                             |
+|0     |Serafin |#51      |closed                                             |
+|0     |Serafin |#37      |closed                                             |
+|0     |Serafin |#35      |closed                                             |
+|0     |Serafin |#11      |closed                                             |
+|0     |Serafin |#53      |closed                                             |
+|0     |Serafin |#55      |Currently working. todo refactor with scheduler    |
+
