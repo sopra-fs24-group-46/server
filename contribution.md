@@ -13,4 +13,4 @@
 |0     |Serafin |#11      |closed                                             |
 |0     |Serafin |#53      |closed                                             |
 |0     |Serafin |#55      |Currently working. todo refactor with scheduler    |
-|------|--------|---------|---------------------------------------------------|
+
