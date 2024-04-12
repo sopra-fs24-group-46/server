@@ -35,6 +35,7 @@ public class GameModel implements GameModelView {
     private List<Question> questions; // one question for each round. Use current round as Index to get current
                                       // question.
     private int serialPlayerNumber; // used to assign player numbers
+    private Player hostPlayer;
 
     public GameModel() {
 
@@ -115,6 +116,11 @@ public class GameModel implements GameModelView {
     }
 
     // setters----------------------------------------------------------
+
+    public void setHostPlayer(String playerId) {
+        hostPlayer = players.stream().filter(player -> player.getId().equals(playerId)).findFirst().get();
+    }
+
     public void setScore(String playerId, int score, Double distance) {
         scores.put(playerId, new Score(score, distance));
     }
@@ -144,6 +150,10 @@ public class GameModel implements GameModelView {
     }
 
     // getters----------------------------------------------------------
+    public Player getHostPlayer() {
+        return hostPlayer;
+    }
+
     public List<Question> getQuestions() {
         return questions;
     }
@@ -193,9 +203,5 @@ public class GameModel implements GameModelView {
 
     public Map<String, History> getHistories() {
         return histories;
-    }
-
-    public String getHostPlayerId() {
-        return players.get(0).getId();
     }
 }
