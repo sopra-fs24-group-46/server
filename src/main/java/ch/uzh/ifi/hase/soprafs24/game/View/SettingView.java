@@ -10,5 +10,5 @@ public interface SettingView {
 
     public Integer getRounds();
 
-    public Integer getGuessingTimePerRound();
+    public Integer getGuessingTime();
 }

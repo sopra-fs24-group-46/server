@@ -38,7 +38,7 @@ public interface DTOMapper {
 
   @Mapping(source = "maxPlayers", target = "maxPlayers")
   @Mapping(source = "rounds", target = "rounds")
-  @Mapping(source = "guessingTime", target = "guessingTimePerRound")
+  @Mapping(source = "guessingTime", target = "guessingTime")
   // @Mapping(source = "host", target = "hostPlayer")
   Settings convertGameSettingsDTOToEntity(GameSettingsDTO gameSettingsDTO);
 

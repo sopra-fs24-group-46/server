@@ -42,7 +42,9 @@ import org.junit.jupiter.api.condition.OS;
 
 @EnabledOnOs({ OS.WINDOWS, OS.MAC }) // cloud runs on linux therefore this is only runs locally
 public class GameControllerIntegrationTest {
-    final static String serverURL = "http://localhost:8080";
+    final static String serverURL = "http://localhost:8080"; // test locally
+    // final static String serverURL = "
+    // https://sopra-fs24-group-46-server.oa.r.appspot.com"; // test deployed
     final static OkHttpClient httpClient = new OkHttpClient();
     final static MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     final static ObjectMapper mapper = new ObjectMapper();
@@ -59,10 +61,10 @@ public class GameControllerIntegrationTest {
     static Request getSettings = null;
 
     @Test
-    void assertTrue() {
+    void serverIsRunning() {
         // if this isn't running something is wrong with
         // BeforeAll, BeforeEach, AfterEach, or AfterAll
-        assertEquals(1, 1);
+        checkIfHostIsRunning();
     }
 
     // how to properly catch errors so I understand them
@@ -95,7 +97,9 @@ public class GameControllerIntegrationTest {
 
         Request updateSettings = new Request.Builder()
                 .url(serverURL + "/game/" + gameId + "/updateSettings")
-                .put(body(String.format("{\"id\": \"%s\", \"token\": \"%s\", \"maxPlayers\": 4, \"rounds\": 1, \"guessingTime\": 0 }", testUser.getId(), testUser.getToken())))
+                .put(body(String.format(
+                        "{\"id\": \"%s\", \"token\": \"%s\", \"maxPlayers\": 4, \"rounds\": 1, \"guessingTime\": 0 }",
+                        testUser.getId(), testUser.getToken())))
                 .build();
 
         gameView.update();
@@ -104,6 +108,8 @@ public class GameControllerIntegrationTest {
 
         settingView.update();
         assertEquals(1, settingView.getRounds());
+        assertEquals(4, settingView.getMaxPlayers());
+        assertEquals(0, settingView.getGuessingTime());
 
         executeRequest(openLobby, 204, "failed to open lobby");
         gameView.update();
@@ -151,7 +157,7 @@ public class GameControllerIntegrationTest {
 
     @BeforeAll
     static void BeforeAll() throws IOException {
-        checkIfLocalHostIsRunning(); // these tests depend on the server to be running at serverURL
+        checkIfHostIsRunning(); // these tests depend on the server to be running at serverURL
 
         Request getUsers = new Request.Builder()
                 .url(serverURL + "/users")
@@ -200,7 +206,7 @@ public class GameControllerIntegrationTest {
 
     @BeforeEach
     void beforeEach() throws IOException {
-        checkIfLocalHostIsRunning();
+        checkIfHostIsRunning();
 
         gameId = null;
         Request postRequest = new Request.Builder()
@@ -300,14 +306,18 @@ public class GameControllerIntegrationTest {
         return RequestBody.create(json, JSON);
     }
 
-    private static void checkIfLocalHostIsRunning() {
+    private static void checkIfHostIsRunning() {
         Request request = new Request.Builder()
                 .url(serverURL)
                 .get()
                 .build();
 
         try {
-            httpClient.newCall(request).execute();
+            Response response = httpClient.newCall(request).execute();
+            if (response.code() != 200) {
+                fail("Server is not running");
+            }
+
         } catch (Exception e) {
 
             fail("Server is not running"); // run local host to use this tests
@@ -351,6 +361,14 @@ public class GameControllerIntegrationTest {
 
         public SettingsView() {
 
+        }
+
+        public Integer getGuessingTime() {
+            return json.get("guessingTime").asInt();
+        }
+
+        public Integer getMaxPlayers() {
+            return json.get("maxPlayers").asInt();
         }
 
         public void update() {
