@@ -1,14 +1,13 @@
 package ch.uzh.ifi.hase.soprafs24.game.entity;
 
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
-import ch.uzh.ifi.hase.soprafs24.user.User;
 
 public class Settings implements SettingView {
 
     private Long hostUserId;
     private Integer maxPlayers;
     private Integer rounds;
-    private Integer guessingTimePerRound;
+    private Integer guessingTime;
     // M2
     // Difficulty
     // Region
@@ -16,7 +15,7 @@ public class Settings implements SettingView {
     public Settings(int maxPlayers, int rounds, int guessingTimePerRound) {
         this.maxPlayers = maxPlayers;
         this.rounds = rounds;
-        this.guessingTimePerRound = guessingTimePerRound;
+        this.guessingTime = guessingTimePerRound;
     }
 
     public Settings(Long hostUserId) {
@@ -24,7 +23,7 @@ public class Settings implements SettingView {
         // default values
         maxPlayers = 4;
         rounds = 4;
-        guessingTimePerRound = 10;
+        guessingTime = 10;
     }
 
     public Settings() {
@@ -42,12 +41,12 @@ public class Settings implements SettingView {
         this.rounds = rounds;
     }
 
-    public Integer getGuessingTimePerRound() {
-        return guessingTimePerRound;
+    public Integer getGuessingTime() {
+        return guessingTime;
     }
 
-    public void setGuessingTimePerRound(Integer guessingTimePerRound) {
-        this.guessingTimePerRound = guessingTimePerRound;
+    public void setGuessingTime(Integer guessingTimePerRound) {
+        this.guessingTime = guessingTimePerRound;
     }
 
     public Integer getMaxPlayers() {
@@ -65,8 +64,8 @@ public class Settings implements SettingView {
         if (settings.getRounds() != null) {
             setRounds(settings.getRounds());
         }
-        if (settings.getGuessingTimePerRound() != null) {
-            setGuessingTimePerRound(settings.getGuessingTimePerRound());
+        if (settings.getGuessingTime() != null) {
+            setGuessingTime(settings.getGuessingTime());
         }
     }
 }
