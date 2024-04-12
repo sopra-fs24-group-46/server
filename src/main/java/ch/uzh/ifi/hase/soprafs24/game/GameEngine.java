@@ -14,6 +14,7 @@ import ch.uzh.ifi.hase.soprafs24.game.entity.GameModel;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import ch.uzh.ifi.hase.soprafs24.geo_admin_api.APIService;
 
+//use a scheduler
 public class GameEngine {
 
     public void startGame(GameModel gameModel, Settings settings) {

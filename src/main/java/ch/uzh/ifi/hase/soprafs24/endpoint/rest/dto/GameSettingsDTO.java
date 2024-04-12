@@ -2,6 +2,11 @@ package ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto;
 
 public class GameSettingsDTO {
 
+    // credentials
+    private long id;// user id
+    private String token;// user token
+
+    // game settings
     private int maxPlayers;
     private int rounds;
     private int guessingTime;
@@ -29,5 +34,21 @@ public class GameSettingsDTO {
 
     public void setGuessingTime(int guessingTime) {
         this.guessingTime = guessingTime;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
