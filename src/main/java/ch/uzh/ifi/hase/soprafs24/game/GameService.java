@@ -1,7 +1,9 @@
 //this provides functions for the endpoints and takes care of navigating traffic to the right place
 package ch.uzh.ifi.hase.soprafs24.game;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.transaction.Transactional;
@@ -125,6 +127,14 @@ public class GameService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game with publicId: " + gameId + " not found");
         }
         return game;
+    }
+
+    public List<String> getAllGameIds() {
+        List<String> gameIds = new ArrayList<>();
+        for (Game game : gameRepository.values()) {
+            gameIds.add(game.getId());
+        }
+        return gameIds;
     }
 
 }
