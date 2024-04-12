@@ -121,4 +121,11 @@ public class GameService {
                 .orElseThrow(() -> new IllegalStateException("Game with publicId: " + gameId + " not found"));
     }
 
-}
+    public List<String> getAllGameIds() {
+        List<String> gameIds = new ArrayList<>();
+        for (Game game : gameRepository.values()) {
+            gameIds.add(game.getId());
+        }
+        return gameIds;
+    }
+
