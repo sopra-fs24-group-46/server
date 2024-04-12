@@ -62,7 +62,7 @@ public class UserController {
   @DeleteMapping("/users")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteUser(@RequestBody CredentialsDTO credentials) {
-    User userToDelete = DTOMapper.INSTANCE.convertCredentialsDTOtoEntity(credentials);
+    User userToDelete = DTOMapper.INSTANCE.convertCredentialsDTOtoUser(credentials);
     userService.deleteUser(userToDelete);
   }
 

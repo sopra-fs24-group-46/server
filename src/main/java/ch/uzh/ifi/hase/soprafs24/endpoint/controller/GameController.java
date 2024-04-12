@@ -46,7 +46,7 @@ public class GameController {
     @ResponseStatus(HttpStatus.CREATED)
     public CreateGameResponseDTO createGame(@RequestBody CredentialsDTO credentials) { // HTTP POST to /game/create
 
-        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoEntity(credentials);
+        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoUser(credentials);
         CreateGameResponseDTO response = gameService.createGame(userCredentials);
         return response;
     }
@@ -118,7 +118,7 @@ public class GameController {
     public void openLobby(@PathVariable String gameId,
             @RequestBody CredentialsDTO credentials) {
         // Open the lobby of the game for the player.
-        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoEntity(credentials);
+        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoUser(credentials);
         gameService.openLobby(gameId, userCredentials);
     }
 
@@ -133,7 +133,7 @@ public class GameController {
     public void startGame(@PathVariable String gameId,
             @RequestBody CredentialsDTO credentials) {
         // Start the game.
-        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoEntity(credentials);
+        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoUser(credentials);
         gameService.startGame(gameId, userCredentials);
     }
 
@@ -148,7 +148,7 @@ public class GameController {
     public void deleteGame(@PathVariable String gameId,
             @RequestBody CredentialsDTO credentials) {
         // Delete the game.
-        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoEntity(credentials);
+        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoUser(credentials);
         gameService.deleteGame(gameId, userCredentials);
     }
 
@@ -206,16 +206,11 @@ public class GameController {
     @PutMapping("/{gameId}/updateSettings") // todo discuss the right way for parameters
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateSettings(@PathVariable String gameId,
-            @RequestBody GameSettingsDTO settingsDTO,
-            @RequestHeader(value = "userId") String userId,
-            @RequestHeader(value = "userToken") String userToken) {
+            @RequestBody GameSettingsDTO settingsDTO) {
         // Update the settings of the game.
 
-        CredentialsDTO credentials = new CredentialsDTO();
-        credentials.setId(Long.parseLong(userId));
-        credentials.setToken(userToken);
         Settings settings = DTOMapper.INSTANCE.gameSettingsDTOtoSettings(settingsDTO);
-        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoEntity(credentials);
+        User userCredentials = DTOMapper.INSTANCE.convertSettingsDTOtoUser(settingsDTO);
         gameService.updateSettings(gameId, settings, userCredentials);
     }
 

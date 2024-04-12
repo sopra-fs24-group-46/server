@@ -95,9 +95,7 @@ public class GameControllerIntegrationTest {
 
         Request updateSettings = new Request.Builder()
                 .url(serverURL + "/game/" + gameId + "/updateSettings")
-                .put(body("{ \"maxPlayers\": 4, \"rounds\": 1, \"guessingTime\": 0 }"))
-                .header("userId", testUser.getId().toString())
-                .header("userToken", testUser.getToken())
+                .put(body(String.format("{\"id\": \"%s\", \"token\": \"%s\", \"maxPlayers\": 4, \"rounds\": 1, \"guessingTime\": 0 }", testUser.getId(), testUser.getToken())))
                 .build();
 
         gameView.update();
