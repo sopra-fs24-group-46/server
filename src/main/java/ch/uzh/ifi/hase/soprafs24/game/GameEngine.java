@@ -38,7 +38,7 @@ public class GameEngine {
         waitTime(5000); // 5 seconds
         // -------------------------------------------
         nextRoundState(gameModel, RoundState.GUESSING);
-        waitTime(settings.getGuessingTimePerRound() * 1000);
+        waitTime(settings.getGuessingTime() * 1000);
         // -------------------------------------------
         nextRoundState(gameModel, RoundState.MAP_REVEAL);
         waitTime(5000);

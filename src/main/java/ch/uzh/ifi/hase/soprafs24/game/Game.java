@@ -42,7 +42,8 @@ public class Game implements Serializable {
     public Game(User hostPlayer) {
         settings = new Settings(hostPlayer.getId());
         gameModel = new GameModel();
-        gameModel.addPlayer(hostPlayer.getDisplayName());
+        var host = gameModel.addPlayer(hostPlayer.getDisplayName());
+        gameModel.setHostPlayer(host);
         gameEngine = new GameEngine();
         // returns a random string of 8 characters
         id = UUID.randomUUID().toString().substring(0, 8);
@@ -57,7 +58,7 @@ public class Game implements Serializable {
     }
 
     public String getHostPlayerId() {
-        return gameModel.getHostPlayerId();
+        return gameModel.getHostPlayer().getId();
     }
 
     public Boolean openLobby() {

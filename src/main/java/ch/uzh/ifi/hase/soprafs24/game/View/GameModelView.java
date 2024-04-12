@@ -19,6 +19,7 @@ import ch.uzh.ifi.hase.soprafs24.game.entity.Score;
         "gameState",
         "roundState",
         "currentRound",
+        "host",
         "players",
         "currentQuestion",
         "answers",
@@ -62,4 +63,6 @@ public interface GameModelView {
     @JsonProperty("histories")
     public Map<String, History> getHistories();
 
+    @JsonProperty("host")
+    public Player getHostPlayer();
 }
