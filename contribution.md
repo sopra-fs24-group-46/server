@@ -1,4 +1,8 @@
-# Contributions
-#### Week 1
-- Serafin Adapting Register and Login to fit our application: [#3](/../sopra-fs24-group-46/server/issues/3) [#17](/../sopra-fs24-group-46/server/issues/17) [#18](/../sopra-fs24-group-46/server/issues/18) [#20](/../sopra-fs24-group-46/server/issues/20) [#22](/../sopra-fs24-group-46/server/issues/22) [#23](/../sopra-fs24-group-46/server/issues/23)
-- ...
+|Week  |Name    |Issue    |Description                            |
+|------|--------|---------|---------------------------------------|
+|0     |Serafin |#3       |                                       |
+|0     |Serafin |#17      |                                       |
+|0     |Serafin |#18      |                                       |
+|0     |Serafin |#20      |                                       |
+|0     |Serafin |#22      |                                       |
+|0     |Serafin |#23      |                                       |
