@@ -7,7 +7,11 @@ public class Settings implements SettingView {
     private Long hostUserId;
     private Integer maxPlayers;
     private Integer rounds;
+    // times in seconds
+    private Integer questionTime; // automatically set
     private Integer guessingTime;
+    private Integer mapRevealTime;// automatically set
+    private Integer leaderBoardTime;// automatically set
     // M2
     // Difficulty
     // Region
@@ -24,6 +28,9 @@ public class Settings implements SettingView {
         maxPlayers = 4;
         rounds = 4;
         guessingTime = 10;
+        questionTime = 5;
+        mapRevealTime = 5;
+        leaderBoardTime = 5;
     }
 
     public Settings() {
@@ -67,5 +74,25 @@ public class Settings implements SettingView {
         if (settings.getGuessingTime() != null) {
             setGuessingTime(settings.getGuessingTime());
         }
+    }
+
+    public Integer getQuestionTime() {
+        return questionTime;
+    }
+
+    public Integer getMapRevealTime() {
+        return mapRevealTime;
+    }
+
+    public Integer getLeaderBoardTime() {
+        return leaderBoardTime;
+    }
+
+    public Integer getRoundTime() {
+        return questionTime + mapRevealTime + leaderBoardTime + guessingTime;
+    }
+
+    public Integer getTotalTime() {
+        return rounds * getRoundTime();
     }
 }
