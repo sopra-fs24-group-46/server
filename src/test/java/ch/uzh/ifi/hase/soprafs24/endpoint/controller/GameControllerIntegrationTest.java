@@ -84,15 +84,15 @@ public class GameControllerIntegrationTest {
     void lobbyIntegration() throws InterruptedException {
         Request joinGuest1 = new Request.Builder()
                 .url(serverURL + "/game/" + gameId + "/join")
-                .post(body("{ \"displayName\": \"guest1\" }"))
+                .post(RequestBody.create("guest1", MediaType.get("text/plain")))
                 .build();
         Request joinGuest2 = new Request.Builder()
                 .url(serverURL + "/game/" + gameId + "/join")
-                .post(body("{ \"displayName\": \"guest2\" }"))
+                .post(RequestBody.create("guest2", MediaType.get("text/plain")))
                 .build();
         Request joinGuest3 = new Request.Builder()
                 .url(serverURL + "/game/" + gameId + "/join")
-                .post(body("{ \"displayName\": \"guest3\" }"))
+                .post(RequestBody.create("guest3", MediaType.get("text/plain")))
                 .build();
 
         Request updateSettings = new Request.Builder()
@@ -153,6 +153,74 @@ public class GameControllerIntegrationTest {
 
         gameView.update();
         assertEquals("ENDED", gameView.getGameState());
+    }
+
+    @Test
+    void gameIntegrationTest() throws InterruptedException {// simulating the game 2 from gameIntegration Test
+        Request joinGuest1 = new Request.Builder()
+                .url(serverURL + "/game/" + gameId + "/join")
+                .post(RequestBody.create("guest1", MediaType.get("text/plain")))
+                .build();
+        Request joinGuest2 = new Request.Builder()
+                .url(serverURL + "/game/" + gameId + "/join")
+                .post(RequestBody.create("guest2", MediaType.get("text/plain")))
+                .build();
+        Request joinGuest3 = new Request.Builder()
+                .url(serverURL + "/game/" + gameId + "/join")
+                .post(RequestBody.create("guest3", MediaType.get("text/plain")))
+                .build();
+
+        Request updateSettings = new Request.Builder()
+                .url(serverURL + "/game/" + gameId + "/updateSettings")
+                .put(body(String.format(
+                        "{\"id\": \"%s\", \"token\": \"%s\", \"maxPlayers\": 4, \"rounds\": 1, \"guessingTime\": 2 }",
+                        testUser.getId(), testUser.getToken())))
+                .build();
+
+        executeRequest(updateSettings, 204, "failed to update settings");
+
+        settingView.update();
+        assertEquals(2, settingView.getGuessingTime());
+
+        executeRequest(openLobby, 204, "failed to open lobby");
+        var playerId2 = executeRequest(joinGuest1, 302, "failed to join");
+        var playerId3 = executeRequest(joinGuest2, 302, "failed to join");
+        var playerId4 = executeRequest(joinGuest3, 302, "failed to join");
+        gameView.update();
+        assertEquals(4, gameView.getNumberOfPlayers());
+
+        new Thread(() -> {// needed to to start game since the start game is blocking
+            try {
+                httpClient.newCall(startGame).execute();
+            } catch (IOException e) {
+                // e.printStackTrace();
+            }
+        }).start();
+        Thread.sleep(500);// wait until game is started
+
+        Request guessPlayer2 = new Request.Builder()
+                .url(serverURL + "/game/" + gameId + "/guess")
+                .post(body("{\"playerId\": \"" + playerId2 + "\", \"x\": 600000, \"y\": 100000}"))
+                .build();
+
+        gameView.update();
+        assertEquals("PLAYING", gameView.getGameState());
+        int count = 0;
+        while (gameView.getGameState().equals("PLAYING")) {
+            gameView.update();
+            System.out.println(gameView.getRoundState());
+            if (gameView.getRoundState().equals("GUESSING")) {
+                executeRequest(guessPlayer2, HttpStatus.NO_CONTENT.value(), "failed to guess player2");
+                count++;
+            }
+
+            Thread.sleep(500);// check every half second
+        }
+
+        System.out.println(count);
+        gameView.update();
+        assertEquals("ENDED", gameView.getGameState());
+        System.out.println(gameView.getJson());
     }
 
     @BeforeAll
@@ -290,11 +358,11 @@ public class GameControllerIntegrationTest {
     }
 
     private static String executeRequest(Request request, int expectedResponseCode, String failMsg) {
-        String json = null;
+        String json = "empty";
         try (Response response = httpClient.newCall(request).execute()) {
             json = getResponseBody(response);
             if (response.code() != expectedResponseCode) {
-                failAndPrint(failMsg + ", HttpCode: " + response.code(), json);
+                failAndPrint(failMsg + ", HttpCode: " + response.code() + " Response: ", json);
             }
         } catch (Exception e) {
             fail(e);
@@ -326,10 +394,19 @@ public class GameControllerIntegrationTest {
 
     static class GameView {
         private JsonNode json;
+        private String rawJson;
         ObjectMapper mapper = new ObjectMapper();
 
         public GameView() {
             json = null;
+        }
+
+        public String getJson() {
+            return rawJson;
+        }
+
+        public String getRoundState() {
+            return json.get("roundState").asText();
         }
 
         public Settings getSettings() {
@@ -337,9 +414,9 @@ public class GameControllerIntegrationTest {
         }
 
         public void update() {
-            String string = executeRequest(getGameView, 200, "Failed to get game view");
+            rawJson = executeRequest(getGameView, 200, "Failed to get game view");
             try {
-                this.json = mapper.readValue(string, JsonNode.class);
+                this.json = mapper.readValue(rawJson, JsonNode.class);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
                 throw new RuntimeException("Failed to parse GameView JSON: " + e.getMessage());
