@@ -1,11 +1,19 @@
 package ch.uzh.ifi.hase.soprafs24.game.entity;
 
+import javax.persistence.Embeddable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 //Immutable
+@Embeddable
 public class GeoLocation {
     private final Double x; // latitude
     private final Double y; // longitude
+
+    private GeoLocation() {
+        x = null;
+        y = null;
+    }
 
     public GeoLocation(Double lat, Double lng) {
         this.x = lat;

@@ -1,8 +1,22 @@
 package ch.uzh.ifi.hase.soprafs24.game.entity;
 
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
 
-public class Settings implements SettingView {
+@Entity
+@Table(name = "SETTINGS")
+public class Settings implements SettingView, Serializable {
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue
+    private Long id;
 
     private Long hostUserId;
     private Integer maxPlayers;

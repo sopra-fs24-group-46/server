@@ -6,6 +6,9 @@ package ch.uzh.ifi.hase.soprafs24.game;
 
 import javax.persistence.*;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,16 +36,15 @@ public class Game implements Serializable {
     private String id;
 
     // For the moment don't save Infos in the database
-    @Transient
+    @OneToOne
     protected Settings settings;
-    @Transient
+    @OneToOne
     protected GameModel gameModel;
 
     // Public constructor allows creation of new games which can be stored to the
     // database
     public Game(User hostPlayer) {
-        settings = new Settings();
-        settings.setHostPlayer(hostPlayer);
+        settings = new Settings(hostPlayer.getId());
         gameModel = new GameModel();
         var host = gameModel.addPlayer(hostPlayer.getDisplayName());
         gameModel.setHostPlayer(host);
@@ -82,13 +84,17 @@ public class Game implements Serializable {
     }
 
     public String joinGame(String displayName) {
-        if (gameModel.getGameState() != GameState.SETUP && gameModel.getGameState() != GameState.LOBBY) {
-            throw new IllegalStateException(
+        if (gameModel.getGameState() != GameState.LOBBY) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
                     "You can only join games which are in Lobby state. Current state: " + gameModel.getGameState());
         }
         if (gameModel.getPlayers().size() >= settings.getMaxPlayers()) {
-            throw new IllegalStateException("Game is full");
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Game is full");
         }
+
         String playerId = gameModel.addPlayer(displayName);
         return playerId;
 

@@ -1,10 +1,19 @@
 package ch.uzh.ifi.hase.soprafs24.game.entity;
 
+import javax.persistence.Embeddable;
+
+import org.hibernate.annotations.Immutable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@Embeddable
+@Immutable
 public class Score {
     private Integer score;
     private Double distance;
+
+    private Score() {
+    }
 
     public Score(int score, Double distance) {
         this.score = score;

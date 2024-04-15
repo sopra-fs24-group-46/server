@@ -1,10 +1,22 @@
 package ch.uzh.ifi.hase.soprafs24.game.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,16 +26,33 @@ import ch.uzh.ifi.hase.soprafs24.game.Enum.PowerUp;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.RoundState;
 import ch.uzh.ifi.hase.soprafs24.game.View.GameModelView;
 
-public class GameModel implements GameModelView {
+@Entity
+public class GameModel implements GameModelView, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue
+    private Long id;
 
     // for each player:
+    @OneToMany
     private List<Player> players;
     // immutables are stored in history
+    @ElementCollection(fetch = FetchType.EAGER, targetClass = Score.class)
     private Map<String, Score> scores;
+
+    @ElementCollection(fetch = FetchType.EAGER, targetClass = PowerUp.class)
+    @Enumerated(EnumType.STRING)
     private Map<String, PowerUp> powerUps; // this allows for only one PowerUp at a time
+
+    @ManyToMany
     private Map<String, Answer> answers;
     // mutable
+
+    @OneToMany
     private Map<String, History> histories;
+    @ElementCollection(fetch = FetchType.EAGER, targetClass = Score.class)
     private Map<String, Score> cumulativeScores;
 
     // game state
@@ -32,9 +61,11 @@ public class GameModel implements GameModelView {
     private int currentRound;
 
     // general
+    @OneToMany
     private List<Question> questions; // one question for each round. Use current round as Index to get current
-                                      // question.
+    // question.
     private int serialPlayerNumber; // used to assign player numbers
+    @ManyToOne
     private Player hostPlayer;
 
     public GameModel() {
@@ -92,14 +123,15 @@ public class GameModel implements GameModelView {
     }
 
     public String addPlayer(String displayName) {
-        String playerId = "player_id_" + serialPlayerNumber + "_" + UUID.randomUUID().toString().substring(0, 4);
+        String playerId = "player_id_" + serialPlayerNumber + "_" +
+                UUID.randomUUID().toString().substring(0, 4);
         serialPlayerNumber++;
 
         players.add(new Player(playerId, displayName));
         // init maps
         scores.put(playerId, null);
         powerUps.put(playerId, null);
-        answers.put(playerId, null);
+        answers.put(playerId, new Answer(null));
         histories.put(playerId, new History());
         cumulativeScores.put(playerId, new Score(0, 0.0));
         return playerId;
