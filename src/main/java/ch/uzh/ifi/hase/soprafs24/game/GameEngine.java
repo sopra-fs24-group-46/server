@@ -23,8 +23,15 @@ public class GameEngine {
                                                                                              // threads as
 
     static public void scheduleGame(GameModel gameModel, Settings settings) {
-        gameModel.setGameState(GameState.LOBBY);
-        loadGame(gameModel, settings);
+        if (gameModel.getGameState() == GameState.SETUP) {
+            initGame(gameModel, settings);// set Game into Lobby mode. loading questions...
+        }
+        if (gameModel.getGameState() == GameState.LOBBY) {
+            loadGame(gameModel, settings);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Only games in Lobby or Setup State can be started. Current state: " + gameModel.getGameState());
+        }
         // ---------------------------------------------------------------------
         var numberOfRounds = settings.getRounds();
         for (int i = 1; i <= numberOfRounds; i++) {
