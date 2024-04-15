@@ -191,7 +191,7 @@ public class UserService {
         return savedUser;
     }
 
-    public void verifyUserCredentials(User userCredentials) {
-        authenticateUser(userCredentials);// throws exception if not valid
+    public User verifyUserCredentials(User userCredentials) {
+        return authenticateUser(userCredentials);// throws exception if not valid
     }
 }

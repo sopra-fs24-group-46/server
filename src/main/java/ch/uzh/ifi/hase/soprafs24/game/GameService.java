@@ -103,20 +103,21 @@ public class GameService {
     public String getGameView(String gameId) {
         Game game = findGameByPublicId(gameId);
         GameModelView gameModelView = game.getGameModelView();
-        ObjectMapper mapper = new ObjectMapper();
-        String gameModelViewJson = null;
-
-        try {// this handles the json conversion (DTO -> JSON) since i don't trust the DTO
-             // mappers to handle multilayer objects
-            gameModelViewJson = mapper.writeValueAsString(gameModelView);
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Could not convert GameModelView to JSON string", e);
-        }
-
+        String gameModelViewJson = toJsonString(gameModelView);
         return gameModelViewJson;
     }
 
     // Private functions-------------------------------------------------
+    private static String toJsonString(GameModelView gameModelView) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(gameModelView);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new IllegalStateException("Could not convert GameModelView to JSON string", e);
+        }
+    }
+
     private Game findGameByPublicId(String gameId) {
         return gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalStateException("Game with publicId: " + gameId + " not found"));
