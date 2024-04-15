@@ -23,7 +23,6 @@ public class GameEngine {
         if (gameModel.getGameState() != GameState.LOBBY) {
             gameModel.setGameState(GameState.LOBBY);
         }
-
         loadGame(gameModel, settings);
         // ---------------------------------------------------------------------
         var numberOfRounds = settings.getRounds();
