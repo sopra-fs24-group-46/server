@@ -1,7 +1,9 @@
 //this provides functions for the endpoints and takes care of navigating traffic to the right place
 package ch.uzh.ifi.hase.soprafs24.game;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.transaction.Transactional;
@@ -36,8 +38,8 @@ public class GameService {
     }
 
     public CreateGameResponseDTO createGame(User userCredentials) {
-        userService.verifyUserCredentials(userCredentials);
-        Game game = new Game(userCredentials);
+        User user = userService.verifyUserCredentials(userCredentials);
+        Game game = new Game(user);
         gameRepository.put(game.getId(), game);
 
         CreateGameResponseDTO response = new CreateGameResponseDTO();
@@ -88,6 +90,7 @@ public class GameService {
     }
 
     public void startGame(String gameId, User userCredentials) {
+
         userService.verifyUserCredentials(userCredentials);
         Game game = findGameByPublicId(gameId);
         game.verifyHost(userCredentials);
@@ -104,27 +107,35 @@ public class GameService {
     public String getGameView(String gameId) {
         Game game = findGameByPublicId(gameId);
         GameModelView gameModelView = game.getGameModelView();
-        ObjectMapper mapper = new ObjectMapper();
-        String gameModelViewJson = null;
-
-        try {// this handles the json conversion (DTO -> JSON) since i don't trust the DTO
-             // mappers to handle multilayer objects
-            gameModelViewJson = mapper.writeValueAsString(gameModelView);
-        } catch (JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Could not convert GameModelView to JSON string", e);
-        }
-
+        String gameModelViewJson = toJsonString(gameModelView);
         return gameModelViewJson;
     }
 
     // Private functions-------------------------------------------------
+    private static String toJsonString(GameModelView gameModelView) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(gameModelView);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new IllegalStateException("Could not convert GameModelView to JSON string", e);
+        }
+    }
+
     private Game findGameByPublicId(String gameId) {
         Game game = gameRepository.get(gameId);
         if (game == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game with publicId: " + gameId + " not found");
         }
         return game;
+    }
+
+    public List<String> getAllGameIds() {
+        List<String> gameIds = new ArrayList<>();
+        for (Game game : gameRepository.values()) {
+            gameIds.add(game.getId());
+        }
+        return gameIds;
     }
 
 }

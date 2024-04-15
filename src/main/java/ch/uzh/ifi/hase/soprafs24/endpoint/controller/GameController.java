@@ -15,6 +15,7 @@ import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +50,17 @@ public class GameController {
         User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoUser(credentials);
         CreateGameResponseDTO response = gameService.createGame(userCredentials);
         return response;
+    }
+
+    /**
+     * This endpoint returns all game ids.
+     *
+     * @response 200 OK - with a list of game ids
+     */
+    @GetMapping("/")
+    @ResponseStatus(HttpStatus.OK)
+    public List<String> getAllGameIds() {
+        return gameService.getAllGameIds();
     }
 
     /**

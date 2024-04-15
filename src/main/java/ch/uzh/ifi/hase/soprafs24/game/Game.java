@@ -35,15 +35,13 @@ public class Game implements Serializable {
 
     protected GameModel gameModel;
 
-    protected GameEngine gameEngine;
-
     // Public constructor allows creation of new games which can be stored to the
     // database
     public Game(User hostPlayer) {
         settings = new Settings(hostPlayer.getId());
         gameModel = new GameModel();
-        gameModel.addPlayer(hostPlayer.getDisplayName());
-        gameEngine = new GameEngine();
+        var host = gameModel.addPlayer(hostPlayer.getDisplayName());
+        gameModel.setHostPlayer(host);
         // returns a random string of 8 characters
         id = UUID.randomUUID().toString().substring(0, 8);
     }
@@ -57,7 +55,7 @@ public class Game implements Serializable {
     }
 
     public String getHostPlayerId() {
-        return gameModel.getHostPlayerId();
+        return gameModel.getHostPlayer().getId();
     }
 
     public Boolean openLobby() {
@@ -66,8 +64,8 @@ public class Game implements Serializable {
     }
 
     public Boolean deleteGame() {
-        gameEngine.deleteGame(gameModel, settings);
-        return true;
+        // todo: delete game from database
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not implemented yet");
     }
 
     public Boolean updateSettings(Settings settings) {
@@ -98,7 +96,7 @@ public class Game implements Serializable {
     }
 
     public Boolean startGame() {
-        gameEngine.startGame(gameModel, settings);
+        GameEngine.scheduleGame(gameModel, settings);
         return true;
     }
 
@@ -134,25 +132,25 @@ public class Game implements Serializable {
         String player2 = game.joinGame("player2");
 
         // start game --------------------
-        game.gameEngine.loadGame(game.gameModel, game.settings);
+        GameEngine.loadGame(game.gameModel, game.settings);
         // round one
         game.gameModel.setCurrentRound(1);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
+        GameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
+        GameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
         game.guess(player1, new Answer(new GeoLocation(10.0, 10.0)));
         game.guess(player2, new Answer(new GeoLocation(10.0, 10.0)));
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
+        GameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
+        GameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
         // round two
         game.gameModel.setCurrentRound(2);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
+        GameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
+        GameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
         game.guess(player1, new Answer(new GeoLocation(10.0, 10.0)));
         game.guess(player2, new Answer(new GeoLocation(10.0, 10.0)));
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
+        GameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
+        GameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
         // end game
-        game.gameEngine.endGame(game.gameModel, game.settings);
+        GameEngine.endGame(game.gameModel, game.settings);
         System.out.println(toJsonString((GameModelView) game.getGameModelView()));
     }
 
