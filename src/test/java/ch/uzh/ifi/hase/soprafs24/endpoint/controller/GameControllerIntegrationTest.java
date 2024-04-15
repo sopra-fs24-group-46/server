@@ -143,13 +143,19 @@ public class GameControllerIntegrationTest {
         try {
             httpClient.newCall(startGame).execute();
         } catch (IOException e) {
-            // fail("call failed"); //disable for now
+            fail("call failed");
         }
 
         gameView.update();
         assertEquals("PLAYING", gameView.getGameState());
 
-        Thread.sleep(30000);// waiting for rounds to pass
+        for (int i = 0; i < 30; i++) {// wait for the game to end
+            gameView.update();
+            if (gameView.getGameState().equals("ENDED")) {
+                break;
+            }
+            Thread.sleep(1000);
+        }
 
         gameView.update();
         assertEquals("ENDED", gameView.getGameState());
@@ -189,14 +195,11 @@ public class GameControllerIntegrationTest {
         gameView.update();
         assertEquals(4, gameView.getNumberOfPlayers());
 
-        new Thread(() -> {// needed to to start game since the start game is blocking
-            try {
-                httpClient.newCall(startGame).execute();
-            } catch (IOException e) {
-                // e.printStackTrace();
-            }
-        }).start();
-        Thread.sleep(500);// wait until game is started
+        try {
+            httpClient.newCall(startGame).execute();
+        } catch (IOException e) {
+            fail(e);
+        }
 
         Request guessPlayer2 = new Request.Builder()
                 .url(serverURL + "/game/" + gameId + "/guess")

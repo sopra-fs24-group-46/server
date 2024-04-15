@@ -39,31 +39,31 @@ public class GameIntegrationTest {
         game.storeState("PlayerJoined");
 
         // start game --------------------
-        game.gameEngine.loadGame(game.gameModel, game.settings);
+        GameEngine.loadGame(game.gameModel, game.settings);
         // round one
         game.gameModel.setCurrentRound(1);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
+        GameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
         game.storeState("Round1Started");
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
+        GameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
         game.guess(player1, new Answer(guessLocation(game.gameModel)));
         game.guess(player2, new Answer(guessLocation(game.gameModel)));
         game.storeState("Round1Guessed");
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
+        GameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
+        GameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
         game.storeState("Round1Ended");
         // round two
         game.gameModel.setCurrentRound(2);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
+        GameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
         game.storeState("Round2Started");
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
+        GameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
         game.guess(player1, new Answer(guessLocation(game.gameModel)));
         game.guess(player2, new Answer(guessLocation(game.gameModel)));
         game.storeState("Round2Guessed");
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
+        GameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
+        GameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
         game.storeState("Round2Ended");
         // end game
-        game.gameEngine.endGame(game.gameModel, game.settings);
+        GameEngine.endGame(game.gameModel, game.settings);
         game.storeState("GameEnded");
     }
 
@@ -95,64 +95,64 @@ public class GameIntegrationTest {
         game.storeState("PlayerJoined");
 
         // start game --------------------
-        game.gameEngine.loadGame(game.gameModel, game.settings);
+        GameEngine.loadGame(game.gameModel, game.settings);
         assertThrows(ResponseStatusException.class, () -> game.joinGame("late guy"));
         // round one
         game.gameModel.setCurrentRound(1);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
+        GameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
 
         assertThrows(ResponseStatusException.class,
                 () -> game.guess(playerToKick, new Answer(guessLocation(game.gameModel))));
         assertThrows(ResponseStatusException.class,
                 () -> game.guess(player1, new Answer(guessLocation(game.gameModel))));
 
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
+        GameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
         game.guess(player1, new Answer(guessLocation(game.gameModel)));
         game.guess(player2, new Answer(guessLocation(game.gameModel)));
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
+        GameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
 
         assertThrows(ResponseStatusException.class,
                 () -> game.guess(player1, new Answer(guessLocation(game.gameModel))));
 
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
+        GameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
         game.storeState("Round1Ended");
         // round two
         game.gameModel.setCurrentRound(2);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
+        GameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
+        GameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
         game.guess(player1, new Answer(guessLocation(game.gameModel)));
         game.guess(player2, new Answer(guessLocation(game.gameModel)));
         game.guess(player3, new Answer(game.gameModel.getCurrentQuestion().getLocation()));
         game.guess(player4, new Answer(new GeoLocation(8000.0, 8000.0)));
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
+        GameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
+        GameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
         game.storeState("Round2Ended");
 
         // round three
         game.gameModel.setCurrentRound(3);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
+        GameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
+        GameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
         game.guess(player1, new Answer(guessLocation(game.gameModel)));
         game.guess(player2, new Answer(guessLocation(game.gameModel)));
         game.guess(player3, new Answer(game.gameModel.getCurrentQuestion().getLocation()));
         game.guess(player4, new Answer(new GeoLocation(608000.0, 108000.0)));
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
+        GameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
+        GameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
         game.storeState("Round3Ended");
 
         // round four
         game.gameModel.setCurrentRound(4);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
+        GameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
+        GameEngine.nextRoundState(game.gameModel, RoundState.GUESSING);
         game.guess(player1, new Answer(guessLocation(game.gameModel)));
         game.guess(player2, new Answer(guessLocation(game.gameModel)));
         game.guess(player3, new Answer(game.gameModel.getCurrentQuestion().getLocation()));
         game.guess(player4, new Answer(new GeoLocation(8000.0, 8000.0)));
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
-        game.gameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
+        GameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
+        GameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
         game.storeState("Round4Ended");
         // end game
-        game.gameEngine.endGame(game.gameModel, game.settings);
+        GameEngine.endGame(game.gameModel, game.settings);
         game.storeState("GameEnded");
     }
 
