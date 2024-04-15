@@ -8,15 +8,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.LoginResponseDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs24.game.entity.Question;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import ch.uzh.ifi.hase.soprafs24.user.User;
 import net.minidev.json.JSONArray;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedReader;
@@ -186,9 +191,12 @@ public class GameControllerIntegrationTest {
         executeRequest(updateSettings, 204, "failed to update settings");
 
         settingView.update();
+        gameView.update();
         assertEquals(2, settingView.getGuessingTime());
+        assertEquals(NullNode.class, gameView.getCurrentQuestion().getClass());
 
         executeRequest(openLobby, 204, "failed to open lobby");
+        assertEquals(NullNode.class, gameView.getCurrentQuestion().getClass());
         var playerId2 = executeRequest(joinGuest1, 302, "failed to join");
         var playerId3 = executeRequest(joinGuest2, 302, "failed to join");
         var playerId4 = executeRequest(joinGuest3, 302, "failed to join");
@@ -207,11 +215,13 @@ public class GameControllerIntegrationTest {
                 .build();
 
         gameView.update();
+        settingView.update();
         assertEquals("PLAYING", gameView.getGameState());
+        assertEquals(settingView.getRounds(), gameView.getQuestions().size());
+        assertNotEquals(NullNode.class, gameView.getCurrentQuestion().getClass());
         int count = 0;
         while (gameView.getGameState().equals("PLAYING")) {
             gameView.update();
-            System.out.println(gameView.getRoundState());
             if (gameView.getRoundState().equals("GUESSING")) {
                 executeRequest(guessPlayer2, HttpStatus.NO_CONTENT.value(), "failed to guess player2");
                 count++;
@@ -404,16 +414,20 @@ public class GameControllerIntegrationTest {
             json = null;
         }
 
+        public JsonNode getCurrentQuestion() {
+            return mapper.convertValue(json.get("currentQuestion"), JsonNode.class);
+        }
+
+        public ArrayNode getQuestions() {
+            return mapper.convertValue(json.get("questions"), ArrayNode.class);
+        }
+
         public String getJson() {
             return rawJson;
         }
 
         public String getRoundState() {
             return json.get("roundState").asText();
-        }
-
-        public Settings getSettings() {
-            return mapper.convertValue(json.get("settings"), Settings.class);
         }
 
         public void update() {
