@@ -20,6 +20,10 @@ public class GameEngine {
     public void startGame(GameModel gameModel, Settings settings) {
         // this starts the game and automatically goes to the next round after a certain
         // time
+        if (gameModel.getGameState() != GameState.LOBBY) {
+            gameModel.setGameState(GameState.LOBBY);
+        }
+
         loadGame(gameModel, settings);
         // ---------------------------------------------------------------------
         var numberOfRounds = settings.getRounds();
