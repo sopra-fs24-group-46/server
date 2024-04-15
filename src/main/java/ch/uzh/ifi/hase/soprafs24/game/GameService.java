@@ -86,6 +86,7 @@ public class GameService {
     }
 
     public void startGame(String gameId, User userCredentials) {
+
         userService.verifyUserCredentials(userCredentials);
         Game game = findGameByPublicId(gameId);
         game.verifyHost(userCredentials);
