@@ -16,7 +16,7 @@ public class Player {
         return id;
     }
 
-    @JsonProperty("DisplayName")
+    @JsonProperty("displayName")
     public String getDisplayName() {
         return displayName;
     }
