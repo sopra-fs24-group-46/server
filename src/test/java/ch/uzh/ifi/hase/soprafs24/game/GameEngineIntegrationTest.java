@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class GameIntegrationTest {
+public class GameEngineIntegrationTest {
 
     @Test
     void game1() {

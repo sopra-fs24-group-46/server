@@ -77,6 +77,7 @@ public class GameEngine {
                     "Only games in Lobby State can be started. Current state: " + gameModel.getGameState());
         }
         gameModel.setGameState(GameState.PLAYING);
+        gameModel.setCurrentRound(1);
     }
 
     static public void endGame(GameModel gameModel, Settings settings) {
@@ -144,6 +145,11 @@ public class GameEngine {
     }
 
     public static void initGame(GameModel gameModel, Settings settings) {
+        if (gameModel.getGameState() != GameState.SETUP) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Game should only be initialized once. Current state: " + gameModel.getGameState() + " expected: "
+                            + GameState.SETUP);
+        }
         var roundNumber = settings.getRounds();
         var questions = APIService.getQuestions(roundNumber);
         if (questions.size() < roundNumber) {
