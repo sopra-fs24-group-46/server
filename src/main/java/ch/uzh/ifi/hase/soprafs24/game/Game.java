@@ -91,6 +91,7 @@ public class Game implements Serializable {
     }
 
     public Boolean leaveGame(String playerId) {
+        validatePlayerId(playerId);
         gameModel.removePlayer(playerId);
         return true;
     }
@@ -101,6 +102,7 @@ public class Game implements Serializable {
     }
 
     public Boolean guess(String playerId, Answer guess) {
+        validatePlayerId(playerId);
         GameEngine.addAnswer(gameModel, guess, playerId);
         return true;
     }
@@ -114,6 +116,14 @@ public class Game implements Serializable {
         if (hostPlayer.getId() != hostId) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Host player does not match");
         }
+    }
+
+    private boolean validatePlayerId(String playerId) {
+        if (gameModel.getPlayersIds().contains(playerId)) {
+            return true;
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                "Player with id: \"" + playerId + "\" is not in the game. Provide a valid player id");
     }
 
     // M2

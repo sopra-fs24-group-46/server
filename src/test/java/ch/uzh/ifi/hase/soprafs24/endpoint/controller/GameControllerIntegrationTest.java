@@ -236,6 +236,56 @@ public class GameControllerIntegrationTest {
         System.out.println(gameView.getJson());
     }
 
+    @Test
+    void minimalGame() throws InterruptedException {// simulating the game 2 from gameIntegration Test
+        Request updateSettings = new Request.Builder()
+                .url(serverURL + "/game/" + gameId + "/updateSettings")
+                .put(body(String.format(
+                        "{\"id\": \"%s\", \"token\": \"%s\", \"maxPlayers\": 4, \"rounds\": 1, \"guessingTime\": 2 }",
+                        testUser.getId(), testUser.getToken())))
+                .build();
+
+        executeRequest(updateSettings, 204, "failed to update settings");
+
+        settingView.update();
+        gameView.update();
+        assertEquals(2, settingView.getGuessingTime());
+        assertEquals(NullNode.class, gameView.getCurrentQuestion().getClass());
+
+        try {
+            httpClient.newCall(startGame).execute();
+        } catch (IOException e) {
+            fail(e);
+        }
+
+        Request guess = new Request.Builder()
+                .url(serverURL + "/game/" + gameId + "/guess")
+                .post(body("{\"playerId\": \"\", \"x\": 600000, \"y\": 100000}"))
+                .build();
+
+        gameView.update();
+        settingView.update();
+        assertEquals("PLAYING", gameView.getGameState());
+        assertEquals(settingView.getRounds(), gameView.getQuestions().size());
+        assertNotEquals(NullNode.class, gameView.getCurrentQuestion().getClass());
+        int count = 0;
+        while (gameView.getGameState().equals("PLAYING")) {
+            gameView.update();
+            if (gameView.getRoundState().equals("GUESSING")) {
+                executeRequest(guess, HttpStatus.BAD_REQUEST.value(),
+                        "Guess should fail (no playerID given). But it worked. ");
+                count++;
+            }
+
+            Thread.sleep(500);// check every half second
+        }
+
+        System.out.println(count);
+        gameView.update();
+        assertEquals("ENDED", gameView.getGameState());
+        System.out.println(gameView.getJson());
+    }
+
     @BeforeAll
     static void BeforeAll() throws IOException {
         checkIfHostIsRunning(); // these tests depend on the server to be running at serverURL
