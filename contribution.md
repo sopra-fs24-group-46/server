@@ -17,3 +17,6 @@
 |1     |Serafin |#11      |added playerId validatoin, added Tests             |
 |1     |Serafin |#120     |closed                                             |
 |1     |Serafin |#37      |added Test                                         |
+|1     |Dominic |#1       |Navigation correction, Localstorage                |
+|1     |Dominic |#12      |Currently working on it                            |
+
