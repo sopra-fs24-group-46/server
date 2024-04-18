@@ -183,6 +183,7 @@ public class UserService {
 
         // Update the user's birth date and username
         existingUser.setUsername(updatedUser.getUsername());
+        existingUser.setPassword(updatedUser.getPassword());
 
         // Save the updated user to the database
         User savedUser = userRepository.save(existingUser);
