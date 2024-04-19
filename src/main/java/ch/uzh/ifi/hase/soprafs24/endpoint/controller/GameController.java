@@ -47,8 +47,7 @@ public class GameController {
     @ResponseStatus(HttpStatus.CREATED)
     public CreateGameResponseDTO createGame(@RequestBody CredentialsDTO credentials) { // HTTP POST to /game/create
 
-        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoUser(credentials);
-        CreateGameResponseDTO response = gameService.createGame(userCredentials);
+        CreateGameResponseDTO response = gameService.createGame(credentials);
         return response;
     }
 
@@ -130,8 +129,7 @@ public class GameController {
     public void openLobby(@PathVariable String gameId,
             @RequestBody CredentialsDTO credentials) {
         // Open the lobby of the game for the player.
-        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoUser(credentials);
-        gameService.openLobby(gameId, userCredentials);
+        gameService.openLobby(gameId, credentials);
     }
 
     /**
@@ -145,8 +143,7 @@ public class GameController {
     public void startGame(@PathVariable String gameId,
             @RequestBody CredentialsDTO credentials) {
         // Start the game.
-        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoUser(credentials);
-        gameService.startGame(gameId, userCredentials);
+        gameService.startGame(gameId, credentials);
     }
 
     /**
@@ -160,8 +157,7 @@ public class GameController {
     public void deleteGame(@PathVariable String gameId,
             @RequestBody CredentialsDTO credentials) {
         // Delete the game.
-        User userCredentials = DTOMapper.INSTANCE.convertCredentialsDTOtoUser(credentials);
-        gameService.deleteGame(gameId, userCredentials);
+        gameService.deleteGame(gameId, credentials);
     }
 
     /**
@@ -222,7 +218,7 @@ public class GameController {
         // Update the settings of the game.
 
         Settings settings = DTOMapper.INSTANCE.gameSettingsDTOtoSettings(settingsDTO);
-        User userCredentials = DTOMapper.INSTANCE.convertSettingsDTOtoUser(settingsDTO);
+        CredentialsDTO userCredentials = DTOMapper.INSTANCE.convertSettingsDTOtoCredentialsDTO(settingsDTO);
         gameService.updateSettings(gameId, settings, userCredentials);
     }
 
