@@ -9,7 +9,11 @@ public class GameSettingsDTO {
     // game settings
     private int maxPlayers;
     private int rounds;
-    private int guessingTime;
+
+    private Integer questionTime;
+    private Integer guessingTime;
+    private Integer mapRevealTime;
+    private Integer leaderBoardTime;
 
     // Getters and Setters
     public int getMaxPlayers() {
@@ -50,5 +54,33 @@ public class GameSettingsDTO {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Integer getQuestionTime() {
+        return questionTime;
+    }
+
+    public void setQuestionTime(Integer questionTime) {
+        this.questionTime = questionTime;
+    }
+
+    public void setGuessingTime(Integer guessingTime) {
+        this.guessingTime = guessingTime;
+    }
+
+    public Integer getMapRevealTime() {
+        return mapRevealTime;
+    }
+
+    public void setMapRevealTime(Integer mapRevealTime) {
+        this.mapRevealTime = mapRevealTime;
+    }
+
+    public Integer getLeaderBoardTime() {
+        return leaderBoardTime;
+    }
+
+    public void setLeaderBoardTime(Integer leaderBoardTime) {
+        this.leaderBoardTime = leaderBoardTime;
     }
 }
