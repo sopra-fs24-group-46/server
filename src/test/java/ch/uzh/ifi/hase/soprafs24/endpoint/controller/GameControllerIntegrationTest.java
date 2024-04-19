@@ -270,7 +270,7 @@ public class GameControllerIntegrationTest {
         Request updateSettings = new Request.Builder()
                 .url(serverURL + "/game/" + gameId + "/updateSettings")
                 .put(body(String.format(
-                        "{\"id\": \"%s\", \"token\": \"%s\", \"maxPlayers\": 4, \"rounds\": 1, \"guessingTime\": 2 }",
+                        "{\"id\": \"%s\", \"token\": \"%s\", \"maxPlayers\": 4, \"rounds\": 2, \"guessingTime\": 2 }",
                         testUser.getId(), testUser.getToken())))
                 .build();
 
