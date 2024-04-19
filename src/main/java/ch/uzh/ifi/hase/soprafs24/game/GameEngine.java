@@ -19,8 +19,8 @@ import ch.uzh.ifi.hase.soprafs24.geo_admin_api.APIService;
 //use a scheduler
 public class GameEngine {
 
-    static private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5); // Adjust the number of
-                                                                                             // threads as
+    static private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(100); // Adjust the number of
+                                                                                               // threads as
 
     static public void scheduleGame(GameModel gameModel, Settings settings) {
         if (gameModel.getGameState() == GameState.SETUP) {
@@ -35,31 +35,37 @@ public class GameEngine {
         // ---------------------------------------------------------------------
         var numberOfRounds = settings.getRounds();
         for (int i = 1; i <= numberOfRounds; i++) {
-            gameModel.setCurrentRound(i);
-            scheduleRound(gameModel, settings);
+            scheduleRound(gameModel, settings, i);
         }
         // ---------------------------------------------------------------------
         scheduler.schedule(() -> endGame(gameModel, settings), settings.getTotalTime(),
                 java.util.concurrent.TimeUnit.SECONDS);
     }
 
-    static public void scheduleRound(GameModel gameModel, Settings settings) {
-        int scheduleTime = gameModel.getCurrentRound() * settings.getRoundTime();// initial delay
-                                                                                 //
-        scheduler.schedule(() -> nextRoundState(gameModel, RoundState.QUESTION), scheduleTime,
-                java.util.concurrent.TimeUnit.SECONDS);
-        scheduleTime = +settings.getQuestionTime();
+    static public void scheduleRound(GameModel gameModel, Settings settings, int roundNumber) {
+        int scheduleTime = (roundNumber - 1) * settings.getRoundTime();// initial delay
+        //
+        System.out.println("scheduleTime: " + scheduleTime + " roundState: " + RoundState.QUESTION);
+        scheduler.schedule(() -> {
+            gameModel.setCurrentRound(roundNumber);
+            nextRoundState(gameModel, RoundState.QUESTION);
+        }, scheduleTime, java.util.concurrent.TimeUnit.SECONDS);
+        scheduleTime += settings.getQuestionTime();
 
+        System.out.println("scheduleTime: " + scheduleTime + " roundState: " + RoundState.GUESSING);
         scheduler.schedule(() -> nextRoundState(gameModel, RoundState.GUESSING), scheduleTime,
                 java.util.concurrent.TimeUnit.SECONDS);
-        scheduleTime = +settings.getGuessingTime();
+        scheduleTime += settings.getGuessingTime();
 
+        System.out.println("scheduleTime: " + scheduleTime + " roundState: " + RoundState.MAP_REVEAL);
         scheduler.schedule(() -> nextRoundState(gameModel, RoundState.MAP_REVEAL), scheduleTime,
                 java.util.concurrent.TimeUnit.SECONDS);
-        scheduleTime = +settings.getMapRevealTime();
+        scheduleTime += settings.getMapRevealTime();
 
+        System.out.println("scheduleTime: " + scheduleTime + " roundState: " + RoundState.LEADERBOARD);
         scheduler.schedule(() -> nextRoundState(gameModel, RoundState.LEADERBOARD), scheduleTime,
                 java.util.concurrent.TimeUnit.SECONDS);
+
     }
 
     public static void addAnswer(GameModel gameModel, Answer answer, String playerId) {

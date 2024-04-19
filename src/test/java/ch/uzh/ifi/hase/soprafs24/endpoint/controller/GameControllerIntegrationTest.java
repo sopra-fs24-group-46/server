@@ -13,6 +13,8 @@ import com.fasterxml.jackson.databind.node.NullNode;
 
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.LoginResponseDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
+import ch.uzh.ifi.hase.soprafs24.game.Enum.RoundState;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Question;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import ch.uzh.ifi.hase.soprafs24.user.User;
@@ -30,6 +32,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -82,7 +86,7 @@ public class GameControllerIntegrationTest {
 
         executeRequest(joinGame, 400, "Should not be able to join");
         executeRequest(openLobby, 204, "failed to open lobby");
-        executeRequest(joinGame, 302, "failed to join");
+        executeRequest(joinGame, 200, "failed to join");
     }
 
     @Test
@@ -121,13 +125,13 @@ public class GameControllerIntegrationTest {
         assertEquals("LOBBY", gameView.getGameState());
         gameView.update();
         assertEquals(1, gameView.getNumberOfPlayers());
-        var playerId2 = executeRequest(joinGuest1, 302, "failed to join");
+        var playerId2 = executeRequest(joinGuest1, 200, "failed to join");
         gameView.update();
         assertEquals(2, gameView.getNumberOfPlayers());
-        var playerId3 = executeRequest(joinGuest2, 302, "failed to join");
+        var playerId3 = executeRequest(joinGuest2, 200, "failed to join");
         gameView.update();
         assertEquals(3, gameView.getNumberOfPlayers());
-        var playerId4 = executeRequest(joinGuest3, 302, "failed to join");
+        var playerId4 = executeRequest(joinGuest3, 200, "failed to join");
         gameView.update();
         assertEquals(4, gameView.getNumberOfPlayers());
         executeRequest(joinGuest3, 400, "should have reached max players, but was able to join");
@@ -140,7 +144,7 @@ public class GameControllerIntegrationTest {
         executeRequest(leaveGame, 204, "failed to leave");
         gameView.update();
         assertEquals(3, gameView.getNumberOfPlayers());
-        playerId4 = executeRequest(joinGuest3, 302, "failed to join");
+        playerId4 = executeRequest(joinGuest3, 200, "failed to join");
         gameView.update();
         assertEquals(4, gameView.getNumberOfPlayers());
         // start game
@@ -184,7 +188,7 @@ public class GameControllerIntegrationTest {
         Request updateSettings = new Request.Builder()
                 .url(serverURL + "/game/" + gameId + "/updateSettings")
                 .put(body(String.format(
-                        "{\"id\": \"%s\", \"token\": \"%s\", \"maxPlayers\": 4, \"rounds\": 1, \"guessingTime\": 2 }",
+                        "{\"id\": \"%s\", \"token\": \"%s\", \"maxPlayers\": 4, \"rounds\": 2, \"guessingTime\": 2 }",
                         testUser.getId(), testUser.getToken())))
                 .build();
 
@@ -197,9 +201,9 @@ public class GameControllerIntegrationTest {
 
         executeRequest(openLobby, 204, "failed to open lobby");
         assertEquals(NullNode.class, gameView.getCurrentQuestion().getClass());
-        var playerId2 = executeRequest(joinGuest1, 302, "failed to join");
-        var playerId3 = executeRequest(joinGuest2, 302, "failed to join");
-        var playerId4 = executeRequest(joinGuest3, 302, "failed to join");
+        var playerId2 = executeRequest(joinGuest1, 200, "failed to join");
+        var playerId3 = executeRequest(joinGuest2, 200, "failed to join");
+        var playerId4 = executeRequest(joinGuest3, 200, "failed to join");
         gameView.update();
         assertEquals(4, gameView.getNumberOfPlayers());
 
@@ -219,21 +223,48 @@ public class GameControllerIntegrationTest {
         assertEquals("PLAYING", gameView.getGameState());
         assertEquals(settingView.getRounds(), gameView.getQuestions().size());
         assertNotEquals(NullNode.class, gameView.getCurrentQuestion().getClass());
-        int count = 0;
-        while (gameView.getGameState().equals("PLAYING")) {
-            gameView.update();
-            if (gameView.getRoundState().equals("GUESSING")) {
-                executeRequest(guessPlayer2, HttpStatus.NO_CONTENT.value(), "failed to guess player2");
-                count++;
-            }
 
-            Thread.sleep(500);// check every half second
-        }
+        waitFor(GameState.PLAYING);
+        waitFor(RoundState.QUESTION);
+        waitFor(RoundState.GUESSING);
+        System.out.println(gameView.getCurrentRound());
+        executeRequest(guessPlayer2, HttpStatus.NO_CONTENT.value(), "failed to guess player2");
+        waitFor(RoundState.MAP_REVEAL);
+        waitFor(RoundState.LEADERBOARD);
 
-        System.out.println(count);
-        gameView.update();
+        waitFor(RoundState.QUESTION);
+        waitFor(RoundState.GUESSING);
+        System.out.println(gameView.getCurrentRound());
+        executeRequest(guessPlayer2, HttpStatus.NO_CONTENT.value(), "failed to guess player2");
+        waitFor(RoundState.MAP_REVEAL);
+        waitFor(RoundState.LEADERBOARD);
+        waitFor(GameState.ENDED);
+
         assertEquals("ENDED", gameView.getGameState());
         System.out.println(gameView.getJson());
+    }
+
+    private void waitFor(GameState state) throws InterruptedException {
+        System.out.println("waiting for " + state.toString());
+        waitFor(() -> gameView.getGameState(), state.toString());
+    }
+
+    private void waitFor(RoundState state) throws InterruptedException {
+        System.out.println("waiting for " + state.toString());
+        waitFor(() -> gameView.getRoundState(), state.toString());
+    }
+
+    // function which takes an function and a string
+
+    private void waitFor(Supplier<String> gameViewField, String state) throws InterruptedException {
+        for (int i = 0; i < 30; i++) {// wait for the state
+            gameView.update();
+            if (gameViewField.get().equals(state)) {
+                System.out.println("found state " + state + " after " + i / 2 + " seconds");
+                break;
+            }
+            Thread.sleep(500);
+        }
     }
 
     @Test
@@ -241,7 +272,7 @@ public class GameControllerIntegrationTest {
         Request updateSettings = new Request.Builder()
                 .url(serverURL + "/game/" + gameId + "/updateSettings")
                 .put(body(String.format(
-                        "{\"id\": \"%s\", \"token\": \"%s\", \"maxPlayers\": 4, \"rounds\": 1, \"guessingTime\": 2 }",
+                        "{\"id\": \"%s\", \"token\": \"%s\", \"maxPlayers\": 4, \"rounds\": 2, \"guessingTime\": 2 }",
                         testUser.getId(), testUser.getToken())))
                 .build();
 
@@ -462,6 +493,10 @@ public class GameControllerIntegrationTest {
 
         public GameView() {
             json = null;
+        }
+
+        public String getCurrentRound() {
+            return json.get("currentRound").asText();
         }
 
         public JsonNode getCurrentQuestion() {
