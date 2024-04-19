@@ -85,7 +85,7 @@ public class GameController {
      * @return The redirect URL to the game page.
      */
     @PostMapping("/{gameId}/join")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public String joinGame(@PathVariable String gameId,
             @RequestBody String displayName) {
         return gameService.joinGame(gameId, displayName);
