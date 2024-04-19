@@ -82,8 +82,13 @@ public class Game implements Serializable {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You can only join games which are in Lobby state. Current state: " + gameModel.getGameState());
         }
+        if (gameModel.getPlayers().stream().anyMatch(player -> player.getDisplayName().equals(displayName))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Player name " + displayName + " is already taken. choose another name");
+        }
         if (gameModel.getPlayers().size() >= settings.getMaxPlayers()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Game is full");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Game is full: " + gameModel.getPlayers().size() + "\\" + settings.getMaxPlayers());
         }
         String playerId = gameModel.addPlayer(displayName);
         return playerId;
