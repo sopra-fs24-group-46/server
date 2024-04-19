@@ -88,4 +88,16 @@ public class Settings implements SettingView {
     public Integer getTotalTime() {
         return rounds * getRoundTime();
     }
+
+    public void setQuestionTime(int questionTime2) {
+        this.questionTime = questionTime2;
+    }
+
+    public void setMapRevealTime(int mapRevealTime2) {
+        this.mapRevealTime = mapRevealTime2;
+    }
+
+    public void setLeaderBoardTime(int leaderBoardTime2) {
+        this.leaderBoardTime = leaderBoardTime2;
+    }
 }
