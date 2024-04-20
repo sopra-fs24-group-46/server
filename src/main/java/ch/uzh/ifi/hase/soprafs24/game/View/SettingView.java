@@ -11,4 +11,10 @@ public interface SettingView {
     public Integer getRounds();
 
     public Integer getGuessingTime();
+
+    public Integer getQuestionTime();
+
+    public Integer getMapRevealTime();
+
+    public Integer getLeaderBoardTime();
 }
