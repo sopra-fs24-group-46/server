@@ -4,6 +4,7 @@ package ch.uzh.ifi.hase.soprafs24.endpoint.controller;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameResponseDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameSettingsDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.JoinPostDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PostGuessDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.game.GameService;
@@ -87,8 +88,8 @@ public class GameController {
     @PostMapping("/{gameId}/join")
     @ResponseStatus(HttpStatus.OK)
     public String joinGame(@PathVariable String gameId,
-            @RequestBody String displayName) {
-        return gameService.joinGame(gameId, displayName);
+            @RequestBody JoinPostDTO DTO) {
+        return gameService.joinGame(gameId, DTO.getDisplayName());
     }
 
     /**

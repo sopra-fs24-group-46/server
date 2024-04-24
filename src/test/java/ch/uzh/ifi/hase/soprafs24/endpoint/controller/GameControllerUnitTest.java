@@ -131,7 +131,8 @@ public class GameControllerUnitTest {
                 String gameId = "ab3501ds";
                 String displayName = "player1";
                 var postRequest = post("/game/" + gameId + "/join/")
-                                .contentType(MediaType.APPLICATION_JSON).content("displayName=" + displayName);
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("{\"displayName\":\"" + displayName + "\"}");
 
                 // Act
                 mockMvc.perform(postRequest)
