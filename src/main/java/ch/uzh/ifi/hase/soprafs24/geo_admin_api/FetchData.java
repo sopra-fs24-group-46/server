@@ -32,6 +32,7 @@ public class FetchData {
         params.put("searchText", searchText);
         params.put("searchField", "objektart");
         params.put("conatins", "false");
+        params.put("sr", "4326");
         String json = callGeoAdminAPI("find", params);
         try (FileWriter fileWriter = new FileWriter(
                 "src/main/resources/GeoAdminAPI/" + searchText + ".json")) { // use relative path
@@ -64,11 +65,13 @@ public class FetchData {
 
     // function to convert hasmap into a paramter string for the GeoAdmin API
     private static String paramsToApiString(HashMap<String, String> params) {
+
         StringBuilder sb = new StringBuilder();
         for (String key : params.keySet()) {
             sb.append(key).append("=").append(params.get(key)).append("&");
         }
-        return "?" + sb.toString();
+        // this does url encode the string
+        return "?" + sb.toString().replace(" ", "%20");
     }
 
     // this calls GeoAdmin API and retunrs JSON as a string

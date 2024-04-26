@@ -21,10 +21,10 @@ public class APIService {
         // roughly area around Matterhorn
         // https://s.geo.admin.ch/qskqmg54fqm6
         data.filterByPolygon(new double[][] {
-                { 588530, 129173 },
-                { 589939, 83020 },
-                { 636525, 83887 },
-                { 645626, 128956 }
+                { 7.0, 45.0 },
+                { 8.0, 45.0 },
+                { 8.0, 46.0 },
+                { 7.0, 46.0 }
         });
 
         var jsonNodes = data.selectRandomElements(amount);

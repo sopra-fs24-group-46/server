@@ -109,14 +109,14 @@ public class ResponseData {
         var data2 = FetchData.readLocalJson("huegel");
         data.addAll(data2);
         double[][] polygon = new double[][] {
-                { 688911, 260544 },
-                { 703344, 248102 },
-                { 721195, 258387 },
-                { 705567, 269337 }
+                { 7.0, 45.0 },
+                { 8.0, 45.0 },
+                { 8.0, 46.0 },
+                { 7.0, 46.0 }
         };
         data.data.get(0).get("geometry").get("points").get(0).get(0).asDouble();
 
-        data.filterByPolygon(polygon);
+        // data.filterByPolygon(polygon);
         data.filterByAttributes("sprachcode", "Hochdeutsch");
         var randomElements = data.selectRandomElements(10);
 

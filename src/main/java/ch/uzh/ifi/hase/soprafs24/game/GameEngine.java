@@ -140,7 +140,7 @@ public class GameEngine {
                 score = 0;
             } else {
                 distance = question.getLocation().getDistanceTo(answer.getLocation());
-                score = (int) (1000 / Math.pow(distance / 10000, 2));
+                score = (int) (1000 / Math.pow(distance / 100, 2));
             }
 
             gameModel.setScore(playerId, score, distance);
