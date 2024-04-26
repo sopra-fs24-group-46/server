@@ -24,4 +24,5 @@
 | 2    | Daniel   | #35   | closed.                                         |
 | 2    | Daniel   | #22   | Closed.                                         |
 | 2    | Daniel   | #52   | Currently working on it                         |
-
+|2|Serafin| #37| bug fix|
+|2|Serafin| #55| bug fix|
