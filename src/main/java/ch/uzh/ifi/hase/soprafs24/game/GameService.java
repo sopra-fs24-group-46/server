@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameResponseDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.game.View.GameModelView;
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
@@ -37,8 +38,8 @@ public class GameService {
         this.userService = userService;
     }
 
-    public CreateGameResponseDTO createGame(User userCredentials) {
-        User user = userService.verifyUserCredentials(userCredentials);
+    public CreateGameResponseDTO createGame(CredentialsDTO credentials) {
+        User user = userService.verifyUserCredentials(credentials);
         Game game = new Game(user);
         gameRepository.put(game.getId(), game);
 
@@ -48,17 +49,17 @@ public class GameService {
         return response;
     }
 
-    public void deleteGame(String gameId, User userCredentials) {
-        userService.verifyUserCredentials(userCredentials);
+    public void deleteGame(String gameId, CredentialsDTO credentials) {
+        var user = userService.verifyUserCredentials(credentials);
         Game game = findGameByPublicId(gameId);
-        game.verifyHost(userCredentials);
+        game.verifyHost(user);
         gameRepository.remove(game.getId());
     }
 
-    public void updateSettings(String gameId, Settings settings, User userCredentials) {
-        userService.verifyUserCredentials(userCredentials);
+    public void updateSettings(String gameId, Settings settings, CredentialsDTO credentials) {
+        var user = userService.verifyUserCredentials(credentials);
         Game game = findGameByPublicId(gameId);
-        game.verifyHost(userCredentials);
+        game.verifyHost(user);
         game.updateSettings(settings);
     }
 
@@ -77,10 +78,10 @@ public class GameService {
         findGameByPublicId(gameId).leaveGame(playerId);
     }
 
-    public Boolean openLobby(String gameId, User userCredentials) {
-        userService.verifyUserCredentials(userCredentials);
+    public Boolean openLobby(String gameId, CredentialsDTO credentials) {
+        var user = userService.verifyUserCredentials(credentials);
         Game game = findGameByPublicId(gameId);
-        game.verifyHost(userCredentials);
+        game.verifyHost(user);
         return game.openLobby();
     }
 
@@ -89,11 +90,11 @@ public class GameService {
         return getGameView(gameId);
     }
 
-    public void startGame(String gameId, User userCredentials) {
+    public void startGame(String gameId, CredentialsDTO credentials) {
 
-        userService.verifyUserCredentials(userCredentials);
+        var user = userService.verifyUserCredentials(credentials);
         Game game = findGameByPublicId(gameId);
-        game.verifyHost(userCredentials);
+        game.verifyHost(user);
         game.startGame();
     }
 

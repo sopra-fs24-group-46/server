@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -150,6 +151,10 @@ public class GameModel implements GameModelView {
     }
 
     // getters----------------------------------------------------------
+    public List<String> getPlayersIds() {
+        return players.stream().map(player -> player.getId()).collect(Collectors.toList());
+    }
+
     public Player getHostPlayer() {
         return hostPlayer;
     }

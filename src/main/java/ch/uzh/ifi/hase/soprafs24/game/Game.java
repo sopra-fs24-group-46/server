@@ -82,8 +82,13 @@ public class Game implements Serializable {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "You can only join games which are in Lobby state. Current state: " + gameModel.getGameState());
         }
+        if (gameModel.getPlayers().stream().anyMatch(player -> player.getDisplayName().equals(displayName))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Player name " + displayName + " is already taken. choose another name");
+        }
         if (gameModel.getPlayers().size() >= settings.getMaxPlayers()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Game is full");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Game is full: " + gameModel.getPlayers().size() + "\\" + settings.getMaxPlayers());
         }
         String playerId = gameModel.addPlayer(displayName);
         return playerId;
@@ -91,6 +96,7 @@ public class Game implements Serializable {
     }
 
     public Boolean leaveGame(String playerId) {
+        validatePlayerId(playerId);
         gameModel.removePlayer(playerId);
         return true;
     }
@@ -101,6 +107,7 @@ public class Game implements Serializable {
     }
 
     public Boolean guess(String playerId, Answer guess) {
+        validatePlayerId(playerId);
         GameEngine.addAnswer(gameModel, guess, playerId);
         return true;
     }
@@ -114,6 +121,14 @@ public class Game implements Serializable {
         if (hostPlayer.getId() != hostId) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Host player does not match");
         }
+    }
+
+    private boolean validatePlayerId(String playerId) {
+        if (gameModel.getPlayersIds().contains(playerId)) {
+            return true;
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                "Player with id: \"" + playerId + "\" is not in the game. Provide a valid player id");
     }
 
     // M2

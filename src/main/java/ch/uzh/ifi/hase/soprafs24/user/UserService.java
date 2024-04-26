@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -67,7 +69,7 @@ public class UserService {
         return user;
     }
 
-    public User updateUser(User credentials, User userInput) {
+    public User updateUser(CredentialsDTO credentials, User userInput) {
         User user = authenticateUser(credentials);
         // user is authenticated
 
@@ -90,7 +92,7 @@ public class UserService {
         return user;
     }
 
-    public Boolean deleteUser(User credentials) {
+    public Boolean deleteUser(CredentialsDTO credentials) {
         User user = authenticateUser(credentials);
         // valid input
 
@@ -100,7 +102,7 @@ public class UserService {
         return true;
     }
 
-    public Boolean logoutUser(User credentials) {
+    public Boolean logoutUser(CredentialsDTO credentials) {
         User user = authenticateUser(credentials);
 
         user.setToken(""); // token no longer valid;
@@ -110,7 +112,7 @@ public class UserService {
         return true;
     }
 
-    public Boolean isValidUser(User credentials) {
+    public Boolean isValidUser(CredentialsDTO credentials) {
         User user = authenticateUser(credentials);
         // valid input
         if (user == null) {// this should always be true
@@ -120,7 +122,7 @@ public class UserService {
         return true;
     }
 
-    private User authenticateUser(User credentials) {
+    private User authenticateUser(CredentialsDTO credentials) {
         User user = userRepository.findById(credentials.getId()).get();
         validateToken(user.getToken(), credentials.getToken());
         // valid input
@@ -176,22 +178,32 @@ public class UserService {
         }
     }
 
-    public User updateUser(Long id, User updatedUser) {
+    @Deprecated
+    public User updateUser(Long id, User userInput) {
         // Get the user from the database
-        User existingUser = userRepository.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        // Update the user's birth date and username
-        existingUser.setUsername(updatedUser.getUsername());
+        // validating user input.
+        // if a field is null then it will not be updated (no validation)
+        if (userInput.getUsername() != null) {
+            validateUsernameUniqueness(userInput.getUsername());
+        }
+        if (userInput.getPassword() != null) {
+            validatePasswordLength(userInput.getPassword());
+        }
 
-        // Save the updated user to the database
-        User savedUser = userRepository.save(existingUser);
+        // user input has to be valid at this stage!!
+        user.updateField(userInput);// all updatable non null values are updated
 
-        // Return the updated user
-        return savedUser;
+        // storing to repository
+        user = userRepository.save(user);
+        userRepository.flush();
+
+        return user;
     }
 
-    public User verifyUserCredentials(User userCredentials) {
+    public User verifyUserCredentials(CredentialsDTO userCredentials) {
         return authenticateUser(userCredentials);// throws exception if not valid
     }
 }

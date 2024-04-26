@@ -49,4 +49,6 @@ public interface DTOMapper {
   GameSettingsDTO convertSettingsToDTO(SettingView settings);
 
   User convertSettingsDTOtoUser(GameSettingsDTO settingsDTO);
+
+  CredentialsDTO convertSettingsDTOtoCredentialsDTO(GameSettingsDTO settingsDTO);
 }
