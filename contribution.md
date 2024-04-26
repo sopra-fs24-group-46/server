@@ -35,5 +35,10 @@
 | 2    | Dominic  | #64   | closed                                          |
 | 2    | Dominic  | #67   | Working on it                                   |
 | 2    | Dominic  | #30   | Working on it                                   |
-
-
+| 2    | Dominic  | #30   | Working on it                                   |
+| 0    | Rolando  | #1    | closed                                          |
+| 0    | Rolando  | #2    | closed                                          |
+| 1    | Rolando  | #5    | closed                                          |
+| 1    | Rolando  | #26   | closed                                          |
+| 1    | Rolando  | #31   | closed                                          |
+| 1    | Rolando  | #36   | closed                                          |
