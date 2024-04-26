@@ -26,3 +26,7 @@
 | 2    | Daniel   | #52   | Currently working on it                         |
 |2|Serafin| #37| bug fix|
 |2|Serafin| #55| bug fix|
+| 2    | Leandra  | #64   | closed                                          |
+| 2    | Leandra  | #65   | closed                                          |
+| 2    | Leandra  | #66   | worked on some views                            |
+| 2    | Leandra  | #68   | closed                                          |
