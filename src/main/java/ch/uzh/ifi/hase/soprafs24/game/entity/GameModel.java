@@ -38,6 +38,9 @@ public class GameModel implements GameModelView {
     private int serialPlayerNumber; // used to assign player numbers
     private Player hostPlayer;
 
+    // helpers
+    private Map<String, List<PowerUp>> usedPlayerPowerUps;
+
     public GameModel() {
 
         // set default values
@@ -53,6 +56,7 @@ public class GameModel implements GameModelView {
         this.answers = new HashMap<>();
         this.histories = new HashMap<>();
         this.cumulativeScores = new HashMap<>();
+        this.usedPlayerPowerUps = new HashMap<>();
         this.questions = new ArrayList<>();
     }
 
@@ -64,7 +68,7 @@ public class GameModel implements GameModelView {
         }
     }
 
-    public void pushHistory() {
+    public void pushHistory() {// responsible adding scores and managing the history
         for (Player player : players) {
 
             var oldCumulativeScore = cumulativeScores.get(player.getId());
@@ -103,6 +107,7 @@ public class GameModel implements GameModelView {
         answers.put(playerId, null);
         histories.put(playerId, new History());
         cumulativeScores.put(playerId, new Score(0, 0.0));
+        usedPlayerPowerUps.put(playerId, new ArrayList<>());
         return playerId;
     }
 
@@ -114,6 +119,24 @@ public class GameModel implements GameModelView {
         histories.remove(playerId);
         cumulativeScores.remove(playerId);
         players.remove(playerFromList);
+    }
+
+    // only one at the time and only once a powerup can be used. Once thi function
+    // is called the powerup is used. Idea to refactor instead of used powerups work
+    // with powerups to be used.
+    public void usePowerUp(String playerId, PowerUp powerUp) {
+        // check if a powerup is already in use
+        if (powerUps.get(playerId) != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Player already has a powerup. Powerup: " + powerUps.get(playerId));
+        }
+        // check if powerup is already used
+        if (usedPlayerPowerUps.get(playerId).contains(powerUp)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Powerup: " + powerUp + " is already used. Used powerups: " + usedPlayerPowerUps.get(playerId));
+        }
+        powerUps.put(playerId, powerUp);
+        usedPlayerPowerUps.get(playerId).add(powerUp);
     }
 
     // setters----------------------------------------------------------
@@ -208,5 +231,9 @@ public class GameModel implements GameModelView {
 
     public Map<String, History> getHistories() {
         return histories;
+    }
+
+    public Map<String, List<PowerUp>> getUsedPlayerPowerUps() {
+        return usedPlayerPowerUps;
     }
 }

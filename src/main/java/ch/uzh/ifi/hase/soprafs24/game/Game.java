@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
+import ch.uzh.ifi.hase.soprafs24.game.Enum.PowerUp;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.RoundState;
 import ch.uzh.ifi.hase.soprafs24.game.View.GameModelView;
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
@@ -109,6 +110,11 @@ public class Game implements Serializable {
     public Boolean guess(String playerId, Answer guess) {
         validatePlayerId(playerId);
         GameEngine.addAnswer(gameModel, guess, playerId);
+        return true;
+    }
+
+    public Boolean usePowerUp(String playerId, PowerUp powerUp) {
+        gameModel.usePowerUp(playerId, powerUp);
         return true;
     }
 
