@@ -162,8 +162,13 @@ public class GameEngine {
 
         // shield powerUp
         // calculate average of scores
-        int avg = (int) gameModel.getCurrentScores().values().stream().mapToInt(Score::getScore).average()
-                .getAsDouble();
+        int avg;
+        try {
+            avg = (int) gameModel.getCurrentScores().values().stream().mapToInt(Score::getScore).average()
+                    .getAsDouble();
+        } catch (Exception e) {
+            avg = 0;
+        }
 
         for (Map.Entry<String, PowerUp> entry : gameModel.getPowerUps().entrySet()) {
             var playerId = entry.getKey();
