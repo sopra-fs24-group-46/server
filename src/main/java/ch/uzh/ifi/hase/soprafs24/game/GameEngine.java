@@ -10,9 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
+import ch.uzh.ifi.hase.soprafs24.game.Enum.PowerUp;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.RoundState;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
 import ch.uzh.ifi.hase.soprafs24.game.entity.GameModel;
+import ch.uzh.ifi.hase.soprafs24.game.entity.Score;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import ch.uzh.ifi.hase.soprafs24.geo_admin_api.APIService;
 
@@ -130,6 +132,13 @@ public class GameEngine {
         for (Map.Entry<String, Answer> entry : gameModel.getAnswers().entrySet()) {
             String playerId = entry.getKey();
             Answer answer = entry.getValue();
+            PowerUp powerUp = gameModel.getPowerUps().get(playerId);
+
+            // Times Two Power UP
+            int powerUpFactor = 1;
+            if (powerUp != null && powerUp == PowerUp.X2) {
+                powerUpFactor = 2;
+            }
 
             var question = gameModel.getCurrentQuestion();
             Double distance;
@@ -139,8 +148,13 @@ public class GameEngine {
                 distance = null;
                 score = 0;
             } else {
+                // in meters
                 distance = question.getLocation().getDistanceTo(answer.getLocation());
-                score = (int) (1000 / Math.pow((distance / 10000) + 1, 2));
+                // define local function formula
+                formula scoring = (answerDistance) -> {
+                    return (1000 / Math.pow((answerDistance / 10000) + 1, 2));
+                };
+                score = (int) scoring.apply(distance) * powerUpFactor;
             }
 
             gameModel.setScore(playerId, score, distance);
@@ -171,4 +185,12 @@ public class GameEngine {
         gameModel.setGameState(GameState.CLOSED);
         // add cleanup here
     }
+}
+
+// functional interface
+/**
+ * formula
+ */
+interface formula {
+    double apply(Double answerDistance);
 }
