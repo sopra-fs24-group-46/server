@@ -160,6 +160,21 @@ public class GameEngine {
             gameModel.setScore(playerId, score, distance);
         }
 
+        // shield powerUp
+        // calculate average of scores
+        int avg = (int) gameModel.getCurrentScores().values().stream().mapToInt(Score::getScore).average()
+                .getAsDouble();
+
+        for (Map.Entry<String, PowerUp> entry : gameModel.getPowerUps().entrySet()) {
+            var playerId = entry.getKey();
+            var powerUp = entry.getValue();
+            var distance = gameModel.getCurrentScores().get(playerId).getDistance();
+
+            if (powerUp == PowerUp.SHIELD) {
+                gameModel.setScore(playerId, avg, distance);
+            }
+        }
+
         gameModel.pushHistory(); // this seals the deal. No more changes to round.
         // cumulative scores are
     }
