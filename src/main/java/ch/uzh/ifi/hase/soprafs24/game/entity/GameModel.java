@@ -39,7 +39,7 @@ public class GameModel implements GameModelView {
     private Player hostPlayer;
 
     // helpers
-    private Map<String, List<PowerUp>> usedPlayerPowerUps;
+    private Map<String, List<PowerUp>> usedPowerUps;
 
     public GameModel() {
 
@@ -56,7 +56,7 @@ public class GameModel implements GameModelView {
         this.answers = new HashMap<>();
         this.histories = new HashMap<>();
         this.cumulativeScores = new HashMap<>();
-        this.usedPlayerPowerUps = new HashMap<>();
+        this.usedPowerUps = new HashMap<>();
         this.questions = new ArrayList<>();
     }
 
@@ -107,7 +107,7 @@ public class GameModel implements GameModelView {
         answers.put(playerId, null);
         histories.put(playerId, new History());
         cumulativeScores.put(playerId, new Score(0, 0.0));
-        usedPlayerPowerUps.put(playerId, new ArrayList<>());
+        usedPowerUps.put(playerId, new ArrayList<>());
         return playerId;
     }
 
@@ -131,12 +131,12 @@ public class GameModel implements GameModelView {
                     "Player already has a powerup. Powerup: " + powerUps.get(playerId));
         }
         // check if powerup is already used
-        if (usedPlayerPowerUps.get(playerId).contains(powerUp)) {
+        if (usedPowerUps.get(playerId).contains(powerUp)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Powerup: " + powerUp + " is already used. Used powerups: " + usedPlayerPowerUps.get(playerId));
+                    "Powerup: " + powerUp + " is already used. Used powerups: " + usedPowerUps.get(playerId));
         }
         powerUps.put(playerId, powerUp);
-        usedPlayerPowerUps.get(playerId).add(powerUp);
+        usedPowerUps.get(playerId).add(powerUp);
     }
 
     // setters----------------------------------------------------------
@@ -233,7 +233,7 @@ public class GameModel implements GameModelView {
         return histories;
     }
 
-    public Map<String, List<PowerUp>> getUsedPlayerPowerUps() {
-        return usedPlayerPowerUps;
+    public Map<String, List<PowerUp>> getUsedPowerUps() {
+        return usedPowerUps;
     }
 }

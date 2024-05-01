@@ -26,6 +26,7 @@ import ch.uzh.ifi.hase.soprafs24.game.entity.Score;
         "currentScores",
         "cumulativeScores",
         "powerUps",
+        "usedPowerUps",
         "questions",
         "histories",
 })
@@ -56,6 +57,9 @@ public interface GameModelView {
 
     @JsonProperty("powerUps")
     public Map<String, PowerUp> getPowerUps();
+    
+    @JsonProperty("usedPowerUps")
+    public Map<String, List<PowerUp>> getUsedPowerUps();
 
     @JsonProperty("questions")
     public List<Question> getQuestions();
