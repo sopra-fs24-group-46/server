@@ -1,5 +1,9 @@
 package ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto;
 
+import java.util.List;
+
+import ch.uzh.ifi.hase.soprafs24.game.entity.LocationTypes;
+
 public class GameSettingsDTO {
 
     // credentials
@@ -9,6 +13,7 @@ public class GameSettingsDTO {
     // game settings
     private int maxPlayers;
     private int rounds;
+    private List<LocationTypes> locationTypes;
 
     private Integer questionTime;
     private Integer guessingTime;
@@ -83,4 +88,13 @@ public class GameSettingsDTO {
     public void setLeaderBoardTime(Integer leaderBoardTime) {
         this.leaderBoardTime = leaderBoardTime;
     }
+
+    public List<LocationTypes> getLocationTypes() {
+        return locationTypes;
+    }
+
+    public void setLocationTypes(List<LocationTypes> locationTypes) {
+        this.locationTypes = locationTypes;
+    }
+
 }

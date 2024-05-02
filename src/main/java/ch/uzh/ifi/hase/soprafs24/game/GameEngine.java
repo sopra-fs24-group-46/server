@@ -191,7 +191,7 @@ public class GameEngine {
                             + GameState.SETUP);
         }
         var roundNumber = settings.getRounds();
-        var questions = APIService.getQuestions(roundNumber);
+        var questions = APIService.getQuestions(settings);
         if (questions.size() < roundNumber) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Not enough questions (" + questions.size() + "). Consider lowering the round number ("

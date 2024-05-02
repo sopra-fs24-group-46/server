@@ -1,6 +1,6 @@
 {
-objektart: [
-"Alpiner Gipfel","Gipfel","Haupthuegel", "Huegel","See",
+"objektart": [
+"Alpiner Gipfel","Gipfel","Haupthuegel", "Huegel","See"
 ],
-all:["Grossregion","Haupttal","Ort","Strassenpass","Alpiner Gipfel","Flugplatzareal","Gipfel","See","Gebaeude","Quartierteil","Pass","Fliessgewaesser","Turm","Graben","Quartier","Haupthuegel","Offenes Gebaeude","Sakrales Gebaeude","Grat","Wasserfall","Lokalname swisstopo","Kraftwerkareal","Ausfahrt","Campingplatzareal","Luftseilbahn","Schmalspur","Sesselbahn","Freizeitanlagenareal","Verzweigung","Standplatzareal","Truppenuebungsplatz","Gebiet","Strasse","Gondelbahn","Flurname swisstopo","Personenfaehre mit Seil","Spitalareal","Oeffentliches Parkareal","Zollamt 24h 24h","Kapelle","Haltestelle Bus","Schul- und Hochschulareal","Haltestelle Bahn","Uebrige Bahnen","Rastplatzareal","Haltestelle Schiff","Abwasserreinigungsareal","Historisches Areal","Messeareal","Zooareal","Schwimmbadareal"]
+"all":["Grossregion","Haupttal","Ort","Strassenpass","Alpiner Gipfel","Flugplatzareal","Gipfel","See","Gebaeude","Quartierteil","Pass","Fliessgewaesser","Turm","Graben","Quartier","Haupthuegel","Offenes Gebaeude","Sakrales Gebaeude","Grat","Wasserfall","Lokalname swisstopo","Kraftwerkareal","Ausfahrt","Campingplatzareal","Luftseilbahn","Schmalspur","Sesselbahn","Freizeitanlagenareal","Verzweigung","Standplatzareal","Truppenuebungsplatz","Gebiet","Strasse","Gondelbahn","Flurname swisstopo","Personenfaehre mit Seil","Spitalareal","Oeffentliches Parkareal","Zollamt 24h 24h","Kapelle","Haltestelle Bus","Schul- und Hochschulareal","Haltestelle Bahn","Uebrige Bahnen","Rastplatzareal","Haltestelle Schiff","Abwasserreinigungsareal","Historisches Areal","Messeareal","Zooareal","Schwimmbadareal"]
 }

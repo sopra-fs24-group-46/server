@@ -27,11 +27,17 @@ public class FetchData {
         // Stored under src main resources
         String searchText = ""; // e.g see
 
+        // searchText = "See";
+        // searchText = "Alpiner Gipfel";
+        // searchText = "Gipfel";
+        // searchText = "Haupthuegel";
+        // searchText = "Huegel";
+
         HashMap<String, String> params = new HashMap<>();
         params.put("layer", "ch.swisstopo.swissnames3d");
         params.put("searchText", searchText);
         params.put("searchField", "objektart");
-        params.put("conatins", "false");
+        params.put("contains", "false");
         params.put("sr", "4326");
         String json = callGeoAdminAPI("find", params);
         try (FileWriter fileWriter = new FileWriter(

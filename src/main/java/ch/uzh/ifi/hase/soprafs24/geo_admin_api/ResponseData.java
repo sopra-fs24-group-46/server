@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class ResponseData {
+    // todo handle rings location data
 
     public List<JsonNode> data = new ArrayList<JsonNode>();
 
@@ -26,6 +27,10 @@ public class ResponseData {
 
     public ResponseData(ArrayNode json) {
         this.data = arrayNodeToList(json);
+    }
+
+    public ResponseData() {
+        this.data = new ArrayList<JsonNode>();
     }
 
     public ResponseData addAll(ResponseData other) {// is this legal code?
@@ -59,6 +64,13 @@ public class ResponseData {
                             obj.get("geometry").get("points").get(0).get(1).asDouble(),
                             polygon);
                 }).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    }
+
+    public void removeDuplicates() {
+        var distinctNames = data.stream().map(obj -> obj.get("attributes").get("name").asText()).distinct()
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        data = data.stream().filter(obj -> distinctNames.contains(obj.get("attributes").get("name").asText()))
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
     public List<JsonNode> selectRandomElements(int numElements) {
