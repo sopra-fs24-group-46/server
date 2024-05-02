@@ -42,3 +42,7 @@
 | 1    | Rolando  | #26   | closed                                          |
 | 1    | Rolando  | #31   | closed                                          |
 | 1    | Rolando  | #36   | closed                                          |
+|3|Serafin|#44 #46|Added Buttons for Powerups|
+|3|Serafin|#45|Added Overlay for PowerUps|
+|3|Serafin|#83 #89|Implemented Shield and Times Two|
+
