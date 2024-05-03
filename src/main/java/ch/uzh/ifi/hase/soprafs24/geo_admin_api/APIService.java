@@ -15,8 +15,19 @@ public class APIService {
     // for now returning alpine Gipfel in german names.
 
     public static List<Question> getQuestions(Settings settings) {
-        var locationTypes = settings.getLocationTypes();
         var amount = settings.getRounds();
+        // converts json nodes to questions
+        var data = loadResponseData(settings);
+
+        var jsonNodes = data.selectRandomElements(amount);
+
+        return jsonNodes.stream()
+                .map(APIService::convertJsonToQuestion)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    }
+
+    public static ResponseData loadResponseData(Settings settings) {
+        var locationTypes = settings.getLocationTypes();
 
         boolean defaultLocationFilter = false;
         if (locationTypes == null || locationTypes.isEmpty()) {// defaults to alpines
@@ -48,15 +59,10 @@ public class APIService {
 
         data.removeDuplicates(); // for now removing duplicates to get rid of ambigous questions
 
-        var jsonNodes = data.selectRandomElements(amount);
-
-        // converts json nodes to questions
-        return jsonNodes.stream()
-                .map(APIService::convertJsonToQuestion)
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        return data;
     }
 
-    private static Question convertJsonToQuestion(JsonNode json) {
+    public static Question convertJsonToQuestion(JsonNode json) {
         Double x = json.get("geometry").get("points").get(0).get(0).asDouble();
         Double y = json.get("geometry").get("points").get(0).get(1).asDouble();
 

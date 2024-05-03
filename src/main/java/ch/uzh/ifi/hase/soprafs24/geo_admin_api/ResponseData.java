@@ -6,6 +6,7 @@ package ch.uzh.ifi.hase.soprafs24.geo_admin_api;
 //
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -67,9 +68,10 @@ public class ResponseData {
     }
 
     public void removeDuplicates() {
-        var distinctNames = data.stream().map(obj -> obj.get("attributes").get("name").asText()).distinct()
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-        data = data.stream().filter(obj -> distinctNames.contains(obj.get("attributes").get("name").asText()))
+        var names = data.stream().map(obj -> obj.get("attributes").get("name").asText()).collect(ArrayList::new,
+                ArrayList::add, ArrayList::addAll);
+        data = data.stream()
+                .filter(obj -> Collections.frequency(names, obj.get("attributes").get("name").asText()) == 1)
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
@@ -108,6 +110,10 @@ public class ResponseData {
             }
         }
         return crossings % 2 == 1;
+    }
+
+    public List<JsonNode> getJsonNodes() {
+        return data;
     }
 
     private static List<JsonNode> arrayNodeToList(ArrayNode json) {
