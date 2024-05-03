@@ -45,4 +45,6 @@
 |3|Serafin|#44 #46|Added Buttons for Powerups|
 |3|Serafin|#45|Added Overlay for PowerUps|
 |3|Serafin|#83 #89|Implemented Shield and Times Two|
+|3|Dominic|#76| closed|
+|3|Dominic|#78|Currently working on the Timer Issues when reloading|
 
