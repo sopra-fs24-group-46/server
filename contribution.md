@@ -47,4 +47,5 @@
 |3|Serafin|#83 #89|Implemented Shield and Times Two|
 |3|Dominic|#76| closed|
 |3|Dominic|#78|Currently working on the Timer Issues when reloading|
-
+|3|Leandra|#77|closed|
+|3|Leandra|#79|closed|
