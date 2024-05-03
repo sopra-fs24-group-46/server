@@ -42,6 +42,7 @@ public class APIService {
         for (LocationTypes type : locationTypes) {
             data.addAll(FetchData.readLocalJson(type.getValue()));
         }
+        data.reduceRingGeometry();
 
         // filtering the language check the function definition for more details
         data.filterByAttributes("sprachcode", "Hochdeutsch");

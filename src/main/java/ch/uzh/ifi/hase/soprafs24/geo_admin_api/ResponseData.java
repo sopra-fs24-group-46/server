@@ -16,6 +16,8 @@ import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ResponseData {
     // todo handle rings location data
@@ -57,7 +59,7 @@ public class ResponseData {
     public void filterByPolygon(double[][] polygon) {
         data = data.stream().filter(
                 obj -> {
-                    if (obj.get("geometry").get("rings") != null) {// filtering for polygons
+                    if (obj.get("geometry").get("points") == null) {// filtering for polygons
                         return false;
                     }
                     return isPointInsidePolygon(
@@ -112,6 +114,11 @@ public class ResponseData {
         return crossings % 2 == 1;
     }
 
+    public void reduceRingGeometry() {
+        data = data.stream().map(ResponseData::reduceRingGeometryToPoint).collect(ArrayList::new, ArrayList::add,
+                ArrayList::addAll);
+    }
+
     public List<JsonNode> getJsonNodes() {
         return data;
     }
@@ -120,6 +127,29 @@ public class ResponseData {
         Stream<JsonNode> stream = StreamSupport.stream(json.spliterator(), false);
         List<JsonNode> list = stream.collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
         return list;
+    }
+
+    private static JsonNode reduceRingGeometryToPoint(JsonNode json) {
+        if (json.get("geometry").has("points")) {
+            return json;
+        }
+
+        ArrayNode ringArrayNode = (ArrayNode) json.get("geometry").get("rings");
+        List<JsonNode> ring = arrayNodeToList(ringArrayNode);
+        // find the middle of the ring
+        var mx = ring.stream().mapToDouble(node -> node.get(0).asDouble()).average().getAsDouble();
+        var my = ring.stream().mapToDouble(node -> node.get(1).asDouble()).average().getAsDouble();
+
+        // add a field to the json node
+        ObjectNode mutable = (ObjectNode) json.get("geometry");
+
+        ArrayNode points = JsonNodeFactory.instance.arrayNode();
+        points.add(mx);
+        points.add(my);
+        mutable.set("points", points);
+        mutable.remove("rings");
+
+        return json;
     }
 
     public static void main(String[] args) {

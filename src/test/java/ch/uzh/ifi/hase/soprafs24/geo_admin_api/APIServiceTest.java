@@ -13,14 +13,12 @@ import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 
 public class APIServiceTest {
 
-    APIService apiService = new APIService();
-
     @Test
     public void testNoDuplicates() {
         var settings = new Settings();
         settings.setLocationTypes(List.of(LocationTypes.ALPINE_MOUNTAIN, LocationTypes.MOUNTAIN, LocationTypes.HILL,
-                LocationTypes.MAIN_HILL));
-        var questions = apiService.loadResponseData(settings).getJsonNodes();
+                LocationTypes.MAIN_HILL, LocationTypes.LAKE));
+        var questions = APIService.loadResponseData(settings).getJsonNodes();
         var names = questions.stream().map((node) -> {
             return node.get("attributes").get("name").asText();
         }).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
@@ -32,4 +30,19 @@ public class APIServiceTest {
         assertEquals(0, duplicates.size());
     }
 
+    @Test
+    public void testNoRingGeometry() {
+        var settings = new Settings();
+        settings.setLocationTypes(List.of(LocationTypes.LAKE));
+        var jsonNodes = APIService.loadResponseData(settings).getJsonNodes();
+        var points = jsonNodes.stream().filter((node) -> {
+            return node.get("geometry").has("points");
+        }).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        var rings = jsonNodes.stream().filter((node) -> {
+            return node.get("geometry").has("rings");
+        }).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+
+        assert (points.size() > 100);
+        assertEquals(0, rings.size());
+    }
 }
