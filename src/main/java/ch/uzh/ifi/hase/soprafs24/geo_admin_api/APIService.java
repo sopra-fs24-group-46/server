@@ -47,6 +47,11 @@ public class APIService {
         // filtering the language check the function definition for more details
         data.filterByAttributes("sprachcode", "Hochdeutsch");
 
+        if (settings.getRegionAsPolygon() != null && settings.getRegionAsPolygon().length > 2
+                && settings.getRegionAsPolygon()[0].length == 2) {// only filter for region if region is provided
+            data.filterByPolygon(settings.getRegionAsPolygon());
+        }
+
         if (defaultLocationFilter) {
             // roughly area around Matterhorn
             // https://s.geo.admin.ch/qskqmg54fqm6
@@ -58,7 +63,8 @@ public class APIService {
             });
         }
 
-        data.removeDuplicates(); // for now removing duplicates to get rid of ambigous questions
+        data.removeDuplicates(); // for now removing duplicates to get rid of
+        // ambigous questions
 
         return data;
     }

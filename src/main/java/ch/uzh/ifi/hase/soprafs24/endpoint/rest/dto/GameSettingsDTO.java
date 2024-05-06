@@ -14,6 +14,7 @@ public class GameSettingsDTO {
     private int maxPlayers;
     private int rounds;
     private List<LocationTypes> locationTypes;
+    private double[][] regionAsPolygon;
 
     private Integer questionTime;
     private Integer guessingTime;
@@ -95,6 +96,14 @@ public class GameSettingsDTO {
 
     public void setLocationTypes(List<LocationTypes> locationTypes) {
         this.locationTypes = locationTypes;
+    }
+
+    public double[][] getRegionAsPolygon() {
+        return regionAsPolygon;
+    }
+
+    public void setRegionAsPolygon(double[][] regionAsPolygon) {
+        this.regionAsPolygon = regionAsPolygon;
     }
 
 }
