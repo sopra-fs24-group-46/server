@@ -70,11 +70,25 @@ public class ResponseData {
     }
 
     public void removeDuplicates() {
-        var names = data.stream().map(obj -> obj.get("attributes").get("name").asText()).collect(ArrayList::new,
+        // reducing to unique featureIds
+        List<Integer> featureIds = new ArrayList<>();
+        List<JsonNode> uniqueFeatureIdData = new ArrayList<>();
+        for (JsonNode node : this.data) {
+            int featureId = node.get("featureId").asInt();
+            if (!featureIds.contains(featureId)) {
+                featureIds.add(featureId);
+                uniqueFeatureIdData.add(node);
+            }
+        }
+
+        // removing duplicate names
+        var names = uniqueFeatureIdData.stream().map(obj -> obj.get("attributes").get("name").asText()).collect(
+                ArrayList::new,
                 ArrayList::add, ArrayList::addAll);
-        data = data.stream()
+        this.data = uniqueFeatureIdData.stream()
                 .filter(obj -> Collections.frequency(names, obj.get("attributes").get("name").asText()) == 1)
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+
     }
 
     public List<JsonNode> selectRandomElements(int numElements) {

@@ -31,6 +31,22 @@ public class APIServiceTest {
     }
 
     @Test
+    public void hasContentAlpine() {
+        var settings = new Settings();
+        settings.setLocationTypes(List.of(LocationTypes.ALPINE_MOUNTAIN));
+        var questions = APIService.loadResponseData(settings).getJsonNodes();
+        var names = questions.stream().map((node) -> {
+            return node.get("attributes").get("name").asText();
+        }).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+
+        assert (names.size() > 0);
+        // find duplicates in names
+        var duplicates = names.stream().filter(name -> Collections.frequency(names, name) > 1).distinct()
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        assertEquals(0, duplicates.size());
+    }
+
+    @Test
     public void testNoRingGeometry() {
         var settings = new Settings();
         settings.setLocationTypes(List.of(LocationTypes.LAKE));
