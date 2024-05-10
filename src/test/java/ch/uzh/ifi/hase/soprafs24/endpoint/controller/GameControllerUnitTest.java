@@ -114,7 +114,7 @@ public class GameControllerUnitTest {
                 String gameId = "ab3501ds";
                 String playerId = "1";
                 var postRequest = put("/game/" + gameId + "/leave/")
-                                .contentType(MediaType.APPLICATION_JSON).content("playerId=" + playerId);
+                                .contentType(MediaType.APPLICATION_JSON).content("{\"playerId\":\"" + playerId + "\"}");
 
                 // Act
                 mockMvc.perform(postRequest)

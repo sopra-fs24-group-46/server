@@ -160,7 +160,7 @@ public class GameControllerIntegrationTest {
 
                 Request leaveGame = new Request.Builder()
                                 .url(serverURL + "/game/" + gameId + "/leave")
-                                .put(RequestBody.create(playerId4, MediaType.get("text/plain")))
+                                .put(executor.body("{\"playerId\": \"" + playerId4 + "\"}"))
                                 .build();
 
                 executor.executeRequest(leaveGame, 204, "failed to leave");
