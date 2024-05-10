@@ -51,3 +51,6 @@
 |3|Dominic|#78|Currently working on the Timer Issues when reloading|
 |3|Leandra|#77|closed|
 |3|Leandra|#79|closed|
+|4|Serafin|# |added location types|
+|4|Serafin|# |Bug fix|
+
