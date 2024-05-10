@@ -6,6 +6,7 @@ package ch.uzh.ifi.hase.soprafs24.geo_admin_api;
 //
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -15,8 +16,11 @@ import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ResponseData {
+    // todo handle rings location data
 
     public List<JsonNode> data = new ArrayList<JsonNode>();
 
@@ -26,6 +30,10 @@ public class ResponseData {
 
     public ResponseData(ArrayNode json) {
         this.data = arrayNodeToList(json);
+    }
+
+    public ResponseData() {
+        this.data = new ArrayList<JsonNode>();
     }
 
     public ResponseData addAll(ResponseData other) {// is this legal code?
@@ -51,7 +59,7 @@ public class ResponseData {
     public void filterByPolygon(double[][] polygon) {
         data = data.stream().filter(
                 obj -> {
-                    if (obj.get("geometry").get("rings") != null) {// filtering for polygons
+                    if (obj.get("geometry").get("points") == null) {// filtering for polygons
                         return false;
                     }
                     return isPointInsidePolygon(
@@ -59,6 +67,28 @@ public class ResponseData {
                             obj.get("geometry").get("points").get(0).get(1).asDouble(),
                             polygon);
                 }).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    }
+
+    public void removeDuplicates() {
+        // reducing to unique featureIds
+        List<Integer> featureIds = new ArrayList<>();
+        List<JsonNode> uniqueFeatureIdData = new ArrayList<>();
+        for (JsonNode node : this.data) {
+            int featureId = node.get("featureId").asInt();
+            if (!featureIds.contains(featureId)) {
+                featureIds.add(featureId);
+                uniqueFeatureIdData.add(node);
+            }
+        }
+
+        // removing duplicate names
+        var names = uniqueFeatureIdData.stream().map(obj -> obj.get("attributes").get("name").asText()).collect(
+                ArrayList::new,
+                ArrayList::add, ArrayList::addAll);
+        this.data = uniqueFeatureIdData.stream()
+                .filter(obj -> Collections.frequency(names, obj.get("attributes").get("name").asText()) == 1)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+
     }
 
     public List<JsonNode> selectRandomElements(int numElements) {
@@ -98,10 +128,42 @@ public class ResponseData {
         return crossings % 2 == 1;
     }
 
+    public void reduceRingGeometry() {
+        data = data.stream().map(ResponseData::reduceRingGeometryToPoint).collect(ArrayList::new, ArrayList::add,
+                ArrayList::addAll);
+    }
+
+    public List<JsonNode> getJsonNodes() {
+        return data;
+    }
+
     private static List<JsonNode> arrayNodeToList(ArrayNode json) {
         Stream<JsonNode> stream = StreamSupport.stream(json.spliterator(), false);
         List<JsonNode> list = stream.collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
         return list;
+    }
+
+    private static JsonNode reduceRingGeometryToPoint(JsonNode json) {
+        if (json.get("geometry").has("points")) {
+            return json;
+        }
+
+        ArrayNode ringArrayNode = (ArrayNode) json.get("geometry").get("rings");
+        List<JsonNode> ring = arrayNodeToList(ringArrayNode);
+        // find the middle of the ring
+        var mx = ring.stream().mapToDouble(node -> node.get(0).asDouble()).average().getAsDouble();
+        var my = ring.stream().mapToDouble(node -> node.get(1).asDouble()).average().getAsDouble();
+
+        // add a field to the json node
+        ObjectNode mutable = (ObjectNode) json.get("geometry");
+
+        ArrayNode points = JsonNodeFactory.instance.arrayNode();
+        points.add(mx);
+        points.add(my);
+        mutable.set("points", points);
+        mutable.remove("rings");
+
+        return json;
     }
 
     public static void main(String[] args) {

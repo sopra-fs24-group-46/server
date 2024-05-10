@@ -2,9 +2,11 @@ package ch.uzh.ifi.hase.soprafs24.endpoint.controller;
 
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameSettingsDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PostGuessDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.game.GameService;
+import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import ch.uzh.ifi.hase.soprafs24.user.User;
 
@@ -52,6 +54,24 @@ public class GameControllerUnitTest {
 
                 verify(gameService, Mockito.times(1)).getGameView(Mockito.matches(gameId));
                 verify(gameService, Mockito.times(0)).getGameView(Mockito.matches("somethingElse"));
+        }
+
+        @Test
+        public void getGameState() throws Exception {
+                // Arrange
+                String gameId = "ab3501ds";
+                GameStateDTO gameStateDTO = new GameStateDTO();
+                gameStateDTO.setGameState(GameState.PLAYING);
+                given(gameService.getGameState(Mockito.matches(gameId))).willReturn(gameStateDTO);
+                var postRequest = get("/game/" + gameId + "/getGameState/").contentType(MediaType.APPLICATION_JSON);
+
+                // Act
+                mockMvc.perform(postRequest)
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.gameState", is("PLAYING")));
+
+                verify(gameService, Mockito.times(1)).getGameState(Mockito.matches(gameId));
+                verify(gameService, Mockito.times(0)).getGameState(Mockito.matches("somethingElse"));
         }
 
         @Test
@@ -114,7 +134,7 @@ public class GameControllerUnitTest {
                 String gameId = "ab3501ds";
                 String playerId = "1";
                 var postRequest = put("/game/" + gameId + "/leave/")
-                                .contentType(MediaType.APPLICATION_JSON).content("playerId=" + playerId);
+                                .contentType(MediaType.APPLICATION_JSON).content("{\"playerId\":\"" + playerId + "\"}");
 
                 // Act
                 mockMvc.perform(postRequest)

@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.game.entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,10 @@ public class GameModel implements GameModelView {
                                       // question.
     private int serialPlayerNumber; // used to assign player numbers
     private Player hostPlayer;
+    private long roundStartTime; // in millis
+
+    // helpers
+    private Map<String, List<PowerUp>> usedPowerUps;
 
     public GameModel() {
 
@@ -53,10 +58,12 @@ public class GameModel implements GameModelView {
         this.answers = new HashMap<>();
         this.histories = new HashMap<>();
         this.cumulativeScores = new HashMap<>();
+        this.usedPowerUps = new HashMap<>();
         this.questions = new ArrayList<>();
     }
 
     public void initRound() {
+        roundStartTime = System.currentTimeMillis();
         for (Player player : players) {
             powerUps.put(player.getId(), null);
             answers.put(player.getId(), null);
@@ -64,7 +71,7 @@ public class GameModel implements GameModelView {
         }
     }
 
-    public void pushHistory() {
+    public void pushHistory() {// responsible adding scores and managing the history
         for (Player player : players) {
 
             var oldCumulativeScore = cumulativeScores.get(player.getId());
@@ -103,6 +110,7 @@ public class GameModel implements GameModelView {
         answers.put(playerId, null);
         histories.put(playerId, new History());
         cumulativeScores.put(playerId, new Score(0, 0.0));
+        usedPowerUps.put(playerId, new ArrayList<>());
         return playerId;
     }
 
@@ -114,6 +122,24 @@ public class GameModel implements GameModelView {
         histories.remove(playerId);
         cumulativeScores.remove(playerId);
         players.remove(playerFromList);
+    }
+
+    // only one at the time and only once a powerup can be used. Once thi function
+    // is called the powerup is used. Idea to refactor instead of used powerups work
+    // with powerups to be used.
+    public void usePowerUp(String playerId, PowerUp powerUp) {
+        // check if a powerup is already in use
+        if (powerUps.get(playerId) != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Player already has a powerup. Powerup: " + powerUps.get(playerId));
+        }
+        // check if powerup is already used
+        if (usedPowerUps.get(playerId).contains(powerUp)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Powerup: " + powerUp + " is already used. Used powerups: " + usedPowerUps.get(playerId));
+        }
+        powerUps.put(playerId, powerUp);
+        usedPowerUps.get(playerId).add(powerUp);
     }
 
     // setters----------------------------------------------------------
@@ -148,6 +174,10 @@ public class GameModel implements GameModelView {
 
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
+    }
+
+    public long getRoundStartTime() {
+        return roundStartTime;
     }
 
     // getters----------------------------------------------------------
@@ -208,5 +238,13 @@ public class GameModel implements GameModelView {
 
     public Map<String, History> getHistories() {
         return histories;
+    }
+
+    public Map<String, List<PowerUp>> getUsedPowerUps() {
+        return usedPowerUps;
+    }
+
+    public void setRoundStartTime(long roundStartTime) {
+        this.roundStartTime = roundStartTime;
     }
 }

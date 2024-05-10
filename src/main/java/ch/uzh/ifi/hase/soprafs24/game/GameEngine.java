@@ -10,9 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
+import ch.uzh.ifi.hase.soprafs24.game.Enum.PowerUp;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.RoundState;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
 import ch.uzh.ifi.hase.soprafs24.game.entity.GameModel;
+import ch.uzh.ifi.hase.soprafs24.game.entity.Score;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import ch.uzh.ifi.hase.soprafs24.geo_admin_api.APIService;
 
@@ -125,11 +127,35 @@ public class GameEngine {
         }
     }
 
+    public static long timeTillNextPhase(GameModel gameModel, Settings settings) {
+        long relativeTimeElapsed = System.currentTimeMillis() - gameModel.getRoundStartTime();
+        long relativeTimeForNextPhase = 0;
+        switch (gameModel.getRoundState()) {
+            case LEADERBOARD:
+                relativeTimeForNextPhase += settings.getLeaderBoardTime() * 1000;
+            case MAP_REVEAL:
+                relativeTimeForNextPhase += settings.getMapRevealTime() * 1000;
+            case GUESSING:
+                relativeTimeForNextPhase += settings.getGuessingTime() * 1000;
+            case QUESTION:
+                relativeTimeForNextPhase += settings.getQuestionTime() * 1000;
+                break;
+        }
+        return relativeTimeForNextPhase - relativeTimeElapsed;
+    }
+
     private static void evaluateAnswers(GameModel gameModel) {
         // iterates over map of answers
         for (Map.Entry<String, Answer> entry : gameModel.getAnswers().entrySet()) {
             String playerId = entry.getKey();
             Answer answer = entry.getValue();
+            PowerUp powerUp = gameModel.getPowerUps().get(playerId);
+
+            // Times Two Power UP
+            int powerUpFactor = 1;
+            if (powerUp != null && powerUp == PowerUp.X2) {
+                powerUpFactor = 2;
+            }
 
             var question = gameModel.getCurrentQuestion();
             Double distance;
@@ -139,11 +165,36 @@ public class GameEngine {
                 distance = null;
                 score = 0;
             } else {
+                // in meters
                 distance = question.getLocation().getDistanceTo(answer.getLocation());
-                score = (int) (1000 / Math.pow((distance / 10000) + 1, 2));
+                // define local function formula
+                formula scoring = (answerDistance) -> {
+                    return (1000 / Math.pow((answerDistance / 10000) + 1, 2));
+                };
+                score = (int) scoring.apply(distance) * powerUpFactor;
             }
 
             gameModel.setScore(playerId, score, distance);
+        }
+
+        // shield powerUp
+        // calculate average of scores
+        int avg;
+        try {
+            avg = (int) gameModel.getCurrentScores().values().stream().mapToInt(Score::getScore).average()
+                    .getAsDouble();
+        } catch (Exception e) {
+            avg = 0;
+        }
+
+        for (Map.Entry<String, PowerUp> entry : gameModel.getPowerUps().entrySet()) {
+            var playerId = entry.getKey();
+            var powerUp = entry.getValue();
+            var distance = gameModel.getCurrentScores().get(playerId).getDistance();
+
+            if (powerUp == PowerUp.SHIELD) {
+                gameModel.setScore(playerId, avg, distance);
+            }
         }
 
         gameModel.pushHistory(); // this seals the deal. No more changes to round.
@@ -157,7 +208,7 @@ public class GameEngine {
                             + GameState.SETUP);
         }
         var roundNumber = settings.getRounds();
-        var questions = APIService.getQuestions(roundNumber);
+        var questions = APIService.getQuestions(settings);
         if (questions.size() < roundNumber) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Not enough questions (" + questions.size() + "). Consider lowering the round number ("
@@ -171,4 +222,16 @@ public class GameEngine {
         gameModel.setGameState(GameState.CLOSED);
         // add cleanup here
     }
+
+    public void countDown(GameModel gameModel) {
+
+    }
+}
+
+// functional interface
+/**
+ * formula
+ */
+interface formula {
+    double apply(Double answerDistance);
 }

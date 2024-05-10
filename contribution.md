@@ -17,6 +17,8 @@
 | 1    | Serafin  | #11   | added playerId validatoin, added Tests          |
 | 1    | Serafin  | #120  | closed                                          |
 | 1    | Serafin  | #37   | added Test                                      |
+| 1    | Leandra  | #6    | closed                                          |
+| 1    | Leandra  | #8    | closed                                          |
 | 1    | Dominic  | #1    | Navigation correction, Localstorage             |
 | 1    | Dominic  | #12   | Currently working on it                         |
 | 2    | Daniel   | #36   | Client - currently working on this.             |
@@ -30,3 +32,25 @@
 | 2    | Leandra  | #65   | closed                                          |
 | 2    | Leandra  | #66   | worked on some views                            |
 | 2    | Leandra  | #68   | closed                                          |
+| 2    | Dominic  | #63   | closed                                          |
+| 2    | Dominic  | #62   | closed                                          |
+| 2    | Dominic  | #64   | closed                                          |
+| 2    | Dominic  | #67   | Working on it                                   |
+| 2    | Dominic  | #30   | Working on it                                   |
+| 2    | Dominic  | #30   | Working on it                                   |
+| 0    | Rolando  | #1    | closed                                          |
+| 0    | Rolando  | #2    | closed                                          |
+| 1    | Rolando  | #5    | closed                                          |
+| 1    | Rolando  | #26   | closed                                          |
+| 1    | Rolando  | #31   | closed                                          |
+| 1    | Rolando  | #36   | closed                                          |
+|3|Serafin|#44 #46|Added Buttons for Powerups|
+|3|Serafin|#45|Added Overlay for PowerUps|
+|3|Serafin|#83 #89|Implemented Shield and Times Two|
+|3|Dominic|#76| closed|
+|3|Dominic|#78|Currently working on the Timer Issues when reloading|
+|3|Leandra|#77|closed|
+|3|Leandra|#79|closed|
+|4|Serafin|# |added location types|
+|4|Serafin|# |Bug fix|
+

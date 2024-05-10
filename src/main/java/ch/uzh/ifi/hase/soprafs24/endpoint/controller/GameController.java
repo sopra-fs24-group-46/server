@@ -4,7 +4,9 @@ package ch.uzh.ifi.hase.soprafs24.endpoint.controller;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameResponseDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameSettingsDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.JoinPostDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PlayerIdDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PostGuessDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.game.GameService;
@@ -73,8 +75,8 @@ public class GameController {
     @PutMapping("/{gameId}/leave")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void leaveGame(@PathVariable String gameId,
-            @RequestBody String playerId) {
-        gameService.leaveGame(gameId, playerId);
+            @RequestBody PlayerIdDTO playerId) {
+        gameService.leaveGame(gameId, playerId.getPlayerId());
     }
 
     /**
@@ -90,6 +92,22 @@ public class GameController {
     public String joinGame(@PathVariable String gameId,
             @RequestBody JoinPostDTO DTO) {
         return gameService.joinGame(gameId, DTO.getDisplayName());
+    }
+
+    /**
+     * This endpoint is used by a player to use a powerup in a game.
+     *
+     * @param gameId The ID of the game.
+     * @param DTO    The PowerUpDTO containing the player's ID and the powerup to
+     *               use.
+     * @response 200 OK - if the powerup has been successfully used.
+     * @return error if something went wrong
+     */
+    @PostMapping("/{gameId}/powerup")
+    @ResponseStatus(HttpStatus.OK)
+    public void usePowerUp(@PathVariable String gameId,
+            @RequestBody PowerUpDTO DTO) {
+        gameService.usePowerUp(gameId, DTO.getPlayerId(), DTO.getPowerUp());
     }
 
     /**
@@ -189,6 +207,19 @@ public class GameController {
         // Get the view of the game.
 
         return gameService.getGameView(gameId);
+    }
+
+    /**
+     * Retrieves the round number, phase, and time till next phase of a game.
+     * 
+     * @param gameId The ID of the game.
+     * @return get the State of the game.
+     */
+    @GetMapping("/{gameId}/getGameState")
+    @ResponseStatus(HttpStatus.OK)
+    public GameStateDTO getGameState(@PathVariable String gameId) {
+
+        return gameService.getGameState(gameId);
     }
 
     /**
