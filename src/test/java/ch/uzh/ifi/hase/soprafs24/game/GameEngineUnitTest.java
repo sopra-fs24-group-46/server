@@ -153,7 +153,7 @@ class GameEngineUnitTest {
     }
 
     @Test
-    void testTimeTillNextPhase() {
+    void testTimeTillNextPhase() throws InterruptedException {
         GameModel gameModel = new GameModel();
         Settings settings = new Settings();
         settings.setQuestionTime(1);
@@ -173,6 +173,12 @@ class GameEngineUnitTest {
 
         gameModel.setRoundState(RoundState.LEADERBOARD);
         assertEquals(RangeState.IN_RANGE, isInRange(GameEngine.timeTillNextPhase(gameModel, settings), 9950, 10000));
+
+        Thread.sleep(1000);
+        assertEquals(RangeState.IN_RANGE, isInRange(GameEngine.timeTillNextPhase(gameModel, settings), 8950, 9000));
+
+        Thread.sleep(1000);
+        assertEquals(RangeState.IN_RANGE, isInRange(GameEngine.timeTillNextPhase(gameModel, settings), 7950, 8000));
     }
 
     @Test
