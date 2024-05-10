@@ -52,6 +52,7 @@ class GameEngineUnitTest {
         GameEngine.initGame(gameModel, settings);
         GameEngine.loadGame(gameModel, settings); // loading game only works if game in lobby state since init is not
                                                   // done yet
+
         assertEquals(GameState.PLAYING, gameModel.getGameState());
         assertEquals(1, gameModel.getCurrentRound());
     }
@@ -60,13 +61,17 @@ class GameEngineUnitTest {
     void testNextRoundStateQuestion() {
         GameModel gameModel = new GameModel();
         Settings settings = new Settings();
+        long before = System.currentTimeMillis();
         GameEngine.initGame(gameModel, settings);
         GameEngine.loadGame(gameModel, settings);
 
         GameEngine.nextRoundState(gameModel, RoundState.QUESTION);
+        long after = System.currentTimeMillis();
         assertEquals(RoundState.QUESTION, gameModel.getRoundState());
         assertThrows(ResponseStatusException.class, () -> GameEngine.nextRoundState(gameModel, RoundState.MAP_REVEAL));
         assertThrows(ResponseStatusException.class, () -> GameEngine.nextRoundState(gameModel, RoundState.LEADERBOARD));
+        assert (before <= gameModel.getRoundStartTime());
+        assert (after >= gameModel.getRoundStartTime());
     }
 
     @Test
@@ -146,4 +151,53 @@ class GameEngineUnitTest {
         assertThrows(ResponseStatusException.class,
                 () -> GameEngine.addAnswer(gameModel, new Answer(new GeoLocation(10.0, 10.0)), "1"));
     }
+
+    @Test
+    void testTimeTillNextPhase() {
+        GameModel gameModel = new GameModel();
+        Settings settings = new Settings();
+        settings.setQuestionTime(1);
+        settings.setGuessingTime(2);
+        settings.setMapRevealTime(3);
+        settings.setLeaderBoardTime(4);
+        gameModel.setRoundStartTime(System.currentTimeMillis());
+
+        gameModel.setRoundState(RoundState.QUESTION);
+        assertEquals(RangeState.IN_RANGE, isInRange(GameEngine.timeTillNextPhase(gameModel, settings), 950, 1000));
+
+        gameModel.setRoundState(RoundState.GUESSING);
+        assertEquals(RangeState.IN_RANGE, isInRange(GameEngine.timeTillNextPhase(gameModel, settings), 2950, 3000));
+
+        gameModel.setRoundState(RoundState.MAP_REVEAL);
+        assertEquals(RangeState.IN_RANGE, isInRange(GameEngine.timeTillNextPhase(gameModel, settings), 5950, 6000));
+
+        gameModel.setRoundState(RoundState.LEADERBOARD);
+        assertEquals(RangeState.IN_RANGE, isInRange(GameEngine.timeTillNextPhase(gameModel, settings), 9950, 10000));
+    }
+
+    @Test
+    void testIsInRange() {
+        assertEquals(RangeState.IN_RANGE, isInRange(0, 0, 0));
+        assertEquals(RangeState.IN_RANGE, isInRange(1, 0, 1));
+        assertEquals(RangeState.IN_RANGE, isInRange(0, 0, 1));
+        assertEquals(RangeState.UNDER_THE_RANGE, isInRange(-1, 0, 1));
+        assertEquals(RangeState.OVER_THE_RANGE, isInRange(2, 0, 1));
+    }
+
+    private RangeState isInRange(long value, long min, long max) {
+        if (value > max) {
+            return RangeState.OVER_THE_RANGE;
+        }
+        if (value < min) {
+            return RangeState.UNDER_THE_RANGE;
+        }
+        return RangeState.IN_RANGE;
+
+    }
+}
+
+enum RangeState {
+    IN_RANGE,
+    OVER_THE_RANGE,
+    UNDER_THE_RANGE
 }

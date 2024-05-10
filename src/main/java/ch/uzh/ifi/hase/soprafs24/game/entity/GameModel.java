@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.game.entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ public class GameModel implements GameModelView {
                                       // question.
     private int serialPlayerNumber; // used to assign player numbers
     private Player hostPlayer;
+    private long roundStartTime; // in millis
 
     // helpers
     private Map<String, List<PowerUp>> usedPowerUps;
@@ -61,6 +63,7 @@ public class GameModel implements GameModelView {
     }
 
     public void initRound() {
+        roundStartTime = System.currentTimeMillis();
         for (Player player : players) {
             powerUps.put(player.getId(), null);
             answers.put(player.getId(), null);
@@ -173,6 +176,10 @@ public class GameModel implements GameModelView {
         this.questions = questions;
     }
 
+    public long getRoundStartTime() {
+        return roundStartTime;
+    }
+
     // getters----------------------------------------------------------
     public List<String> getPlayersIds() {
         return players.stream().map(player -> player.getId()).collect(Collectors.toList());
@@ -235,5 +242,9 @@ public class GameModel implements GameModelView {
 
     public Map<String, List<PowerUp>> getUsedPowerUps() {
         return usedPowerUps;
+    }
+
+    public void setRoundStartTime(long roundStartTime) {
+        this.roundStartTime = roundStartTime;
     }
 }

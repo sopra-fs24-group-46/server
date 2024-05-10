@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.PowerUp;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.RoundState;
@@ -120,6 +121,15 @@ public class Game implements Serializable {
 
     public GameModelView getGameModelView() {
         return gameModel;
+    }
+
+    public GameStateDTO getGameState() {
+        GameStateDTO gameState = new GameStateDTO();
+        gameState.setGameState(gameModel.getGameState());
+        gameState.setCurrentRound(gameModel.getCurrentRound());
+        gameState.setTimeTillNextPhaseInMillis(GameEngine.timeTillNextPhase(gameModel, settings));
+
+        return gameState;
     }
 
     public void verifyHost(User hostPlayer) {

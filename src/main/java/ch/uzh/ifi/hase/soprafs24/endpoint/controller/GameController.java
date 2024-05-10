@@ -4,6 +4,7 @@ package ch.uzh.ifi.hase.soprafs24.endpoint.controller;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameResponseDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameSettingsDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.JoinPostDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PlayerIdDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PostGuessDTO;
@@ -206,6 +207,19 @@ public class GameController {
         // Get the view of the game.
 
         return gameService.getGameView(gameId);
+    }
+
+    /**
+     * Retrieves the round number, phase, and time till next phase of a game.
+     * 
+     * @param gameId The ID of the game.
+     * @return get the State of the game.
+     */
+    @GetMapping("/{gameId}/getGameState")
+    @ResponseStatus(HttpStatus.OK)
+    public GameStateDTO getGameState(@PathVariable String gameId) {
+
+        return gameService.getGameState(gameId);
     }
 
     /**

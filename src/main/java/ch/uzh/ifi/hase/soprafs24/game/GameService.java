@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameResponseDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.PowerUp;
 import ch.uzh.ifi.hase.soprafs24.game.View.GameModelView;
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
@@ -67,6 +68,11 @@ public class GameService {
     public SettingView getSettingsView(String gameId) {
         Game game = findGameByPublicId(gameId);
         return game.getSettings();
+    }
+
+    public GameStateDTO getGameState(String gameId) {
+        Game game = findGameByPublicId(gameId);
+        return game.getGameState();
     }
 
     public String joinGame(String gameId, String displayName) {

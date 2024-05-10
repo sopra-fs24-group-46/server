@@ -127,6 +127,23 @@ public class GameEngine {
         }
     }
 
+    public static long timeTillNextPhase(GameModel gameModel, Settings settings) {
+        long relativeTimeElapsed = System.currentTimeMillis() - gameModel.getRoundStartTime();
+        long relativeTimeForNextPhase = 0;
+        switch (gameModel.getRoundState()) {
+            case LEADERBOARD:
+                relativeTimeForNextPhase += settings.getLeaderBoardTime() * 1000;
+            case MAP_REVEAL:
+                relativeTimeForNextPhase += settings.getMapRevealTime() * 1000;
+            case GUESSING:
+                relativeTimeForNextPhase += settings.getGuessingTime() * 1000;
+            case QUESTION:
+                relativeTimeForNextPhase += settings.getQuestionTime() * 1000;
+                break;
+        }
+        return relativeTimeForNextPhase - relativeTimeElapsed;
+    }
+
     private static void evaluateAnswers(GameModel gameModel) {
         // iterates over map of answers
         for (Map.Entry<String, Answer> entry : gameModel.getAnswers().entrySet()) {
@@ -204,6 +221,10 @@ public class GameEngine {
     public void deleteGame(GameModel gameModel, Settings settings) {
         gameModel.setGameState(GameState.CLOSED);
         // add cleanup here
+    }
+
+    public void countDown(GameModel gameModel) {
+
     }
 }
 
