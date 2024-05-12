@@ -125,6 +125,7 @@ public class Game implements Serializable {
 
     public GameStateDTO getGameState() {
         GameStateDTO gameState = new GameStateDTO();
+        gameState.setGameState(gameModel.getGameState());
         gameState.setRoundState(gameModel.getRoundState());
         gameState.setCurrentRound(gameModel.getCurrentRound());
         gameState.setTimeTillNextPhaseInMillis(GameEngine.timeTillNextPhase(gameModel, settings));
