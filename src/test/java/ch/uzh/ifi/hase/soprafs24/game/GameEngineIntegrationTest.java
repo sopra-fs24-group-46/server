@@ -193,6 +193,7 @@ public class GameEngineIntegrationTest {
         // round one
         game.gameModel.setCurrentRound(1);
         GameEngine.nextRoundState(game.gameModel, RoundState.QUESTION);
+        game.storeState("Round1Question");
 
         assertThrows(ResponseStatusException.class,
                 () -> game.guess(playerToKick, new Answer(guessLocation(game.gameModel))));
@@ -204,6 +205,7 @@ public class GameEngineIntegrationTest {
         game.usePowerUp(player1, PowerUp.X2);
         game.guess(player1, new Answer(location));
         game.guess(player2, new Answer(location));
+        game.storeState("Round1Guessing");
         GameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
 
         var scores = game.gameModel.getCurrentScores();
@@ -212,6 +214,7 @@ public class GameEngineIntegrationTest {
         assertThrows(ResponseStatusException.class,
                 () -> game.guess(player1, new Answer(guessLocation(game.gameModel))));
 
+        game.storeState("Round1MapReveal");
         GameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
         game.storeState("Round1Ended");
         // round two
@@ -225,7 +228,7 @@ public class GameEngineIntegrationTest {
         game.guess(player1, new Answer(guessLocation(game.gameModel)));
         game.guess(player2, new Answer(guessLocation(game.gameModel)));
         game.guess(player3, new Answer(game.gameModel.getCurrentQuestion().getLocation()));
-        game.guess(player4, new Answer(new GeoLocation(8000.0, 8000.0)));
+        game.guess(player4, new Answer(guessLocation(game.gameModel)));
         GameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
         GameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
         game.storeState("Round2Ended");
@@ -241,7 +244,6 @@ public class GameEngineIntegrationTest {
         game.guess(player1, new Answer(guessLocation(game.gameModel)));
         game.guess(player2, new Answer(guessLocation(game.gameModel)));
         game.guess(player3, new Answer(game.gameModel.getCurrentQuestion().getLocation()));
-        game.guess(player4, new Answer(new GeoLocation(608000.0, 108000.0)));
         GameEngine.nextRoundState(game.gameModel, RoundState.MAP_REVEAL);
         GameEngine.nextRoundState(game.gameModel, RoundState.LEADERBOARD);
         game.storeState("Round3Ended");
