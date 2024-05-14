@@ -145,8 +145,9 @@ public class FetchData {
         ArrayNode results = (ArrayNode) parseJson(json).get("results");
         if (results.size() > 0) {
             JsonNode geometry = results.get(0).get("geometry");
-            ArrayNode rings = (ArrayNode) geometry.get("rings").get(0);
-            Stream<JsonNode> stream = StreamSupport.stream(rings.spliterator(), false);
+            ArrayNode rings = (ArrayNode) geometry.get("rings");
+            ArrayNode ring = (ArrayNode) rings.get(rings.size()-1);
+            Stream<JsonNode> stream = StreamSupport.stream(ring.spliterator(), false);
             double[][] boundaries = stream.map(node -> {
                 return new double[] { node.get(0).asDouble(), node.get(1).asDouble() };
             }).toArray(double[][]::new);
