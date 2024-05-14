@@ -46,6 +46,14 @@ public class APIService {
 
         // filtering the language check the function definition for more details
         data.filterByAttributes("sprachcode", "Hochdeutsch");
+        
+        if (settings.getRegion() != null && settings.getRegionType() != null) {
+            data.filterByRegionName(settings.getRegion(), settings.getRegionType());
+        }
+        
+        if (settings.getLocationNames() != null && !settings.getLocationNames().isEmpty()) {
+            data.filterByNames(settings.getLocationNames());
+        }
 
         if (settings.getRegionAsPolygon() != null && settings.getRegionAsPolygon().length > 2
                 && settings.getRegionAsPolygon()[0].length == 2) {// only filter for region if region is provided
@@ -67,6 +75,12 @@ public class APIService {
         // ambigous questions
 
         return data;
+    }
+    
+    public static void filterByRegion(ResponseData data, String region, RegionType type) {
+        if (region != null && type != null) {
+            data.filterByPolygon(FetchData.fetchRegionBoundaries(region, type));
+        }
     }
 
     public static Question convertJsonToQuestion(JsonNode json) {
