@@ -30,32 +30,32 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 public class FetchData {
 
     public static void main(String[] args) {// this calls GeoAdmin and stores string into a json file
-        // // these are helper code to write json files.
-        // // Stored under src main resources
-        // String searchText = ""; // e.g see
+        // these are helper code to write json files.
+        // Stored under src main resources
+        String searchText = ""; // e.g see
 
-        // searchText = "See";
-        // // searchText = "Alpiner Gipfel";
-        // // searchText = "Gipfel";
-        // // searchText = "Haupthuegel";
-        // // searchText = "Huegel";
+        searchText = "See";
+        // searchText = "Alpiner Gipfel";
+        // searchText = "Gipfel";
+        // searchText = "Haupthuegel";
+        // searchText = "Huegel";
 
-        // HashMap<String, String> params = new HashMap<>();
-        // params.put("layer", "ch.swisstopo.swissnames3d");
-        // params.put("searchText", searchText);
-        // params.put("searchField", "objektart");
-        // params.put("contains", "false");
-        // params.put("sr", "4326");
-        // String json = callGeoAdminAPI("find", params);
-        // // ResponseData data = new ResponseData((ArrayNode) parseJson(json).get("results"));
-        // // data.reduceRingGeometry();
-        // // json = data.getJsonAsString();
-        // try (FileWriter fileWriter = new FileWriter(
-        //         "src/main/resources/GeoAdminAPI/" + searchText + ".json")) { // use relative path
-        //     fileWriter.write(json);
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
+        HashMap<String, String> params = new HashMap<>();
+        params.put("layer", "ch.swisstopo.swissnames3d");
+        params.put("searchText", searchText);
+        params.put("searchField", "objektart");
+        params.put("contains", "false");
+        params.put("sr", "4326");
+        String json = callGeoAdminAPI("find", params);
+        ResponseData data = new ResponseData((ArrayNode) parseJson(json).get("results"));
+        data.reduceRingGeometry();
+        json = data.getJsonAsString();
+        try (FileWriter fileWriter = new FileWriter(
+                "src/main/resources/GeoAdminAPI/" + searchText + ".json")) { // use relative path
+            fileWriter.write(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         
         //---------------------------------------------------------------------------
         // double[][] ring = fetchRegionBoundaries("Winterthur", RegionType.DISTRICT);
@@ -150,6 +150,9 @@ public class FetchData {
             double[][] boundaries = stream.map(node -> {
                 return new double[] { node.get(0).asDouble(), node.get(1).asDouble() };
             }).toArray(double[][]::new);
+            if (boundaries.length < 10) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Region not found: " + region);
+            }
             return boundaries;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Region not found: " + region);

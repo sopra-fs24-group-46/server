@@ -28,6 +28,7 @@ public class APIService {
 
     public static ResponseData loadResponseData(Settings settings) {
         var locationTypes = settings.getLocationTypes();
+        var roundNumber = settings.getRounds();
 
         boolean defaultLocationFilter = false;
         if (locationTypes == null || locationTypes.isEmpty()) {// defaults to alpines
@@ -42,22 +43,24 @@ public class APIService {
         for (LocationTypes type : locationTypes) {
             data.addAll(FetchData.readLocalJson(type.getValue()));
         }
-        data.reduceRingGeometry();
+        data.logSize(roundNumber, "loading location types: " + locationTypes + " for Switzerland");
 
         // filtering the language check the function definition for more details
-        data.filterByAttributes("sprachcode", "Hochdeutsch");
         
         if (settings.getRegion() != null && settings.getRegionType() != null) {
             data.filterByRegionName(settings.getRegion(), settings.getRegionType());
+            data.logSize(roundNumber, "filtering region: " + settings.getRegionType() + " " + settings.getRegion());
         }
         
         if (settings.getLocationNames() != null && !settings.getLocationNames().isEmpty()) {
             data.filterByNames(settings.getLocationNames());
+            data.logSize(roundNumber, "filtering names: " + settings.getLocationNames());
         }
 
         if (settings.getRegionAsPolygon() != null && settings.getRegionAsPolygon().length > 2
                 && settings.getRegionAsPolygon()[0].length == 2) {// only filter for region if region is provided
             data.filterByPolygon(settings.getRegionAsPolygon());
+            data.logSize(roundNumber, "filtering by polygon: " + settings.getRegionAsPolygon());
         }
 
         if (defaultLocationFilter) {
@@ -69,9 +72,14 @@ public class APIService {
                     { 8.0, 46.0 },
                     { 7.0, 46.0 }
             });
+            data.logSize(roundNumber, "filtering default location around Matterhorn");
         }
 
+        data.filterByAttributes("sprachcode", "Hochdeutsch");
+        data.logSize(roundNumber, "filtering languages: Hochdeutsch");
+
         data.removeDuplicates(); // for now removing duplicates to get rid of
+        data.logSize(roundNumber, "removing duplicates");
         // ambigous questions
 
         return data;
