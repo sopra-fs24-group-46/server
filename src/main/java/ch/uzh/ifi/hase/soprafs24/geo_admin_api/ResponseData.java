@@ -148,6 +148,10 @@ public class ResponseData {
                 ArrayList::addAll);
     }
 
+    public String getJsonAsString() {
+        return "{\"results\":" + data.toString() + "}";
+    }
+
     public List<JsonNode> getJsonNodes() {
         return data;
     }
@@ -163,7 +167,7 @@ public class ResponseData {
             return json;
         }
 
-        ArrayNode ringArrayNode = (ArrayNode) json.get("geometry").get("rings");
+        ArrayNode ringArrayNode = (ArrayNode) json.get("geometry").get("rings").get(0);
         List<JsonNode> ring = arrayNodeToList(ringArrayNode);
         // find the middle of the ring
         var mx = ring.stream().mapToDouble(node -> node.get(0).asDouble()).average().getAsDouble();

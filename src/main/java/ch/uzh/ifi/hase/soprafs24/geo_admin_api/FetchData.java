@@ -30,11 +30,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 public class FetchData {
 
     public static void main(String[] args) {// this calls GeoAdmin and stores string into a json file
-        //these are helper code to write json files.
-        // Stored under src main resources
+        // // these are helper code to write json files.
+        // // Stored under src main resources
         // String searchText = ""; // e.g see
 
-        // // searchText = "See";
+        // searchText = "See";
         // // searchText = "Alpiner Gipfel";
         // // searchText = "Gipfel";
         // // searchText = "Haupthuegel";
@@ -47,6 +47,9 @@ public class FetchData {
         // params.put("contains", "false");
         // params.put("sr", "4326");
         // String json = callGeoAdminAPI("find", params);
+        // // ResponseData data = new ResponseData((ArrayNode) parseJson(json).get("results"));
+        // // data.reduceRingGeometry();
+        // // json = data.getJsonAsString();
         // try (FileWriter fileWriter = new FileWriter(
         //         "src/main/resources/GeoAdminAPI/" + searchText + ".json")) { // use relative path
         //     fileWriter.write(json);
@@ -59,38 +62,38 @@ public class FetchData {
         // System.out.println(ring[0][0]);
         
         //---------------------------------------------------------------------------
-        HashMap<String, String> params = new HashMap<>();
+        // HashMap<String, String> params = new HashMap<>();
         
-        // String region = "kanton";
-        // String searchField = "name";
+        // // String region = "kanton";
+        // // String searchField = "name";
 
-        String region = "gemeinde";
-        String searchField = "gemname";
-        String offset = "6";
-        params.put("offset", offset);
+        // String region = "gemeinde";
+        // String searchField = "gemname";
+        // String offset = "6";
+        // params.put("offset", offset);
 
-        // String region = "bezirk";
-        // String searchField = "name";
+        // // String region = "bezirk";
+        // // String searchField = "name";
 
-        String layerId = "ch.swisstopo.swissboundaries3d-"+region+"-flaeche.fill";
+        // String layerId = "ch.swisstopo.swissboundaries3d-"+region+"-flaeche.fill";
 
 
-        params.put("layer", layerId);
-        params.put("searchText", "");
-        params.put("searchField", searchField);
-        params.put("sr", "4326");
+        // params.put("layer", layerId);
+        // params.put("searchText", "");
+        // params.put("searchField", searchField);
+        // params.put("sr", "4326");
         
-        String json = callGeoAdminAPI("find", params);
-        ArrayNode results = (ArrayNode) parseJson(json).get("results");
-        Stream<JsonNode> stream = StreamSupport.stream(results.spliterator(), false);
-        var names = stream.map(x -> "'"+x.get("attributes").get(searchField).asText() +" ("+ x.get("attributes").get("kanton").asText()+")'\n").toList();
+        // String json = callGeoAdminAPI("find", params);
+        // ArrayNode results = (ArrayNode) parseJson(json).get("results");
+        // Stream<JsonNode> stream = StreamSupport.stream(results.spliterator(), false);
+        // var names = stream.map(x -> "'"+x.get("attributes").get(searchField).asText() +" ("+ x.get("attributes").get("kanton").asText()+")'\n").toList();
         
-        try (FileWriter fileWriter = new FileWriter(
-                "src/main/resources/GeoAdminAPI/" + region + offset +".json")) { // use relative path
-            fileWriter.write(names.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // try (FileWriter fileWriter = new FileWriter(
+        //         "src/main/resources/GeoAdminAPI/" + region + offset +".json")) { // use relative path
+        //     fileWriter.write(names.toString());
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
     }
 
     public static ResponseData readLocalJson(String file_name) {
