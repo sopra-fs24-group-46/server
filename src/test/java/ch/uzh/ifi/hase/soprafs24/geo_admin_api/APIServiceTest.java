@@ -62,7 +62,7 @@ public class APIServiceTest {
         }).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 
         assert (points.size() > 100);
-        assertEquals(points.get(0).get("geometry").get("points").size(), 2);
+        assertEquals(points.get(0).get("geometry").get("points").get(0).size(), 2);
         assertEquals(0, rings.size());
     }
 }
