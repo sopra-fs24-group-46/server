@@ -8,6 +8,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+
 import ch.uzh.ifi.hase.soprafs24.game.entity.LocationTypes;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 
@@ -51,7 +54,7 @@ public class APIServiceTest {
         var settings = new Settings();
         settings.setLocationTypes(List.of(LocationTypes.LAKE));
         var jsonNodes = APIService.loadResponseData(settings).getJsonNodes();
-        var points = jsonNodes.stream().filter((node) -> {
+        List<JsonNode> points = jsonNodes.stream().filter((node) -> {
             return node.get("geometry").has("points");
         }).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
         var rings = jsonNodes.stream().filter((node) -> {
@@ -59,6 +62,7 @@ public class APIServiceTest {
         }).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 
         assert (points.size() > 100);
+        assertEquals(points.get(0).get("geometry").get("points").size(), 2);
         assertEquals(0, rings.size());
     }
 }

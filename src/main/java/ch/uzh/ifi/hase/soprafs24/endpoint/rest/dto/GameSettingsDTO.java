@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto;
 import java.util.List;
 
 import ch.uzh.ifi.hase.soprafs24.game.entity.LocationTypes;
+import ch.uzh.ifi.hase.soprafs24.geo_admin_api.RegionType;
 
 public class GameSettingsDTO {
 
@@ -13,9 +14,15 @@ public class GameSettingsDTO {
     // game settings
     private int maxPlayers;
     private int rounds;
+    
+    //data filtering
     private List<LocationTypes> locationTypes;
     private double[][] regionAsPolygon;
+    private String region;
+    private RegionType regionType;
+    private List<String> locationNames;
 
+    //times
     private Integer questionTime;
     private Integer guessingTime;
     private Integer mapRevealTime;
@@ -104,6 +111,30 @@ public class GameSettingsDTO {
 
     public void setRegionAsPolygon(double[][] regionAsPolygon) {
         this.regionAsPolygon = regionAsPolygon;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public RegionType getRegionType() {
+        return regionType;
+    }
+
+    public void setRegionType(RegionType regionType) {
+        this.regionType = regionType;
+    }
+
+    public List<String> getLocationNames() {
+        return locationNames;
+    }
+
+    public void setLocationNames(List<String> locationNames) {
+        this.locationNames = locationNames;
     }
 
 }

@@ -69,6 +69,21 @@ public class ResponseData {
                 }).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
+    public void filterByNames(List<String> names) {
+        if (names == null || names.size() == 0) {
+            throw new IllegalArgumentException("names should contain at least one name: " + names);
+        }
+        data = data.stream().filter(obj -> names.contains(obj.get("attributes").get("name").asText()))
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    }
+
+    public void filterByRegionName(String region, RegionType type) {
+        if (region == null || type == null) {
+            throw new IllegalArgumentException("region and type must not be null: " + region + " " + type);
+        }
+        filterByPolygon(FetchData.fetchRegionBoundaries(region, type));
+    }
+
     public void removeDuplicates() {
         // reducing to unique featureIds
         List<Integer> featureIds = new ArrayList<>();

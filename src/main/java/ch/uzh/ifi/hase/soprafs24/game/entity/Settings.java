@@ -3,15 +3,24 @@ package ch.uzh.ifi.hase.soprafs24.game.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
+import ch.uzh.ifi.hase.soprafs24.geo_admin_api.RegionType;
 
 public class Settings implements SettingView {
 
     private Long hostUserId;
     private Integer maxPlayers = 4;
     private Integer rounds = 4;
+    
+    //data filtering
     private List<LocationTypes> locationTypes;
     private double[][] regionAsPolygon;
+    private String region;
+    private RegionType regionType;
+    private List<String> locationNames;
 
     // times in seconds
     private Integer questionTime = 5;
@@ -83,6 +92,16 @@ public class Settings implements SettingView {
                 settings.getRegionAsPolygon()[0].length == 2) {// a point has two coordinates
             setRegionAsPolygon(settings.getRegionAsPolygon());
         }
+        if (settings.getRegion() != null) {
+            if (settings.getRegionType() == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "RegionType must be provided when using region name: " + settings.getRegion() + " " + settings.getRegionType());
+            }
+            setRegion(settings.getRegion());
+            setRegionType(settings.getRegionType());
+        }
+        if (settings.getLocationNames() != null && !settings.getLocationNames().isEmpty()) {
+            setLocationNames(settings.getLocationNames());
+        }
     }
 
     public Integer getQuestionTime() {
@@ -148,4 +167,29 @@ public class Settings implements SettingView {
     public void setLeaderBoardTime(Integer leaderBoardTime) {
         this.leaderBoardTime = leaderBoardTime;
     }
+
+    public RegionType getRegionType() {
+        return regionType;
+    }
+
+    public void setRegionType(RegionType regionType) {
+        this.regionType = regionType;
+    }
+
+    public List<String> getLocationNames() {
+        return locationNames;
+    }
+
+    public void setLocationNames(List<String> locationNames) {
+        this.locationNames = locationNames;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
 }
