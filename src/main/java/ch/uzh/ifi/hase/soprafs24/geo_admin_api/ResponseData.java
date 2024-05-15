@@ -14,6 +14,9 @@ import java.util.Set;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -23,6 +26,7 @@ public class ResponseData {
     // todo handle rings location data
 
     public List<JsonNode> data = new ArrayList<JsonNode>();
+    private String filterLog = "";
 
     public ResponseData(List<JsonNode> data) {
         this.data = data;
@@ -79,9 +83,13 @@ public class ResponseData {
 
     public void filterByRegionName(String region, RegionType type) {
         if (region == null || type == null) {
-            throw new IllegalArgumentException("region and type must not be null: " + region + " " + type);
+            throw new IllegalArgumentException("region and type must not be null: " + type + " " + region);
         }
-        filterByPolygon(FetchData.fetchRegionBoundaries(region, type));
+        double[][] polygon = FetchData.fetchRegionBoundaries(region, type);
+        System.out.println("polygon(" + polygon.length + ") retrieved from Geo Admin: " + type + " " + region + "\n points: [" +
+                "(" + polygon[0][0] + ", " + polygon[0][1] + "), (" + polygon[1][0] + ", " + polygon[1][1] + "), (" +
+                polygon[2][0] + ", " + polygon[2][1] + "), (" + polygon[3][0] + ", " + polygon[3][1] + ")");
+        filterByPolygon(polygon);
     }
 
     public void removeDuplicates() {
@@ -148,8 +156,20 @@ public class ResponseData {
                 ArrayList::addAll);
     }
 
+    public String getJsonAsString() {
+        return "{\"results\":" + data.toString() + "}";
+    }
+
     public List<JsonNode> getJsonNodes() {
         return data;
+    }
+
+    public void logSize(int roundNumber, String ErrorMessage) {
+        System.out.println("Round ("+data.size()+"/"+roundNumber+"): " + ErrorMessage);
+        filterLog = filterLog + "("+data.size()+"/"+roundNumber+") questions after: " + ErrorMessage + " \n";
+        if (data.size() < roundNumber) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not enough questions. Consider lowering the round number or use less restrictive settings. Filter log: \n" + filterLog);
+        }
     }
 
     private static List<JsonNode> arrayNodeToList(ArrayNode json) {
@@ -163,7 +183,7 @@ public class ResponseData {
             return json;
         }
 
-        ArrayNode ringArrayNode = (ArrayNode) json.get("geometry").get("rings");
+        ArrayNode ringArrayNode = (ArrayNode) json.get("geometry").get("rings").get(0);
         List<JsonNode> ring = arrayNodeToList(ringArrayNode);
         // find the middle of the ring
         var mx = ring.stream().mapToDouble(node -> node.get(0).asDouble()).average().getAsDouble();
@@ -172,9 +192,11 @@ public class ResponseData {
         // add a field to the json node
         ObjectNode mutable = (ObjectNode) json.get("geometry");
 
+        ArrayNode point = JsonNodeFactory.instance.arrayNode();
+        point.add(mx);
+        point.add(my);
         ArrayNode points = JsonNodeFactory.instance.arrayNode();
-        points.add(mx);
-        points.add(my);
+        points.add(point);
         mutable.set("points", points);
         mutable.remove("rings");
 

@@ -23,9 +23,9 @@ public class Settings implements SettingView {
     private List<String> locationNames;
 
     // times in seconds
-    private Integer questionTime = 5;
+    private Integer questionTime = 10;
     private Integer guessingTime = 10;
-    private Integer mapRevealTime = 5;
+    private Integer mapRevealTime = 10;
     private Integer leaderBoardTime = 5;
     // M2
     // Difficulty
