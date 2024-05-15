@@ -206,4 +206,9 @@ public class UserService {
     public User verifyUserCredentials(CredentialsDTO userCredentials) {
         return authenticateUser(userCredentials);// throws exception if not valid
     }
+
+    public User getUserById(CredentialsDTO credentials) {
+        return authenticateUser(credentials);
+    }
+
 }

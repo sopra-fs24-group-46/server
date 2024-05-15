@@ -43,7 +43,18 @@ public class UserController {
     for (User user : users) {
       userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
     }
+    //todo: should be without tokens
     return userGetDTOs;
+  }
+
+  @GetMapping("/users/{id}/{token}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public UserGetDTO getUser(@PathVariable(value = "id") Long id, @PathVariable(value = "token") String token) {
+    CredentialsDTO credentials = new CredentialsDTO(id, token);
+    // fetch all users in the internal representation
+    User user = userService.getUserById(credentials);
+    return DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
   }
 
   @PostMapping("/users")
@@ -68,15 +79,9 @@ public class UserController {
   @PostMapping("/login")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public LoginResponseDTO login(@RequestBody UserPostDTO userPostDTO) {// let user service do that
+  public LoginResponseDTO login(@RequestBody UserPostDTO userPostDTO) {
     // retrieve the user by username
-    User user = userService.getUserByUsername(userPostDTO.getUsername());
-    if (user == null || !user.getPassword().equals(userPostDTO.getPassword())) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
-    }
-
-    // userService.updateUserStatus(user.getId(), UserStatus.ONLINE); //status
-    // ONLINE
+    var user = userService.loginUser(userPostDTO.getUsername(), userPostDTO.getPassword());
 
     // Convert user to API representation
     UserGetDTO userDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
@@ -91,7 +96,9 @@ public class UserController {
 
   @PutMapping("/users/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-    userService.updateUser(id, updatedUser);
+  public void updateUser(@PathVariable Long id, @RequestBody UpdateUserDTO DTO) {
+    var updatedUser = DTO.getUser();
+    var credentials = DTO.getCredentialsDTO();
+    userService.updateUser(credentials, updatedUser);
   }
 }
