@@ -45,7 +45,7 @@ public class Game implements Serializable {
         var host = gameModel.addPlayer(hostPlayer.getDisplayName());
         gameModel.setHostPlayer(host);
         // returns a random string of 8 characters
-        id = UUID.randomUUID().toString().replace("[^a-zA-Z]", "").substring(0, 6);
+        id = UUID.randomUUID().toString().replaceAll("[0-9]", "").substring(0, 6);
     }
 
     public Game() {// needed for JPA
@@ -65,9 +65,10 @@ public class Game implements Serializable {
         return true;
     }
 
-    public Boolean deleteGame() {
+    public Boolean closeGame() {
         // todo: delete game from database
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not implemented yet");
+        gameModel.setGameState(GameState.CLOSED);
+        return true;
     }
 
     public Boolean updateSettings(Settings settings) {
@@ -99,6 +100,9 @@ public class Game implements Serializable {
 
     public Boolean leaveGame(String playerId) {
         validatePlayerId(playerId);
+        if(gameModel.getHostPlayer().getId().equals(playerId)) {
+            closeGame();
+        }
         gameModel.removePlayer(playerId);
         return true;
     }
