@@ -167,11 +167,17 @@ public class GameEngine {
             } else {
                 // in meters
                 distance = question.getLocation().getDistanceTo(answer.getLocation());
-                // define local function formula
-                formula scoring = (answerDistance) -> {
-                    return (1000 / Math.pow((answerDistance / 10000) + 1, 2));
-                };
-                score = (int) scoring.apply(distance) * powerUpFactor;
+
+                if (distance != null) {
+                    // define local function formula
+                    formula scoring = (answerDistance) -> {
+                        return (1000 / Math.pow((answerDistance / 10000) + 1, 2));
+                    };
+                    score = (int) scoring.apply(distance) * powerUpFactor;
+                } else {
+                    distance = null;
+                    score = 0;
+                }
             }
 
             gameModel.setScore(playerId, score, distance);

@@ -87,21 +87,24 @@ public class Settings implements SettingView {
         if (settings.getLocationTypes() != null && !settings.getLocationTypes().isEmpty()) {
             setLocationTypes(settings.getLocationTypes());
         }
+
         if (settings.getRegionAsPolygon() != null &&
                 settings.getRegionAsPolygon().length > 2 && // polygon has at least 3 points
                 settings.getRegionAsPolygon()[0].length == 2) {// a point has two coordinates
             setRegionAsPolygon(settings.getRegionAsPolygon());
-        }
+        }else setRegionAsPolygon(null);//disable filtering
+
         if (settings.getRegion() != null) {
             if (settings.getRegionType() == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "RegionType must be provided when using region name: " + settings.getRegion() + " " + settings.getRegionType());
             }
             setRegion(settings.getRegion());
             setRegionType(settings.getRegionType());
-        }
+        } else setRegion(null);//disable filtering
+
         if (settings.getLocationNames() != null && !settings.getLocationNames().isEmpty()) {
             setLocationNames(settings.getLocationNames());
-        }
+        }else setLocationNames(null);//disable filtering
     }
 
     public Integer getQuestionTime() {
