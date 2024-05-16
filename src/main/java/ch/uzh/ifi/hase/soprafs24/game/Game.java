@@ -44,8 +44,9 @@ public class Game implements Serializable {
         gameModel = new GameModel();
         var host = gameModel.addPlayer(hostPlayer.getDisplayName());
         gameModel.setHostPlayer(host);
-        // returns a random string of 8 characters
-        id = UUID.randomUUID().toString().replaceAll("[0-9]", "").substring(0, 6);
+
+        var number = Math.abs(java.util.UUID.randomUUID().getLeastSignificantBits()) % 1000000L;
+        id = Long.toString(number);
     }
 
     public Game() {// needed for JPA
