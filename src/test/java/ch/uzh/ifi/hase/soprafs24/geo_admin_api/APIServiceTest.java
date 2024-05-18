@@ -74,4 +74,33 @@ public class APIServiceTest {
         var questions = APIService.getQuestions(settings);
         assertEquals(10, questions.size());
     }
+    
+    @Test
+    public void correctEncodingLakes() {
+        var settings = new Settings();
+        settings.setRounds(1);
+        settings.setLocationTypes(List.of(LocationTypes.LAKE));
+        settings.setLocationNames(List.of("Heurütiweiher"));
+        var questions = APIService.getQuestions(settings);
+        assertEquals(1, questions.size());
+    }
+
+    @Test
+    public void correctEncodingMountainsEscaped() {
+        var settings = new Settings();
+        settings.setRounds(1);
+        settings.setLocationTypes(List.of(LocationTypes.ALPINE_MOUNTAIN));
+        settings.setLocationNames(List.of("Glarner T\u00F6di"));
+        var questions = APIService.getQuestions(settings);
+        assertEquals(1, questions.size());
+    }
+    @Test
+    public void correctEncodingMountains() {
+        var settings = new Settings();
+        settings.setRounds(1);
+        settings.setLocationTypes(List.of(LocationTypes.ALPINE_MOUNTAIN));
+        settings.setLocationNames(List.of("Glarner Tödi"));
+        var questions = APIService.getQuestions(settings);
+        assertEquals(1, questions.size());
+    }
 }

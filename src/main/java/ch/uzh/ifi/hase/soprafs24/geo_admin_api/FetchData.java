@@ -23,13 +23,18 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import java.io.OutputStreamWriter;
+import java.io.FileOutputStream;
 
 public class FetchData {
 
-    public static void main(String[] args) {// this calls GeoAdmin and stores string into a json file
+    public static void main(String[] args) throws JsonMappingException, JsonProcessingException {// this calls GeoAdmin and stores string into a json file
         // these are helper code to write json files.
         // Stored under src main resources
         String searchText = ""; // e.g see
@@ -40,22 +45,32 @@ public class FetchData {
         // searchText = "Haupthuegel";
         // searchText = "Huegel";
 
-        // HashMap<String, String> params = new HashMap<>();
-        // params.put("layer", "ch.swisstopo.swissnames3d");
-        // params.put("searchText", searchText);
-        // params.put("searchField", "objektart");
-        // params.put("contains", "false");
-        // params.put("sr", "4326");
-        // String json = callGeoAdminAPI("find", params);
-        // ResponseData data = new ResponseData((ArrayNode) parseJson(json).get("results"));
-        // data.reduceRingGeometry();
-        // json = data.getJsonAsString();
-        // try (FileWriter fileWriter = new FileWriter(
-        //         "src/main/resources/GeoAdminAPI/" + searchText + ".json")) { // use relative path
-        //     fileWriter.write(json);
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
+        HashMap<String, String> params = new HashMap<>();
+        params.put("layer", "ch.swisstopo.swissnames3d");
+        params.put("searchText", searchText);
+        params.put("searchField", "objektart");
+        params.put("contains", "false");
+        params.put("sr", "4326");
+        String json = callGeoAdminAPI("find", params);
+        try (FileWriter fileWriter = new FileWriter(
+                "src/main/resources/GeoAdminAPI/" + "backup" + ".json")) { // use relative path
+            fileWriter.write(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        // mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARACTERS, true);
+        mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
+        JsonNode node = mapper.readTree(json);
+        ResponseData data = new ResponseData((ArrayNode) node.get("results"));
+        data.reduceRingGeometry();
+        json = data.getJsonAsString();
+        try (OutputStreamWriter writer = new OutputStreamWriter(
+                new FileOutputStream("src/main/resources/GeoAdminAPI/" + searchText.toLowerCase() + ".json"), "UTF-8")) {
+            writer.write(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         
         //---------------------------------------------------------------------------
         // double[][] ring = fetchRegionBoundaries("Winterthur", RegionType.DISTRICT);
