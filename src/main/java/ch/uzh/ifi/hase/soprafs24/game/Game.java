@@ -82,17 +82,17 @@ public class Game implements Serializable {
     }
 
     public String joinGame(String displayName) {
-        if (gameModel.getGameState() != GameState.LOBBY) {
+        if (gameModel.getGameState() != GameState.LOBBY && gameModel.getGameState() != GameState.SETUP) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "You can only join games which are in Lobby state. Current state: " + gameModel.getGameState());
+                    "You can only join games which are in Lobby or Setup. Current state: " + gameModel.getGameState());
         }
         if (gameModel.getPlayers().stream().anyMatch(player -> player.getDisplayName().equals(displayName))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Player name " + displayName + " is already taken. choose another name");
+                    "Player name " + displayName + " is already taken. Choose another name");
         }
         if (gameModel.getPlayers().size() >= settings.getMaxPlayers()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Game is full: " + gameModel.getPlayers().size() + "\\" + settings.getMaxPlayers());
+                    "Game is already full: " + gameModel.getPlayers().size() + "\\" + settings.getMaxPlayers());
         }
         String playerId = gameModel.addPlayer(displayName);
         return playerId;

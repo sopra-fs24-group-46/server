@@ -26,7 +26,7 @@ public class ResponseData {
     // todo handle rings location data
 
     public List<JsonNode> data = new ArrayList<JsonNode>();
-    private String filterLog = "";
+    private String filterLog = "(Questions/Round): after Action \n";
 
     public ResponseData(List<JsonNode> data) {
         this.data = data;
@@ -166,9 +166,9 @@ public class ResponseData {
 
     public void logSize(int roundNumber, String ErrorMessage) {
         System.out.println("Round ("+data.size()+"/"+roundNumber+"): " + ErrorMessage);
-        filterLog = filterLog + "("+data.size()+"/"+roundNumber+") questions after: " + ErrorMessage + " \n";
+        filterLog = filterLog + "("+data.size()+"/"+roundNumber+"): " + ErrorMessage + " \n";
         if (data.size() < roundNumber) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not enough questions. Consider lowering the round number or use less restrictive settings. Filter log: \n" + filterLog);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, filterLog);
         }
     }
 
