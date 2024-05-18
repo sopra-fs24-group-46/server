@@ -65,4 +65,13 @@ public class APIServiceTest {
         assertEquals(points.get(0).get("geometry").get("points").get(0).size(), 2);
         assertEquals(0, rings.size());
     }
+    
+    @Test
+    public void loadLakes() {
+        var settings = new Settings();
+        settings.setRounds(10);
+        settings.setLocationTypes(List.of(LocationTypes.LAKE));
+        var questions = APIService.getQuestions(settings);
+        assertEquals(10, questions.size());
+    }
 }
