@@ -71,6 +71,10 @@ public class GameEngine {
     }
 
     public static void addAnswer(GameModel gameModel, Answer answer, String playerId) {
+        if(answer == null || answer.getLocation() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Answer can not be null. Answer: " + answer);
+        }
         if (gameModel.getRoundState() != RoundState.GUESSING) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Answers are only allowed during guessing. Current state: " + gameModel.getRoundState());

@@ -3,6 +3,9 @@ package ch.uzh.ifi.hase.soprafs24.geo_admin_api;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import ch.uzh.ifi.hase.soprafs24.game.entity.GeoLocation;
@@ -30,12 +33,8 @@ public class APIService {
         var locationTypes = settings.getLocationTypes();
         var roundNumber = settings.getRounds();
 
-        boolean defaultLocationFilter = false;
         if (locationTypes == null || locationTypes.isEmpty()) {// defaults to alpines
-            defaultLocationFilter = true;
-
-            locationTypes = new ArrayList<>();
-            locationTypes.add(LocationTypes.ALPINE_MOUNTAIN);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please select at least one location type.");
         }
 
         ResponseData data = new ResponseData();
@@ -43,48 +42,42 @@ public class APIService {
         for (LocationTypes type : locationTypes) {
             data.addAll(FetchData.readLocalJson(type.getValue()));
         }
-        data.logSize(roundNumber, "loading location types: " + locationTypes + " for Switzerland");
+        data.logSize(roundNumber, "loading: " + locationTypes);
 
         // filtering the language check the function definition for more details
-        
+
         if (settings.getRegion() != null && settings.getRegionType() != null) {
             data.filterByRegionName(settings.getRegion(), settings.getRegionType());
-            data.logSize(roundNumber, "filtering region: " + settings.getRegionType() + " " + settings.getRegion());
+            data.logSize(roundNumber, "filtering region " + settings.getRegionType() + " " + settings.getRegion());
         }
-        
+
         if (settings.getLocationNames() != null && !settings.getLocationNames().isEmpty()) {
             data.filterByNames(settings.getLocationNames());
-            data.logSize(roundNumber, "filtering names: " + settings.getLocationNames());
+            data.logSize(roundNumber, "filtering names " + settings.getLocationNames());
         }
 
         if (settings.getRegionAsPolygon() != null && settings.getRegionAsPolygon().length > 2
                 && settings.getRegionAsPolygon()[0].length == 2) {// only filter for region if region is provided
             data.filterByPolygon(settings.getRegionAsPolygon());
-            data.logSize(roundNumber, "filtering by polygon: " + settings.getRegionAsPolygon());
+            data.logSize(roundNumber, "filtering by polygon " + settings.getRegionAsPolygon());
         }
-
-        if (defaultLocationFilter) {
-            // roughly area around Matterhorn
-            // https://s.geo.admin.ch/qskqmg54fqm6
-            data.filterByPolygon(new double[][] {
-                    { 7.0, 45.0 },
-                    { 8.0, 45.0 },
-                    { 8.0, 46.0 },
-                    { 7.0, 46.0 }
-            });
-            data.logSize(roundNumber, "filtering default location around Matterhorn");
-        }
+        // Example
+        // data.filterByPolygon(new double[][] {
+        //         { 7.0, 45.0 },
+        //         { 8.0, 45.0 },
+        //         { 8.0, 46.0 },
+        //         { 7.0, 46.0 }
+        // });
 
         data.filterByAttributes("sprachcode", "Hochdeutsch");
-        data.logSize(roundNumber, "filtering languages: Hochdeutsch");
+        data.logSize(roundNumber, "filtering language: Hochdeutsch");
 
-        data.removeDuplicates(); // for now removing duplicates to get rid of
+        data.removeDuplicates(); // for now removing duplicates to get rid of ambiguous questions
         data.logSize(roundNumber, "removing duplicates");
-        // ambigous questions
 
         return data;
     }
-    
+
     public static void filterByRegion(ResponseData data, String region, RegionType type) {
         if (region != null && type != null) {
             data.filterByPolygon(FetchData.fetchRegionBoundaries(region, type));

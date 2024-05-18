@@ -105,7 +105,7 @@ public class UserService {
     public Boolean logoutUser(CredentialsDTO credentials) {
         User user = authenticateUser(credentials);
 
-        user.setToken(""); // token no longer valid;
+        user.setToken(null); // token no longer valid;
 
         user = userRepository.save(user);
         userRepository.flush();
@@ -144,16 +144,6 @@ public class UserService {
         }
     }
 
-    /**
-     * This is a helper method that will check the uniqueness criteria of the
-     * username and the name
-     * defined in the User entity. The method will do nothing if the input is unique
-     * and throw an error otherwise.
-     *
-     * @param userToBeCreated
-     * @throws org.springframework.web.server.ResponseStatusException
-     * @see User
-     */
     private void validateUsernameExists(String username) {
         User existingUser = userRepository.findByUsername(username);
         if (existingUser == null) {
@@ -166,7 +156,7 @@ public class UserService {
         User existingUser = userRepository.findByUsername(username);
 
         if (existingUser != null) {
-            String errorMessage = "The username is already taken. Please choose a different one.";
+            String errorMessage = "The username " + username + " is already taken. Please choose a different one.";
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
         }
     }
@@ -174,33 +164,8 @@ public class UserService {
     private void validatePasswordLength(String password) {
         if (password.length() < 6) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "The password is too short. It must be at least 8 characters long.");
+                    "The password is too short. It must be at least 6 characters long.");
         }
-    }
-
-    @Deprecated
-    public User updateUser(Long id, User userInput) {
-        // Get the user from the database
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
-        // validating user input.
-        // if a field is null then it will not be updated (no validation)
-        if (userInput.getUsername() != null) {
-            validateUsernameUniqueness(userInput.getUsername());
-        }
-        if (userInput.getPassword() != null) {
-            validatePasswordLength(userInput.getPassword());
-        }
-
-        // user input has to be valid at this stage!!
-        user.updateField(userInput);// all updatable non null values are updated
-
-        // storing to repository
-        user = userRepository.save(user);
-        userRepository.flush();
-
-        return user;
     }
 
     public User verifyUserCredentials(CredentialsDTO userCredentials) {
