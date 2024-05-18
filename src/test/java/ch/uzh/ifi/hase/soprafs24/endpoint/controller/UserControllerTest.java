@@ -54,7 +54,7 @@ public class UserControllerTest {
 
     // this mocks the UserService -> we define above what the userService should
     // return when getUsers() is called
-    given(userService.getUsers(Mockito.any())).willReturn(allUsers);
+    given(userService.getUsers()).willReturn(allUsers);
 
     // when
     MockHttpServletRequestBuilder getRequest = get("/users").contentType(MediaType.APPLICATION_JSON);
