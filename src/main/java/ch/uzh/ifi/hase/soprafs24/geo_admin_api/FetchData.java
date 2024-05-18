@@ -40,22 +40,22 @@ public class FetchData {
         // searchText = "Haupthuegel";
         // searchText = "Huegel";
 
-        HashMap<String, String> params = new HashMap<>();
-        params.put("layer", "ch.swisstopo.swissnames3d");
-        params.put("searchText", searchText);
-        params.put("searchField", "objektart");
-        params.put("contains", "false");
-        params.put("sr", "4326");
-        String json = callGeoAdminAPI("find", params);
-        ResponseData data = new ResponseData((ArrayNode) parseJson(json).get("results"));
-        data.reduceRingGeometry();
-        json = data.getJsonAsString();
-        try (FileWriter fileWriter = new FileWriter(
-                "src/main/resources/GeoAdminAPI/" + searchText + ".json")) { // use relative path
-            fileWriter.write(json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // HashMap<String, String> params = new HashMap<>();
+        // params.put("layer", "ch.swisstopo.swissnames3d");
+        // params.put("searchText", searchText);
+        // params.put("searchField", "objektart");
+        // params.put("contains", "false");
+        // params.put("sr", "4326");
+        // String json = callGeoAdminAPI("find", params);
+        // ResponseData data = new ResponseData((ArrayNode) parseJson(json).get("results"));
+        // data.reduceRingGeometry();
+        // json = data.getJsonAsString();
+        // try (FileWriter fileWriter = new FileWriter(
+        //         "src/main/resources/GeoAdminAPI/" + searchText + ".json")) { // use relative path
+        //     fileWriter.write(json);
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
         
         //---------------------------------------------------------------------------
         // double[][] ring = fetchRegionBoundaries("Winterthur", RegionType.DISTRICT);
@@ -108,6 +108,7 @@ public class FetchData {
             // jsonContent);
         } catch (IOException e) {
             e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found: " + "src/main/resources/GeoAdminAPI/" + file_name + ".json");
         }
         return new ResponseData((ArrayNode) parseJson(jsonContent).get("results"));
     }
