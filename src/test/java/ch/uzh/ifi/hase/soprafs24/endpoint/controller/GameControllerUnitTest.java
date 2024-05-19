@@ -4,9 +4,11 @@ import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PostGuessDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PowerUpDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.game.GameService;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
+import ch.uzh.ifi.hase.soprafs24.game.Enum.PowerUp;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import ch.uzh.ifi.hase.soprafs24.user.User;
 
@@ -56,6 +58,24 @@ public class GameControllerUnitTest {
                 verify(gameService, Mockito.times(0)).getGameView(Mockito.matches("somethingElse"));
         }
 
+        @Test
+        public void usePowerUpTest() throws Exception {
+                // Arrange
+                String gameId = "ab3501ds";
+                PowerUpDTO powerUpDTO = new PowerUpDTO();
+                powerUpDTO.setPlayerId("1");
+                powerUpDTO.setPowerUp(PowerUp.JOKER);
+                String jsonPayload = new ObjectMapper().writeValueAsString(powerUpDTO);
+                var postRequest = post("/game/" + gameId + "/powerup/").contentType(MediaType.APPLICATION_JSON)
+                                .content(jsonPayload);
+
+                // Act
+                mockMvc.perform(postRequest)
+                        .andExpect(status().isOk());
+
+                verify(gameService, Mockito.times(1)).usePowerUp(Mockito.matches(gameId), Mockito.matches(powerUpDTO.getPlayerId()), Mockito.any());
+                verify(gameService, Mockito.times(0)).usePowerUp(Mockito.matches("somethingElse"), Mockito.matches(powerUpDTO.getPlayerId()), Mockito.any());
+        }
         @Test
         public void getGameState() throws Exception {
                 // Arrange

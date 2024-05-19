@@ -96,7 +96,7 @@ public class GameController {
      * This endpoint is used by a player to use a powerup in a game.
      *
      * @param gameId The ID of the game.
-     * @param DTO    The PowerUpDTO containing the player's ID and the powerup to
+     * @param powerUpDTO    The PowerUpDTO containing the player's ID and the powerup to
      *               use.
      * @response 200 OK - if the powerup has been successfully used.
      * @return error if something went wrong
@@ -104,36 +104,10 @@ public class GameController {
     @PostMapping("/{gameId}/powerup")
     @ResponseStatus(HttpStatus.OK)
     public void usePowerUp(@PathVariable String gameId,
-            @RequestBody PowerUpDTO DTO) {
-        gameService.usePowerUp(gameId, DTO.getPlayerId(), DTO.getPowerUp());
+            @RequestBody PowerUpDTO powerUpDTO) {
+        gameService.usePowerUp(gameId, powerUpDTO.getPlayerId(), powerUpDTO.getPowerUp());
     }
 
-    /**
-     * Retrieves the content of a JSON file with the specified name from the
-     * GameModelViews directory. The file name must be a valid file name.
-     * 
-     * @param jsonName the name of the JSON file to retrieve
-     * @return the content of the JSON file as a String, or an error message if
-     *         the file does not exist
-     */
-    // @GetMapping("/developer/getView/{jsonName}")
-    // @ResponseStatus(HttpStatus.OK)
-    // public String getMethodName(@PathVariable String jsonName) {
-    //     String jsonContent;
-
-    //     String filePath = "src/main/resources/GameModelViews/" + jsonName + ".json";
-
-    //     try {
-    //         // Read JSON file content as a String
-    //         jsonContent = new String(Files.readAllBytes(Paths.get(filePath)));
-    //     } catch (IOException e) {
-    //         jsonContent = String.format(
-    //                 "Error: File %s not found. Check src/main/resources/GameModelViews/ for valid file names",
-    //                 jsonName);
-    //     }
-
-    //     return jsonContent;
-    // }
 
     /**
      * Opens the lobby for a game.
