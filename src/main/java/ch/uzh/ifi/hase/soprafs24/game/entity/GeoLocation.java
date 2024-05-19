@@ -24,7 +24,7 @@ public class GeoLocation {
 
     public Double getDistanceTo(GeoLocation other) {
         if (this.isNull() || other.isNull()) {
-            return null;
+            throw new IllegalArgumentException("Both GeoLocations must not be null. to calculate distance");
         }
         // caluclating distance World Geodetic System 1984
         double earthRadius = 6371008.8; // in meters

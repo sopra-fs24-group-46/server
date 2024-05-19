@@ -182,7 +182,7 @@ public class GameModel implements GameModelView {
 
     // getters----------------------------------------------------------
     public List<String> getPlayersIds() {
-        return players.stream().map(player -> player.getId()).collect(Collectors.toList());
+        return players.stream().map(Player::getId).toList();
     }
 
     public Player getHostPlayer() {

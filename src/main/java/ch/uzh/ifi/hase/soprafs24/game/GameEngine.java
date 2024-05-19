@@ -165,23 +165,21 @@ public class GameEngine {
             Double distance;
             int score;
 
-            if (answer == null) {// no answer submitted
+            if(question == null || question.getLocation() == null) {
+                throw new IllegalStateException("Question should not be null but is: " + question);
+            }
+            if (answer == null || answer.getLocation() == null) {// no answer submitted
                 distance = null;
                 score = 0;
             } else {
                 // in meters
                 distance = question.getLocation().getDistanceTo(answer.getLocation());
 
-                if (distance != null) {
-                    // define local function formula
-                    formula scoring = (answerDistance) -> {
-                        return (1000 / Math.pow((answerDistance / 10000) + 1, 2));
-                    };
-                    score = (int) scoring.apply(distance) * powerUpFactor;
-                } else {
-                    distance = null;
-                    score = 0;
-                }
+                // define local function formula
+                formula scoring = (answerDistance) -> {
+                    return (1000 / Math.pow((answerDistance / 10000) + 1, 2));
+                };
+                score = (int) scoring.apply(distance) * powerUpFactor;
             }
 
             gameModel.setScore(playerId, score, distance);
