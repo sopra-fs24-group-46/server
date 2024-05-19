@@ -13,6 +13,7 @@ import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
 import ch.uzh.ifi.hase.soprafs24.game.entity.GameModel;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import ch.uzh.ifi.hase.soprafs24.game.entity.GeoLocation;
+import ch.uzh.ifi.hase.soprafs24.game.entity.LocationTypes;
 import ch.uzh.ifi.hase.soprafs24.user.User;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 public class GameEngineIntegrationTest {
 
@@ -33,7 +35,9 @@ public class GameEngineIntegrationTest {
         TestGame game = new TestGame(host, "Game1");
         String player1 = game.getHostPlayerId();
         game.storeState("Created");
-        game.updateSettings(new Settings(2, 2, 2));
+        var settings = new Settings(2, 2, 2);
+        settings.setLocationTypes(List.of(LocationTypes.LAKE));
+        game.updateSettings(settings);
         game.storeState("SettingsUpdated");
         // lobby --------------------------
         game.openLobby();
@@ -82,6 +86,7 @@ public class GameEngineIntegrationTest {
         String player1 = game.getHostPlayerId();
         game.storeState("Created");
         var settings = new Settings(4, 4, 2);
+        settings.setLocationTypes(List.of(LocationTypes.LAKE));
         game.updateSettings(settings);
         game.storeState("SettingsUpdated");
         // lobby --------------------------
@@ -172,6 +177,7 @@ public class GameEngineIntegrationTest {
         String player1 = game.getHostPlayerId();
         game.storeState("Created");
         var settings = new Settings(4, 4, 2);
+        settings.setLocationTypes(List.of(LocationTypes.LAKE));
         game.updateSettings(settings);
         game.storeState("SettingsUpdated");
         // lobby --------------------------

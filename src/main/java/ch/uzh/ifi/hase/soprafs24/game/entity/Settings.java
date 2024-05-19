@@ -44,6 +44,7 @@ public class Settings implements SettingView {
     }
 
     public Settings() {
+        this.locationTypes = List.of(LocationTypes.values());
     }
 
     public Long getHostUserId() {

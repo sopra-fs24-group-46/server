@@ -11,6 +11,7 @@ import ch.uzh.ifi.hase.soprafs24.game.Enum.RoundState;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
 import ch.uzh.ifi.hase.soprafs24.game.entity.GameModel;
 import ch.uzh.ifi.hase.soprafs24.game.entity.GeoLocation;
+import ch.uzh.ifi.hase.soprafs24.game.entity.LocationTypes;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 
+import java.util.List;
 import java.util.concurrent.*;
 
 class GameEngineUnitTest {

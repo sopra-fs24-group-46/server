@@ -8,6 +8,7 @@ import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.JoinPostDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PlayerIdDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PostGuessDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PowerUpDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.game.GameService;
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
@@ -22,12 +23,10 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ch.uzh.ifi.hase.soprafs24.user.User;
 import org.springframework.web.bind.annotation.GetMapping;
 
 //CredentialsD credentials refer to a User object with valid id and token of the user. These are needed to do Host actions like create, start... a game
 //for joining a game no credentials are needed
-//todo move credentials to request parameters and update the calls
 @RestController
 @RequestMapping("/game")
 public class GameController {
@@ -50,8 +49,7 @@ public class GameController {
     @ResponseStatus(HttpStatus.CREATED)
     public CreateGameResponseDTO createGame(@RequestBody CredentialsDTO credentials) { // HTTP POST to /game/create
 
-        CreateGameResponseDTO response = gameService.createGame(credentials);
-        return response;
+        return gameService.createGame(credentials);
     }
 
     /**
@@ -118,24 +116,24 @@ public class GameController {
      * @return the content of the JSON file as a String, or an error message if
      *         the file does not exist
      */
-    @GetMapping("/developer/getView/{jsonName}")
-    @ResponseStatus(HttpStatus.OK)
-    public String getMethodName(@PathVariable String jsonName) {
-        String jsonContent;
+    // @GetMapping("/developer/getView/{jsonName}")
+    // @ResponseStatus(HttpStatus.OK)
+    // public String getMethodName(@PathVariable String jsonName) {
+    //     String jsonContent;
 
-        String filePath = "src/main/resources/GameModelViews/" + jsonName + ".json";
+    //     String filePath = "src/main/resources/GameModelViews/" + jsonName + ".json";
 
-        try {
-            // Read JSON file content as a String
-            jsonContent = new String(Files.readAllBytes(Paths.get(filePath)));
-        } catch (IOException e) {
-            jsonContent = String.format(
-                    "Error: File %s not found. Check src/main/resources/GameModelViews/ for valid file names",
-                    jsonName);
-        }
+    //     try {
+    //         // Read JSON file content as a String
+    //         jsonContent = new String(Files.readAllBytes(Paths.get(filePath)));
+    //     } catch (IOException e) {
+    //         jsonContent = String.format(
+    //                 "Error: File %s not found. Check src/main/resources/GameModelViews/ for valid file names",
+    //                 jsonName);
+    //     }
 
-        return jsonContent;
-    }
+    //     return jsonContent;
+    // }
 
     /**
      * Opens the lobby for a game.
@@ -243,7 +241,7 @@ public class GameController {
      * @param settingsDTO The new settings of the game.
      * @param credentials The credentials of the player.
      */
-    @PutMapping("/{gameId}/updateSettings") // todo discuss the right way for parameters
+    @PutMapping("/{gameId}/updateSettings") 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateSettings(@PathVariable String gameId,
             @RequestBody GameSettingsDTO settingsDTO) {

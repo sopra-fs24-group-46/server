@@ -1,6 +1,5 @@
-package ch.uzh.ifi.hase.soprafs24.endpoint.controller;
+package ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto;
 
-import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.user.User;
 
 public class UpdateUserDTO {
