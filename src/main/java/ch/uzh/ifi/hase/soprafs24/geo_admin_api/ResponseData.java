@@ -190,6 +190,9 @@ public class ResponseData {
         // find the middle of the ring
         var mx = ring.stream().mapToDouble(node -> node.get(0).asDouble()).average().getAsDouble();
         var my = ring.stream().mapToDouble(node -> node.get(1).asDouble()).average().getAsDouble();
+       
+        double[][] ringArray = ring.stream().map(node -> new double[] {node.get(0).asDouble(), node.get(1).asDouble()}).toArray(double[][]::new);
+        double area = calculateArea(ringArray);
 
         // add a field to the json node
         ObjectNode mutable = (ObjectNode) json.get("geometry");
@@ -200,11 +203,26 @@ public class ResponseData {
         ArrayNode points = JsonNodeFactory.instance.arrayNode();
         points.add(point);
         mutable.set("points", points);
+        mutable.put("area", area);
         mutable.remove("rings");
 
         return json;
     }
     
+    
+
+    public static double calculateArea(double[][] points) {
+        int n = points.length;
+        double area = 0;
+        for (int i = 0; i < n; i++) {
+            int j = (i + 1) % n;
+            area += points[i][0] * points[j][1];
+            area -= points[j][0] * points[i][1];
+        }
+        area = Math.abs(area) / 2;
+        return area;
+    }
+
     public int size() {
         return data.size();
     }

@@ -52,24 +52,19 @@ public class FetchData {
         // params.put("contains", "false");
         // params.put("sr", "4326");
         // String json = callGeoAdminAPI("find", params);
-        // try (FileWriter fileWriter = new FileWriter(
-        //         "src/main/resources/GeoAdminAPI/" + "backup" + ".json")) { // use relative path
-        //     fileWriter.write(json);
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
         // ObjectMapper mapper = new ObjectMapper();
         // // mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARACTERS, true);
         // mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
         // JsonNode node = mapper.readTree(json);
         // ResponseData data = new ResponseData((ArrayNode) node.get("results"));
         // data.reduceRingGeometry();
+        // data.filterByAttributes("sprachcode", "Hochdeutsch");
         // json = data.getJsonAsString();
         // try (OutputStreamWriter writer = new OutputStreamWriter(
-        //         new FileOutputStream("src/main/resources/GeoAdminAPI/" + searchText.toLowerCase() + ".json"), "UTF-8")) {
-        //     writer.write(json);
+                // new FileOutputStream("src/main/resources/GeoAdminAPI/" + searchText.toLowerCase() + ".json"), "UTF-8")) {
+            // writer.write(json);
         // } catch (IOException e) {
-        //     e.printStackTrace();
+            // e.printStackTrace();
         // }
         
         //---------------------------------------------------------------------------
