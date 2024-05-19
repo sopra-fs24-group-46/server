@@ -42,6 +42,11 @@ public class GameEngine {
         // ---------------------------------------------------------------------
         scheduler.schedule(() -> endGame(gameModel, settings), settings.getTotalTime(),
                 java.util.concurrent.TimeUnit.SECONDS);
+
+        //close game after 60 seconds will be deleted automatically
+        // ---------------------------------------------------------------------
+        scheduler.schedule(() -> gameModel.setGameState(GameState.CLOSED), settings.getTotalTime() + 60,
+                java.util.concurrent.TimeUnit.SECONDS);
     }
 
     static public void scheduleRound(GameModel gameModel, Settings settings, int roundNumber) {

@@ -9,6 +9,7 @@ import ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.game.GameService;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.PowerUp;
+import ch.uzh.ifi.hase.soprafs24.game.entity.GameModel;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import ch.uzh.ifi.hase.soprafs24.user.User;
 
@@ -46,13 +47,15 @@ public class GameControllerUnitTest {
         public void getGameView() throws Exception {
                 // Arrange
                 String gameId = "ab3501ds";
-                given(gameService.getGameView(Mockito.matches(gameId))).willReturn("{\"gameId\":\"1\"}");
+                var gameModel = new GameModel();
+                gameModel.setPowerUp("player1", PowerUp.JOKER);
+                given(gameService.getGameView(Mockito.matches(gameId))).willReturn(gameModel);
                 var postRequest = get("/game/" + gameId + "/getView/").contentType(MediaType.APPLICATION_JSON);
 
                 // Act
                 mockMvc.perform(postRequest)
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.gameId", is("1")));
+                                .andExpect(jsonPath("$.powerUps.player1", is(PowerUp.JOKER.name())));
 
                 verify(gameService, Mockito.times(1)).getGameView(Mockito.matches(gameId));
                 verify(gameService, Mockito.times(0)).getGameView(Mockito.matches("somethingElse"));

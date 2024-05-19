@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.transaction.Transactional;
 
@@ -19,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameResponseDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameStateDTO;
+import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.PowerUp;
 import ch.uzh.ifi.hase.soprafs24.game.View.GameModelView;
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
@@ -40,6 +44,13 @@ public class GameService {
         this.userService = userService;
     }
 
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private final Runnable clearClosedGamesRunnable = this::clearClosedGames;
+
+    {
+        scheduler.scheduleAtFixedRate(clearClosedGamesRunnable, 0, 1, TimeUnit.MINUTES);
+    }
+   
     public CreateGameResponseDTO createGame(CredentialsDTO credentials) {
         User user = userService.verifyUserCredentials(credentials);
         Game game = new Game(user);
@@ -92,11 +103,6 @@ public class GameService {
         return game.openLobby();
     }
 
-    // at this time Lobby info is also a GameModelView
-    public String getLobbyView(String gameId) {
-        return getGameView(gameId);
-    }
-
     public void startGame(String gameId, CredentialsDTO credentials) {
 
         var user = userService.verifyUserCredentials(credentials);
@@ -112,34 +118,13 @@ public class GameService {
 
     // for an example JSON string check:
     // src\main\resources\GameModelView_gameEnded.json
-    public String getGameView(String gameId) {
+    public GameModelView getGameView(String gameId) {
         Game game = findGameByPublicId(gameId);
-        GameModelView gameModelView = game.getGameModelView();
-        String gameModelViewJson = toJsonString(gameModelView);
-        return gameModelViewJson;
+        return game.getGameModelView();
     }
 
     public Boolean usePowerUp(String gameId, String playerId, PowerUp powerUp) {
         return findGameByPublicId(gameId).usePowerUp(playerId, powerUp);
-    }
-
-    // Private functions-------------------------------------------------
-    private static String toJsonString(GameModelView gameModelView) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(gameModelView);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            throw new IllegalStateException("Could not convert GameModelView to JSON string", e);
-        }
-    }
-
-    private Game findGameByPublicId(String gameId) {
-        Game game = gameRepository.get(gameId);
-        if (game == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game with publicId: " + gameId + " not found");
-        }
-        return game;
     }
 
     public List<String> getAllGameIds() {
@@ -150,4 +135,27 @@ public class GameService {
         return gameIds;
     }
 
+    public static String toJsonString(GameModelView gameModelView) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(gameModelView);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new IllegalStateException("Could not convert GameModelView to JSON string", e);
+        }
+    }
+
+    // Private functions-------------------------------------------------
+
+    private Game findGameByPublicId(String gameId) {
+        Game game = gameRepository.get(gameId);
+        if (game == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game with publicId: " + gameId + " not found");
+        }
+        return game;
+    }
+
+    private void clearClosedGames() {
+        gameRepository.entrySet().removeIf(entry -> entry.getValue().getGameState().getGameState() == GameState.CLOSED);
+    }
 }

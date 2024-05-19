@@ -57,8 +57,8 @@ import org.junit.jupiter.api.condition.OS;
 
 @EnabledOnOs({ OS.WINDOWS, OS.MAC }) // cloud runs on linux therefore this is only runs locally
 public class GameControllerIntegrationTest {
-        // final static String serverURL = "http://localhost:8080"; // test locally
-        final static String serverURL = " https://sopra-fs24-group-46-server.oa.r.appspot.com"; // test deployed
+        final static String serverURL = "http://localhost:8080"; // test locally
+        // final static String serverURL = " https://sopra-fs24-group-46-server.oa.r.appspot.com"; // test deployed
         final static OkHttpClient httpClient = new OkHttpClient();
         final static MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         final static ObjectMapper mapper = new ObjectMapper();
@@ -90,7 +90,8 @@ public class GameControllerIntegrationTest {
                                 .post(executor.body("{ \"displayName\": \"test\" }"))
                                 .build();
 
-                executor.executeRequest(joinGame, 400, "Should not be able to join");
+                // joining during setup is possible now
+                // executor.executeRequest(joinGame, 400, "Should not be able to join");
                 executor.executeRequest(openLobby, 204, "failed to open lobby");
                 executor.executeRequest(joinGame, 200, "failed to join");
         }
@@ -326,14 +327,8 @@ public class GameControllerIntegrationTest {
                 assertEquals(2, settingView.getGuessingTime());
                 assertEquals(NullNode.class, gameView.getCurrentQuestion().getClass());
 
-                try {
-                        var response = httpClient.newCall(startGame).execute();
-                        if (response.code() != 201) {
-                                fail(response.body().string());
-                        };
-                } catch (IOException e) {
-                        fail(e);
-                }
+                executor.executeRequest(startGame, 204, "failed to start game");
+
                 gameView.update();
                 var q= gameView.getQuestions();
 

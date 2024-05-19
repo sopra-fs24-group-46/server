@@ -178,7 +178,7 @@ public class GameController {
     public String getGameView(@PathVariable String gameId) {
         // Get the view of the game.
 
-        return gameService.getGameView(gameId);
+        return GameService.toJsonString(gameService.getGameView(gameId));
     }
 
     /**
