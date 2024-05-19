@@ -155,7 +155,7 @@ public class UserService {
     private void validateUsernameUniqueness(String username) {
         User existingUser = userRepository.findByUsername(username);
 
-        if (existingUser != null) {
+        if (existingUser != null && existingUser.getUsername().equals(username)) {
             String errorMessage = "The username " + username + " is already taken. Please choose a different one.";
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
         }
