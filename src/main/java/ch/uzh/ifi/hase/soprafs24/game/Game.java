@@ -17,9 +17,7 @@ import ch.uzh.ifi.hase.soprafs24.game.entity.GameModel;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 import ch.uzh.ifi.hase.soprafs24.user.User;
 
-import java.io.Serializable;
-
-public class Game implements Serializable {
+public class Game{
 
     private String id;
 
@@ -131,7 +129,7 @@ public class Game implements Serializable {
 
     public void verifyHost(User hostPlayer) {
         var hostId = settings.getHostUserId();
-        if (hostPlayer.getId() != hostId) {
+        if (!hostPlayer.getId().equals(hostId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Host player does not match");
         }
     }

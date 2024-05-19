@@ -113,17 +113,13 @@ public class UserService {
     }
 
     public Boolean isValidUser(CredentialsDTO credentials) {
-        User user = authenticateUser(credentials);
-        // valid input
-        if (user == null) {// this should always be true
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Unexpected Error. Credentials are valid but no user was found.");
-        }
+        authenticateUser(credentials);
         return true;
     }
 
     private User authenticateUser(CredentialsDTO credentials) {
-        User user = userRepository.findById(credentials.getId()).get();
+        User user = userRepository.findById(credentials.getId()).orElseThrow(
+            () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Authentication error. User does not exist."));
         validateToken(user.getToken(), credentials.getToken());
         // valid input
         return user;

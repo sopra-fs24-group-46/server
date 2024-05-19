@@ -51,7 +51,6 @@ public class GameView {
         try {
             this.json = mapper.readValue(rawJson, JsonNode.class);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
             throw new RuntimeException("Failed to parse GameView JSON: " + e.getMessage());
         }
         // System.out.println(string);

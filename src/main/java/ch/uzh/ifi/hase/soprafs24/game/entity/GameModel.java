@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -115,13 +116,16 @@ public class GameModel implements GameModelView {
     }
 
     public void removePlayer(String playerId) {
-        Player playerFromList = players.stream().filter(player -> player.getId().equals(playerId)).findFirst().get();
+        Optional<Player> playerFromList = players.stream().filter(player -> player.getId().equals(playerId)).findFirst();
+        if (playerFromList.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Player not found");
+        }
         scores.remove(playerId);
         powerUps.remove(playerId);
         answers.remove(playerId);
         histories.remove(playerId);
         cumulativeScores.remove(playerId);
-        players.remove(playerFromList);
+        players.remove(playerFromList.get());
     }
 
     // only one at the time and only once a powerup can be used. Once thi function
@@ -145,7 +149,8 @@ public class GameModel implements GameModelView {
     // setters----------------------------------------------------------
 
     public void setHostPlayer(String playerId) {
-        hostPlayer = players.stream().filter(player -> player.getId().equals(playerId)).findFirst().get();
+        hostPlayer = players.stream().filter(player -> player.getId().equals(playerId)).findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Player not found"));
     }
 
     public void setScore(String playerId, int score, Double distance) {

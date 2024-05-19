@@ -27,6 +27,7 @@ public class ResponseData {
 
     private List<JsonNode> data = new ArrayList<JsonNode>();
     private String filterLog = "(Questions/Round): after Action \n";
+    private Random random = new Random();
 
     public ResponseData(List<JsonNode> data) {
         this.data = data;
@@ -115,7 +116,6 @@ public class ResponseData {
 
     public List<JsonNode> selectRandomElements(int numElements) {
         List<JsonNode> randomElements = new ArrayList<>();
-        Random random = new Random();
         Set<Integer> selectedIndices = new HashSet<>();
 
         while (selectedIndices.size() < numElements && selectedIndices.size() < data.size()) {

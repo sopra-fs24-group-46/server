@@ -45,7 +45,7 @@ public class GameEngine {
 
         //close game after 60 seconds will be deleted automatically
         // ---------------------------------------------------------------------
-        scheduler.schedule(() -> gameModel.setGameState(GameState.CLOSED), settings.getTotalTime() + 60,
+        scheduler.schedule(() -> gameModel.setGameState(GameState.CLOSED), settings.getTotalTime() + 60L,
                 java.util.concurrent.TimeUnit.SECONDS);
     }
 

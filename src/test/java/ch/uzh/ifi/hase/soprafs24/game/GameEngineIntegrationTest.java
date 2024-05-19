@@ -307,7 +307,6 @@ class TestGame extends Game {
         try {
             return mapper.writeValueAsString(gameModelView);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
             throw new IllegalStateException("Could not convert GameModelView to JSON string", e);
         }
     }

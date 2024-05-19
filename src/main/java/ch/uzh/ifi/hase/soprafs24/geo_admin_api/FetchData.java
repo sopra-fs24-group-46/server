@@ -122,7 +122,6 @@ public class FetchData {
             // System.out.println("JSON content read from file as a String: " +
             // jsonContent);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found: " + "src/main/resources/GeoAdminAPI/" + file_name + ".json");
         }
         return new ResponseData((ArrayNode) parseJson(jsonContent).get("results"));
@@ -232,7 +231,6 @@ public class FetchData {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException("API request failed: " + e.getMessage());
         }
     }
@@ -242,7 +240,6 @@ public class FetchData {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readTree(json);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException("Failed to parse JSON: " + e.getMessage());
         }
     }
