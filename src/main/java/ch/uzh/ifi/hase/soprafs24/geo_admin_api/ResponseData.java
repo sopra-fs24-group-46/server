@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class ResponseData {
     // todo handle rings location data
 
-    public List<JsonNode> data = new ArrayList<JsonNode>();
+    private List<JsonNode> data = new ArrayList<JsonNode>();
     private String filterLog = "(Questions/Round): after Action \n";
 
     public ResponseData(List<JsonNode> data) {
@@ -54,7 +54,6 @@ public class ResponseData {
     // "namen_typ": "Endonym",
     // "status": "ueblich",
     // "label": "Punta Rosa"}
-    // }
     public void filterByAttributes(String field, String value) {
         data = data.stream().filter(obj -> obj.get("attributes").get(field).asText().contains(value))
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
@@ -205,25 +204,12 @@ public class ResponseData {
 
         return json;
     }
-
-    public static void main(String[] args) {
-        ResponseData data = FetchData.readLocalJson("alpiner gipfel");
-        // var data2 = FetchData.readLocalJson("huegel");
-        // data.addAll(data2);
-        double[][] polygon = new double[][] {
-                { 7.0, 45.0 },
-                { 8.0, 45.0 },
-                { 8.0, 46.0 },
-                { 7.0, 46.0 }
-        };
-        data.data.get(0).get("geometry").get("points").get(0).get(0).asDouble();
-
-        // data.filterByPolygon(polygon);
-        data.filterByAttributes("sprachcode", "Hochdeutsch");
-        var randomElements = data.selectRandomElements(10);
-
-        // this is how the json is accessed
-
-        System.out.println(randomElements.get(0).get("attributes").get("name").asText());
+    
+    public int size() {
+        return data.size();
+    }
+    
+    public String getFilterLog() {
+        return filterLog;
     }
 }

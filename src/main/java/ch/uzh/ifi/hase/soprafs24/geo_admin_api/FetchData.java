@@ -37,40 +37,40 @@ public class FetchData {
     public static void main(String[] args) throws JsonMappingException, JsonProcessingException {// this calls GeoAdmin and stores string into a json file
         // these are helper code to write json files.
         // Stored under src main resources
-        String searchText = ""; // e.g see
+        // String searchText = ""; // e.g see
 
-        searchText = "See";
-        // searchText = "Alpiner Gipfel";
-        // searchText = "Gipfel";
-        // searchText = "Haupthuegel";
-        // searchText = "Huegel";
+        // searchText = "See";
+        // // searchText = "Alpiner Gipfel";
+        // // searchText = "Gipfel";
+        // // searchText = "Haupthuegel";
+        // // searchText = "Huegel";
 
-        HashMap<String, String> params = new HashMap<>();
-        params.put("layer", "ch.swisstopo.swissnames3d");
-        params.put("searchText", searchText);
-        params.put("searchField", "objektart");
-        params.put("contains", "false");
-        params.put("sr", "4326");
-        String json = callGeoAdminAPI("find", params);
-        try (FileWriter fileWriter = new FileWriter(
-                "src/main/resources/GeoAdminAPI/" + "backup" + ".json")) { // use relative path
-            fileWriter.write(json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        // mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARACTERS, true);
-        mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
-        JsonNode node = mapper.readTree(json);
-        ResponseData data = new ResponseData((ArrayNode) node.get("results"));
-        data.reduceRingGeometry();
-        json = data.getJsonAsString();
-        try (OutputStreamWriter writer = new OutputStreamWriter(
-                new FileOutputStream("src/main/resources/GeoAdminAPI/" + searchText.toLowerCase() + ".json"), "UTF-8")) {
-            writer.write(json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // HashMap<String, String> params = new HashMap<>();
+        // params.put("layer", "ch.swisstopo.swissnames3d");
+        // params.put("searchText", searchText);
+        // params.put("searchField", "objektart");
+        // params.put("contains", "false");
+        // params.put("sr", "4326");
+        // String json = callGeoAdminAPI("find", params);
+        // try (FileWriter fileWriter = new FileWriter(
+        //         "src/main/resources/GeoAdminAPI/" + "backup" + ".json")) { // use relative path
+        //     fileWriter.write(json);
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
+        // ObjectMapper mapper = new ObjectMapper();
+        // // mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARACTERS, true);
+        // mapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
+        // JsonNode node = mapper.readTree(json);
+        // ResponseData data = new ResponseData((ArrayNode) node.get("results"));
+        // data.reduceRingGeometry();
+        // json = data.getJsonAsString();
+        // try (OutputStreamWriter writer = new OutputStreamWriter(
+        //         new FileOutputStream("src/main/resources/GeoAdminAPI/" + searchText.toLowerCase() + ".json"), "UTF-8")) {
+        //     writer.write(json);
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
         
         //---------------------------------------------------------------------------
         // double[][] ring = fetchRegionBoundaries("Winterthur", RegionType.DISTRICT);
@@ -188,7 +188,7 @@ public class FetchData {
     }
 
     // this calls GeoAdmin API and retunrs JSON as a string
-    private static String callGeoAdminAPI(String method, HashMap<String, String> params) {
+    public static String callGeoAdminAPI(String method, HashMap<String, String> params) {
         String apiUrl = "https://api3.geo.admin.ch/rest/services/api/MapServer/"; // Replace with the actual API URL
 
         String APICall = apiUrl + method + paramsToApiString(params);

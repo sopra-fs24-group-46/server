@@ -1,15 +1,16 @@
 package ch.uzh.ifi.hase.soprafs24.geo_admin_api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import ch.uzh.ifi.hase.soprafs24.game.entity.LocationTypes;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
@@ -103,4 +104,44 @@ public class APIServiceTest {
         var questions = APIService.getQuestions(settings);
         assertEquals(1, questions.size());
     }
+    
+    @Test 
+    public void noLocationTypes() {
+        var settings = new Settings();
+        assertThrows(ResponseStatusException.class, () -> APIService.getQuestions(settings));
+    }
+    
+    @Test
+    void filterByPolygon() {
+        var settings = Settings.defaultSettings();
+
+        double[][] polygon = {
+                { 7.0, 45.0 },
+                { 8.0, 45.0 },
+                { 8.0, 46.0 },
+                { 7.0, 46.0 } };
+
+        //more than 10 questions
+        settings.setRounds(10);
+        settings.setRegionAsPolygon(polygon);
+        APIService.getQuestions(settings);
+
+        //less than 20
+        settings.setRounds(20);
+        assertThrows(ResponseStatusException.class, () -> APIService.getQuestions(settings));
+    }
+    
+    @Test
+    void filterByRegionName() {
+        var settings = Settings.defaultSettings();
+        settings.setRounds(10);
+        settings.setRegionType(RegionType.CANTON);
+        settings.setRegion("Bern");
+        var question = APIService.getQuestions(settings);
+        assertEquals(10, question.size());
+        settings.setRounds(700);
+        assertThrows(ResponseStatusException.class, () -> APIService.getQuestions(settings));
+    }
+
+
 }
