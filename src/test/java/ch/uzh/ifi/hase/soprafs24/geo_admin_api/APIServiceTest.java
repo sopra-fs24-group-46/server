@@ -18,7 +18,7 @@ public class APIServiceTest {
 
     @Test
     public void testNoDuplicates() {
-        var settings = new Settings();
+        var settings = Settings.defaultSettings();
         settings.setLocationTypes(List.of(LocationTypes.ALPINE_MOUNTAIN, LocationTypes.MOUNTAIN, LocationTypes.HILL,
                 LocationTypes.MAIN_HILL, LocationTypes.LAKE));
         var questions = APIService.loadResponseData(settings).getJsonNodes();
@@ -35,7 +35,7 @@ public class APIServiceTest {
 
     @Test
     public void hasContentAlpine() {
-        var settings = new Settings();
+        var settings = Settings.defaultSettings();
         settings.setLocationTypes(List.of(LocationTypes.ALPINE_MOUNTAIN));
         var questions = APIService.loadResponseData(settings).getJsonNodes();
         var names = questions.stream().map((node) -> {
@@ -51,7 +51,7 @@ public class APIServiceTest {
 
     @Test
     public void testNoRingGeometry() {
-        var settings = new Settings();
+        var settings = Settings.defaultSettings();
         settings.setLocationTypes(List.of(LocationTypes.LAKE));
         var jsonNodes = APIService.loadResponseData(settings).getJsonNodes();
         List<JsonNode> points = jsonNodes.stream().filter((node) -> {
@@ -68,7 +68,7 @@ public class APIServiceTest {
     
     @Test
     public void loadLakes() {
-        var settings = new Settings();
+        var settings = Settings.defaultSettings();
         settings.setRounds(10);
         settings.setLocationTypes(List.of(LocationTypes.LAKE));
         var questions = APIService.getQuestions(settings);
@@ -77,7 +77,7 @@ public class APIServiceTest {
     
     @Test
     public void correctEncodingLakes() {
-        var settings = new Settings();
+        var settings = Settings.defaultSettings();
         settings.setRounds(1);
         settings.setLocationTypes(List.of(LocationTypes.LAKE));
         settings.setLocationNames(List.of("Heurütiweiher"));
@@ -87,7 +87,7 @@ public class APIServiceTest {
 
     @Test
     public void correctEncodingMountainsEscaped() {
-        var settings = new Settings();
+        var settings = Settings.defaultSettings();
         settings.setRounds(1);
         settings.setLocationTypes(List.of(LocationTypes.ALPINE_MOUNTAIN));
         settings.setLocationNames(List.of("Glarner T\u00F6di"));
@@ -96,7 +96,7 @@ public class APIServiceTest {
     }
     @Test
     public void correctEncodingMountains() {
-        var settings = new Settings();
+        var settings = Settings.defaultSettings();
         settings.setRounds(1);
         settings.setLocationTypes(List.of(LocationTypes.ALPINE_MOUNTAIN));
         settings.setLocationNames(List.of("Glarner Tödi"));

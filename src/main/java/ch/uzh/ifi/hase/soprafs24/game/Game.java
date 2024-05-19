@@ -40,7 +40,8 @@ public class Game implements Serializable {
     // Public constructor allows creation of new games which can be stored to the
     // database
     public Game(User hostPlayer) {
-        settings = new Settings(hostPlayer.getId());
+        settings = Settings.defaultSettings();
+        settings.setHostUserId(hostPlayer.getId());
         gameModel = new GameModel();
         var host = gameModel.addPlayer(hostPlayer.getDisplayName());
         gameModel.setHostPlayer(host);

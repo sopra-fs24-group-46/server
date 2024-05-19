@@ -260,7 +260,7 @@ public class GameControllerUnitTest {
         public void getSettingsTest() throws Exception {
                 // Arrange
                 String gameId = "ab3501ds";
-                var settings = new Settings();
+                var settings = Settings.defaultSettings();
                 settings.setRounds(4);
                 given(gameService.getSettingsView(Mockito.matches(gameId))).willReturn(settings);
                 var postRequest = get("/game/" + gameId + "/settings/").contentType(MediaType.APPLICATION_JSON);

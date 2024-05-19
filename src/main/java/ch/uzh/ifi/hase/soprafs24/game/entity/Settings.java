@@ -12,8 +12,8 @@ import ch.uzh.ifi.hase.soprafs24.geo_admin_api.RegionType;
 public class Settings implements SettingView {
 
     private Long hostUserId;
-    private Integer maxPlayers = 4;
-    private Integer rounds = 4;
+    private Integer maxPlayers;
+    private Integer rounds;
     
     //data filtering
     private List<LocationTypes> locationTypes;
@@ -23,13 +23,27 @@ public class Settings implements SettingView {
     private List<String> locationNames;
 
     // times in seconds
-    private Integer questionTime = 10;
-    private Integer guessingTime = 10;
-    private Integer mapRevealTime = 10;
-    private Integer leaderBoardTime = 5;
+    private Integer questionTime;
+    private Integer guessingTime;
+    private Integer mapRevealTime;
+    private Integer leaderBoardTime;
     // M2
     // Difficulty
     // Region
+
+    public static Settings defaultSettings() {
+        var settings = new Settings();
+        settings.maxPlayers = 4;
+        settings.rounds = 4;
+
+        settings.questionTime = 10;
+        settings.guessingTime = 10;
+        settings.mapRevealTime = 10;
+        settings.leaderBoardTime = 5;
+
+        settings.locationTypes = List.of(LocationTypes.values());
+        return settings;
+    }
 
     public Settings(int maxPlayers, int rounds, int guessingTimePerRound) {
         this.maxPlayers = maxPlayers;
@@ -44,7 +58,6 @@ public class Settings implements SettingView {
     }
 
     public Settings() {
-        this.locationTypes = List.of(LocationTypes.values());
     }
 
     public Long getHostUserId() {
@@ -101,7 +114,10 @@ public class Settings implements SettingView {
             }
             setRegion(settings.getRegion());
             setRegionType(settings.getRegionType());
-        } else setRegion(null);//disable filtering
+        } else {
+            setRegion(null);
+            setRegionType(null);
+        } //disable filtering
 
         if (settings.getLocationNames() != null && !settings.getLocationNames().isEmpty()) {
             setLocationNames(settings.getLocationNames());

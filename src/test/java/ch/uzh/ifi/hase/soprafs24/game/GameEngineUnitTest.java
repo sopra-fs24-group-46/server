@@ -38,7 +38,7 @@ class GameEngineUnitTest {
     void testInitGame() {
 
         GameModel gameModel = new GameModel();
-        Settings settings = new Settings();
+        Settings settings = Settings.defaultSettings();
         GameEngine.initGame(gameModel, settings);
         assertEquals(GameState.LOBBY, gameModel.getGameState());
         assertThrows(ResponseStatusException.class, () -> GameEngine.initGame(gameModel, settings));
@@ -48,7 +48,7 @@ class GameEngineUnitTest {
     @Test
     void testLoadGame() {
         GameModel gameModel = new GameModel();
-        Settings settings = new Settings();
+        Settings settings = Settings.defaultSettings();
         assertThrows(ResponseStatusException.class, () -> GameEngine.loadGame(gameModel, settings));
 
         GameEngine.initGame(gameModel, settings);
@@ -62,7 +62,7 @@ class GameEngineUnitTest {
     @Test
     void testNextRoundStateQuestion() {
         GameModel gameModel = new GameModel();
-        Settings settings = new Settings();
+        Settings settings = Settings.defaultSettings();
         long before = System.currentTimeMillis();
         GameEngine.initGame(gameModel, settings);
         GameEngine.loadGame(gameModel, settings);
@@ -79,7 +79,7 @@ class GameEngineUnitTest {
     @Test
     void testNextRoundStateGuessing() {
         GameModel gameModel = new GameModel();
-        Settings settings = new Settings();
+        Settings settings = Settings.defaultSettings();
         GameEngine.initGame(gameModel, settings);
         GameEngine.loadGame(gameModel, settings);
         GameEngine.nextRoundState(gameModel, RoundState.QUESTION);
@@ -93,7 +93,7 @@ class GameEngineUnitTest {
     @Test
     void testNextRoundStateMapReveal() {
         GameModel gameModel = new GameModel();
-        Settings settings = new Settings();
+        Settings settings = Settings.defaultSettings();
         GameEngine.initGame(gameModel, settings);
         GameEngine.loadGame(gameModel, settings);
         GameEngine.nextRoundState(gameModel, RoundState.QUESTION);
@@ -108,7 +108,7 @@ class GameEngineUnitTest {
     @Test
     void testNextRoundStateLeaderboard() {
         GameModel gameModel = new GameModel();
-        Settings settings = new Settings();
+        Settings settings = Settings.defaultSettings();
         GameEngine.initGame(gameModel, settings);
         GameEngine.loadGame(gameModel, settings);
         GameEngine.nextRoundState(gameModel, RoundState.QUESTION);
@@ -125,7 +125,7 @@ class GameEngineUnitTest {
     @Test
     void testEndGame() {
         GameModel gameModel = new GameModel();
-        Settings settings = new Settings();
+        Settings settings = Settings.defaultSettings();
         GameEngine.initGame(gameModel, settings);
 
         assertThrows(ResponseStatusException.class, () -> GameEngine.endGame(gameModel, settings));
@@ -138,7 +138,7 @@ class GameEngineUnitTest {
     @Test
     void testAddAnswer() {
         GameModel gameModel = new GameModel();
-        Settings settings = new Settings();
+        Settings settings = Settings.defaultSettings();
         GameEngine.initGame(gameModel, settings);
         GameEngine.loadGame(gameModel, settings);
 
@@ -157,7 +157,7 @@ class GameEngineUnitTest {
     @Test
     void testTimeTillNextPhase() throws InterruptedException {
         GameModel gameModel = new GameModel();
-        Settings settings = new Settings();
+        Settings settings = Settings.defaultSettings();
         settings.setQuestionTime(1);
         settings.setGuessingTime(2);
         settings.setMapRevealTime(3);
