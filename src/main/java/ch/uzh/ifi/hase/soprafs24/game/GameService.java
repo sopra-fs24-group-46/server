@@ -19,9 +19,12 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ch.uzh.ifi.hase.soprafs24.endpoint.controller.CreateGameDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.controller.NextGameDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameResponseDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameStateDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.PowerUp;
 import ch.uzh.ifi.hase.soprafs24.game.View.GameModelView;
@@ -35,12 +38,14 @@ import ch.uzh.ifi.hase.soprafs24.user.UserService;
 @Transactional
 public class GameService {
 
+    private final Map<String, String> nextGameId;
     private final Map<String, Game> gameRepository;
     private final UserService userService;
 
     @Autowired
     public GameService(UserService userService) {
         this.gameRepository = new HashMap<>();
+        this.nextGameId = new HashMap<>();
         this.userService = userService;
     }
 
@@ -51,9 +56,13 @@ public class GameService {
         scheduler.scheduleAtFixedRate(clearClosedGamesRunnable, 0, 1, TimeUnit.MINUTES);
     }
    
-    public CreateGameResponseDTO createGame(CredentialsDTO credentials) {
+    public CreateGameResponseDTO createGame(CreateGameDTO createGameDTO) {
+        var credentials = DTOMapper.INSTANCE.convertCreateGameDTOtoCredentialsDTO(createGameDTO);
         User user = userService.verifyUserCredentials(credentials);
         Game game = new Game(user);
+        if(createGameDTO.getGameId() != null) {
+            nextGameId.put(createGameDTO.getGameId(), game.getId());
+        }
         gameRepository.put(game.getId(), game);
 
         CreateGameResponseDTO response = new CreateGameResponseDTO();
@@ -156,5 +165,15 @@ public class GameService {
 
     private void clearClosedGames() {
         gameRepository.entrySet().removeIf(entry -> entry.getValue().getGameState().getGameState() == GameState.CLOSED);
+    }
+
+    public NextGameDTO getNextGameId(String gameId) {
+        if(gameId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "GameId cannot be null: " + gameId);
+        }
+        if(!nextGameId.containsKey(gameId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game with publicId: " + gameId + " has no next game. Please try again later.");
+        }
+        return new NextGameDTO(nextGameId.get(gameId));
     }
 }

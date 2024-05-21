@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.user.User;
+import ch.uzh.ifi.hase.soprafs24.endpoint.controller.CreateGameDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
@@ -51,4 +52,6 @@ public interface DTOMapper {
   User convertSettingsDTOtoUser(GameSettingsDTO settingsDTO);
 
   CredentialsDTO convertSettingsDTOtoCredentialsDTO(GameSettingsDTO settingsDTO);
+
+CredentialsDTO convertCreateGameDTOtoCredentialsDTO(CreateGameDTO createGameDTO);
 }

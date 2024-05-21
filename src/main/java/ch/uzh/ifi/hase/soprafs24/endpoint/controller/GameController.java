@@ -47,9 +47,15 @@ public class GameController {
      */
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateGameResponseDTO createGame(@RequestBody CredentialsDTO credentials) { // HTTP POST to /game/create
+    public CreateGameResponseDTO createGame(@RequestBody CreateGameDTO createGameDTO) { // HTTP POST to /game/create
 
-        return gameService.createGame(credentials);
+        return gameService.createGame(createGameDTO);
+    }
+    
+    @GetMapping("/{gameId}/next")
+    @ResponseStatus(HttpStatus.OK)
+    public NextGameDTO nextGame(@PathVariable String gameId) {
+        return gameService.getNextGameId(gameId);
     }
 
     /**

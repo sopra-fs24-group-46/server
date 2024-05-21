@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import ch.uzh.ifi.hase.soprafs24.endpoint.controller.CreateGameDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameResponseDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameStateDTO;
@@ -59,7 +60,7 @@ public class GameServiceTest{
         // testUser
         Mockito.when(userService.verifyUserCredentials(Mockito.any())).thenReturn(host);
 
-        var response = gameService.createGame(new CredentialsDTO());
+        var response = gameService.createGame(new CreateGameDTO());
         gameId = response.getGameId();
         playerId = response.getPlayerId();
     }
@@ -67,7 +68,7 @@ public class GameServiceTest{
     @Test
     public void createGame_validInputs_success() {
         // Arrange
-        CredentialsDTO credentialsDTO = new CredentialsDTO();
+        CreateGameDTO credentialsDTO = new CreateGameDTO();
         credentialsDTO.setId(1L);
         credentialsDTO.setToken("1");
 
