@@ -95,8 +95,17 @@ public class Settings implements SettingView {
         if (settings.getRounds() != null) {
             setRounds(settings.getRounds());
         }
+        if (settings.getQuestionTime() != null) {
+            setQuestionTime(settings.getQuestionTime());
+        }
         if (settings.getGuessingTime() != null) {
             setGuessingTime(settings.getGuessingTime());
+        }
+        if (settings.getMapRevealTime() != null) {
+            setMapRevealTime(settings.getMapRevealTime());
+        }
+        if (settings.getLeaderBoardTime() != null) {
+            setLeaderBoardTime(settings.getLeaderBoardTime());
         }
         if (settings.getLocationTypes() != null && !settings.getLocationTypes().isEmpty()) {
             setLocationTypes(settings.getLocationTypes());
