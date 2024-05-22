@@ -1,6 +1,6 @@
 | Week | Name     | Issue | Description                                     |
 |------|----------|-------|-------------------------------------------------|
-|1||(#83)[sopra-fs24-group-46/client#83]||
+|1||[#83](sopra-fs24-group-46/client#83)||
 |2||||
 |3|Dominic|#1|closed|
 |3|Dominic|#13|closed|
