@@ -11,18 +11,20 @@ public class GameSettingsDTO {
     private long id;// user id
     private String token;// user token
 
+    private String name;
+
     // game settings
     private int maxPlayers;
     private int rounds;
-    
-    //data filtering
+
+    // data filtering
     private List<LocationTypes> locationTypes;
     private double[][] regionAsPolygon;
     private String region;
     private RegionType regionType;
     private List<String> locationNames;
 
-    //times
+    // times
     private Integer questionTime;
     private Integer guessingTime;
     private Integer mapRevealTime;
@@ -135,6 +137,14 @@ public class GameSettingsDTO {
 
     public void setLocationNames(List<String> locationNames) {
         this.locationNames = locationNames;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

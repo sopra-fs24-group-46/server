@@ -1,7 +1,10 @@
 package ch.uzh.ifi.hase.soprafs24.game.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -9,23 +12,50 @@ import org.springframework.web.server.ResponseStatusException;
 import ch.uzh.ifi.hase.soprafs24.game.View.SettingView;
 import ch.uzh.ifi.hase.soprafs24.geo_admin_api.RegionType;
 
-public class Settings implements SettingView {
+@Entity
+@Table(name = "SETTINGS")
+public class Settings implements SettingView, Serializable {
 
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(name = "HOST_USER_ID")
     private Long hostUserId;
+
+    @Column(name = "NAME")
+    private String name;
+
+    @Column(name = "MAX_PLAYERS")
     private Integer maxPlayers;
+    @Column(name = "ROUNDS")
     private Integer rounds;
-    
-    //data filtering
+
+    // data filtering
+    @ElementCollection
+    @Column(name = "LOCATION_TYPE")
     private List<LocationTypes> locationTypes;
+    @Column(name = "REGION_AS_POLYGON")
     private double[][] regionAsPolygon;
+    @Column(name = "REGION")
     private String region;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "REGION_TYPE")
     private RegionType regionType;
+    @ElementCollection
+    @Column(name = "LOCATION_NAME")
     private List<String> locationNames;
 
     // times in seconds
+    @Column(name = "QUESTION_TIME")
     private Integer questionTime;
+    @Column(name = "GUESSING_TIME")
     private Integer guessingTime;
+    @Column(name = "MAP_REVEAL_TIME")
     private Integer mapRevealTime;
+    @Column(name = "LEADER_BOARD_TIME")
     private Integer leaderBoardTime;
     // M2
     // Difficulty
@@ -115,22 +145,26 @@ public class Settings implements SettingView {
                 settings.getRegionAsPolygon().length > 2 && // polygon has at least 3 points
                 settings.getRegionAsPolygon()[0].length == 2) {// a point has two coordinates
             setRegionAsPolygon(settings.getRegionAsPolygon());
-        }else setRegionAsPolygon(null);//disable filtering
+        } else
+            setRegionAsPolygon(null);// disable filtering
 
         if (settings.getRegion() != null) {
             if (settings.getRegionType() == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "RegionType must be provided when using region name: " + settings.getRegion() + " " + settings.getRegionType());
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "RegionType must be provided when using region name: " + settings.getRegion() + " "
+                                + settings.getRegionType());
             }
             setRegion(settings.getRegion());
             setRegionType(settings.getRegionType());
         } else {
             setRegion(null);
             setRegionType(null);
-        } //disable filtering
+        } // disable filtering
 
         if (settings.getLocationNames() != null && !settings.getLocationNames().isEmpty()) {
             setLocationNames(settings.getLocationNames());
-        }else setLocationNames(null);//disable filtering
+        } else
+            setLocationNames(null);// disable filtering
     }
 
     public Integer getQuestionTime() {
@@ -221,4 +255,11 @@ public class Settings implements SettingView {
         this.region = region;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

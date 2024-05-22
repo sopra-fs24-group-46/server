@@ -33,6 +33,9 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.Collections;
+import java.util.List;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class GameControllerUnitTest {
@@ -74,11 +77,14 @@ public class GameControllerUnitTest {
 
                 // Act
                 mockMvc.perform(postRequest)
-                        .andExpect(status().isOk());
+                                .andExpect(status().isOk());
 
-                verify(gameService, Mockito.times(1)).usePowerUp(Mockito.matches(gameId), Mockito.matches(powerUpDTO.getPlayerId()), Mockito.any());
-                verify(gameService, Mockito.times(0)).usePowerUp(Mockito.matches("somethingElse"), Mockito.matches(powerUpDTO.getPlayerId()), Mockito.any());
+                verify(gameService, Mockito.times(1)).usePowerUp(Mockito.matches(gameId),
+                                Mockito.matches(powerUpDTO.getPlayerId()), Mockito.any());
+                verify(gameService, Mockito.times(0)).usePowerUp(Mockito.matches("somethingElse"),
+                                Mockito.matches(powerUpDTO.getPlayerId()), Mockito.any());
         }
+
         @Test
         public void getGameState() throws Exception {
                 // Arrange
@@ -278,5 +284,59 @@ public class GameControllerUnitTest {
 
         public static <T> org.hamcrest.Matcher<T> is(T value) {
                 return org.hamcrest.core.Is.is(value);
+        }
+
+        @Test
+        public void storeSettingsTest() throws Exception {
+                // Arrange
+                Settings settings = Settings.defaultSettings();
+                String jsonPayload = new ObjectMapper().writeValueAsString(settings);
+                var postRequest = post("/game/storeSettings").contentType(MediaType.APPLICATION_JSON)
+                                .content(jsonPayload);
+
+                // Act
+                mockMvc.perform(postRequest)
+                                .andExpect(status().isNoContent());
+
+                verify(gameService, Mockito.times(1)).storeSettings(Mockito.any(), Mockito.any());
+        }
+
+        @Test
+        public void getStoredSettingsTest() throws Exception {
+                // Arrange
+                Long userId = 1L;
+                String token = "token";
+                Settings settings = Settings.defaultSettings();
+
+                given(gameService.getSettings(Mockito.any())).willReturn(
+                                List.of(settings));
+
+                var postRequest = get("/game/" + userId + "/" + token + "/getStoredSettings")
+                                .contentType(MediaType.APPLICATION_JSON);
+
+                // Act
+                mockMvc.perform(postRequest)
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.length()", is(1)))
+                                .andExpect(jsonPath("$[0].rounds", is(4)));
+
+                verify(gameService, Mockito.times(1)).getSettings(Mockito.any());
+        }
+
+        @Test
+        public void nextGameTest() throws Exception {
+                // Arrange
+                String gameId = "ab3501ds";
+                NextGameDTO nextGameDTO = new NextGameDTO(gameId);
+                given(gameService.getNextGameId(gameId)).willReturn(nextGameDTO);
+
+                var postRequest = get("/game/" + gameId + "/next").contentType(MediaType.APPLICATION_JSON);
+
+                // Act
+                mockMvc.perform(postRequest)
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.gameId", is("ab3501ds")));
+
+                verify(gameService, Mockito.times(1)).getNextGameId(gameId);
         }
 }

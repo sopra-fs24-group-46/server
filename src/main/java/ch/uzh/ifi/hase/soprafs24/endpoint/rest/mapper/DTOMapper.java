@@ -41,8 +41,6 @@ public interface DTOMapper {
   @Mapping(source = "rounds", target = "rounds")
   @Mapping(source = "guessingTime", target = "guessingTime")
   // @Mapping(source = "host", target = "hostPlayer")
-  Settings convertGameSettingsDTOToEntity(GameSettingsDTO gameSettingsDTO);
-
   Settings gameSettingsDTOtoSettings(GameSettingsDTO settingsDTO);
 
   User convertCredentialsDTOtoUser(CredentialsDTO credentials);
@@ -53,5 +51,5 @@ public interface DTOMapper {
 
   CredentialsDTO convertSettingsDTOtoCredentialsDTO(GameSettingsDTO settingsDTO);
 
-CredentialsDTO convertCreateGameDTOtoCredentialsDTO(CreateGameDTO createGameDTO);
+  CredentialsDTO convertCreateGameDTOtoCredentialsDTO(CreateGameDTO createGameDTO);
 }

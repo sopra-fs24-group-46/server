@@ -51,7 +51,7 @@ public class GameController {
 
         return gameService.createGame(createGameDTO);
     }
-    
+
     @GetMapping("/{gameId}/next")
     @ResponseStatus(HttpStatus.OK)
     public NextGameDTO nextGame(@PathVariable String gameId) {
@@ -101,9 +101,10 @@ public class GameController {
     /**
      * This endpoint is used by a player to use a powerup in a game.
      *
-     * @param gameId The ID of the game.
-     * @param powerUpDTO    The PowerUpDTO containing the player's ID and the powerup to
-     *               use.
+     * @param gameId     The ID of the game.
+     * @param powerUpDTO The PowerUpDTO containing the player's ID and the powerup
+     *                   to
+     *                   use.
      * @response 200 OK - if the powerup has been successfully used.
      * @return error if something went wrong
      */
@@ -113,7 +114,6 @@ public class GameController {
             @RequestBody PowerUpDTO powerUpDTO) {
         gameService.usePowerUp(gameId, powerUpDTO.getPlayerId(), powerUpDTO.getPowerUp());
     }
-
 
     /**
      * Opens the lobby for a game.
@@ -221,7 +221,7 @@ public class GameController {
      * @param settingsDTO The new settings of the game.
      * @param credentials The credentials of the player.
      */
-    @PutMapping("/{gameId}/updateSettings") 
+    @PutMapping("/{gameId}/updateSettings")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateSettings(@PathVariable String gameId,
             @RequestBody GameSettingsDTO settingsDTO) {
@@ -230,6 +230,36 @@ public class GameController {
         Settings settings = DTOMapper.INSTANCE.gameSettingsDTOtoSettings(settingsDTO);
         CredentialsDTO userCredentials = DTOMapper.INSTANCE.convertSettingsDTOtoCredentialsDTO(settingsDTO);
         gameService.updateSettings(gameId, settings, userCredentials);
+    }
+
+    /**
+     * Stores the settings for a user
+     * 
+     * @param settingsDTO The settings of the game to store.
+     */
+    @PostMapping("/storeSettings")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void storeSettings(@RequestBody GameSettingsDTO settingsDTO) {
+        // Store the settings of the game.
+
+        CredentialsDTO userCredentials = DTOMapper.INSTANCE.convertSettingsDTOtoCredentialsDTO(settingsDTO);
+        Settings settings = DTOMapper.INSTANCE.gameSettingsDTOtoSettings(settingsDTO);
+        gameService.storeSettings(settings, userCredentials);
+    }
+
+    /**
+     * Retrieves the stored settings of a user
+     * 
+     * @param userId The ID of the player.
+     * @param token  The token of the player.
+     * @return The stored settings of a user
+     */
+    @GetMapping("/{userId}/{token}/getStoredSettings")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Settings> getStoredSettings(@PathVariable Long userId, @PathVariable String token) {
+        // Get the stored settings of the game.
+        var settings = gameService.getSettings(new CredentialsDTO(userId, token));
+        return settings;
     }
 
 }

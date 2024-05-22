@@ -32,10 +32,12 @@ import ch.uzh.ifi.hase.soprafs24.game.entity.Answer;
 import ch.uzh.ifi.hase.soprafs24.game.entity.GeoLocation;
 import ch.uzh.ifi.hase.soprafs24.game.entity.Settings;
 
-public class GameServiceTest{
+public class GameServiceTest {
 
     @Mock
     private final UserService userService = Mockito.mock(UserService.class);
+    @Mock
+    private final SettingsRepository settingsRepository = Mockito.mock(SettingsRepository.class);
 
     @InjectMocks
     private GameService gameService;
@@ -48,13 +50,12 @@ public class GameServiceTest{
     public void setup() {
         MockitoAnnotations.openMocks(this);
 
-        gameService = new GameService(userService);
+        gameService = new GameService(settingsRepository, userService);
 
         // given
         host = new User();
         host.setId(1L);
         host.setUsername("HostPlayer");
-
 
         // when -> any object is being save in the userRepository -> return the dummy
         // testUser
@@ -202,7 +203,7 @@ public class GameServiceTest{
     @Test
     public void submitAnswer_validInputs_success() throws InterruptedException {
         // Arrange
-        GeoLocation location = new GeoLocation( 46.0, 8.0 );
+        GeoLocation location = new GeoLocation(46.0, 8.0);
         Answer answer = new Answer(location);
 
         // Act
