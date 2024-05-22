@@ -13,11 +13,14 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import ch.uzh.ifi.hase.soprafs24.endpoint.controller.CreateGameDTO;
@@ -64,6 +67,9 @@ public class GameServiceTest {
         var response = gameService.createGame(new CreateGameDTO());
         gameId = response.getGameId();
         playerId = response.getPlayerId();
+        Mockito.when(settingsRepository.findById(Mockito.any())).thenReturn(Optional.of(new Settings()));
+        Mockito.when(settingsRepository.save(Mockito.any())).thenReturn(new Settings());
+        Mockito.when(userService.verifyUserCredentials(null)).thenReturn(null);
     }
 
     @Test
@@ -248,6 +254,47 @@ public class GameServiceTest {
 
         // Assert
         assertNotNull(allGameIds);
+    }
+
+    @Test
+    public void nextGame_validInputs_success() throws InterruptedException {
+        // Arrange
+        var oldId = gameService.createGame(new CreateGameDTO()).getGameId();
+        var dto = new CreateGameDTO();
+        dto.setGameId(oldId);
+
+        // Act
+        var newId = gameService.createGame(dto);
+        var directedId = gameService.getNextGameId(oldId);
+
+        // Assert
+        assertEquals(newId.getGameId(), directedId.getGameId());
+    }
+
+    @Test
+    public void storeSettings_validInputs_success() {
+        // Arrange
+        Settings settings = Settings.defaultSettings();
+        var credentials = new CredentialsDTO();
+
+        // Act
+        gameService.storeSettings(settings, credentials);
+
+        // Assert
+        verify(settingsRepository, times(1)).save(any(Settings.class));
+    }
+
+    @Test
+    public void getStoredSettings_validInputs_success() {
+        // Arrange
+        Settings settings = Settings.defaultSettings();
+        gameService.storeSettings(settings, new CredentialsDTO());
+
+        // Act
+        var storedSettings = gameService.getSettings(new CredentialsDTO(3L, "3"));
+
+        // Assert
+        verify(settingsRepository, times(1)).findAllByHostUserId(3L);
     }
 
     private void waitFor(GameState state) throws InterruptedException {
