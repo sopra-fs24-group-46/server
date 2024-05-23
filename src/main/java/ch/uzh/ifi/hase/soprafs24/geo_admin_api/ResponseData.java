@@ -6,6 +6,7 @@ package ch.uzh.ifi.hase.soprafs24.geo_admin_api;
 //
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -96,12 +97,14 @@ public class ResponseData {
 
     public void removeDuplicates() {
         // reducing to unique featureIds
-        List<Integer> featureIds = new ArrayList<>();
+        List<double[]> featureIds = new ArrayList<>();
         List<JsonNode> uniqueFeatureIdData = new ArrayList<>();
         for (JsonNode node : this.data) {
-            int featureId = node.get("featureId").asInt();
-            if (!featureIds.contains(featureId)) {
-                featureIds.add(featureId);
+            double x = node.get("bbox").get(0).asDouble();
+            double y = node.get("bbox").get(1).asDouble();
+            double[] bbox = { x, y };
+            if (!featureIds.stream().anyMatch(f -> Arrays.equals(f, bbox))) {
+                featureIds.add(bbox);
                 uniqueFeatureIdData.add(node);
             }
         }

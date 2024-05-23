@@ -157,4 +157,13 @@ public class APIServiceTest {
         assertThrows(ResponseStatusException.class, () -> APIService.getQuestions(settings));
     }
 
+    @Test
+    void loadingZürichSeeWorks() {
+        var settings = Settings.defaultSettings();
+        settings.setRounds(1);
+        settings.setLocationNames(List.of("Zürichsee"));
+        var question = APIService.getQuestions(settings);
+        assertEquals(1, question.size());
+    }
+
 }
