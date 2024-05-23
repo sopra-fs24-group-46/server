@@ -30,7 +30,7 @@
 |6|Dominic|#81|closed|
 |6|Dominic|#76|closed|
 |6|Serafin|[#72](sopra-fs24-group-46/server#72)|closed|
-|7|Serafin|[#49](sopra-fs24-group-46/server#49)|removing duplicate names closed|
+|6|Serafin|[#49](sopra-fs24-group-46/server#49)|removing duplicate names closed|
 |6|Serafin|[#83](sopra-fs24-group-46/server#83)|closed|
 |6|Serafin|[#89](sopra-fs24-group-46/server#89)|closed|
 |6|Serafin|[#80](sopra-fs24-group-46/server#80)|closed|
