@@ -63,7 +63,8 @@ public class ResponseData {
     public void filterByPolygon(double[][] polygon) {
         data = data.stream().filter(
                 obj -> {
-                    if (obj.get("geometry").get("points") == null) {// filtering for polygons
+                    if (obj.get("geometry").get("points") == null || obj.get("geometry").get("points").size() == 0
+                            || obj.get("geometry").get("points").get(0).size() != 2) {// filtering for polygons
                         return false;
                     }
                     return isPointInsidePolygon(
@@ -86,7 +87,8 @@ public class ResponseData {
             throw new IllegalArgumentException("region and type must not be null: " + type + " " + region);
         }
         double[][] polygon = FetchData.fetchRegionBoundaries(region, type);
-        System.out.println("polygon(" + polygon.length + ") retrieved from Geo Admin: " + type + " " + region + "\n points: [" +
+        System.out.println("polygon(" + polygon.length + ") retrieved from Geo Admin: " + type + " " + region
+                + "\n points: [" +
                 "(" + polygon[0][0] + ", " + polygon[0][1] + "), (" + polygon[1][0] + ", " + polygon[1][1] + "), (" +
                 polygon[2][0] + ", " + polygon[2][1] + "), (" + polygon[3][0] + ", " + polygon[3][1] + ")");
         filterByPolygon(polygon);
@@ -164,16 +166,17 @@ public class ResponseData {
     }
 
     public void logSize(int roundNumber, String ErrorMessage) {
-        System.out.println("Round ("+data.size()+"/"+roundNumber+"): " + ErrorMessage);
-        filterLog = filterLog + "("+data.size()+"/"+roundNumber+"): " + ErrorMessage + " \n";
+        System.out.println("Round (" + data.size() + "/" + roundNumber + "): " + ErrorMessage);
+        filterLog = filterLog + "(" + data.size() + "/" + roundNumber + "): " + ErrorMessage + " \n";
         if (data.size() < roundNumber) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, filterLog);
         }
     }
 
     private static List<JsonNode> arrayNodeToList(ArrayNode json) {
-        if(json == null || json.size() == 0) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Loaded data is: " +json + ". Should be of size equal to rounds");
+        if (json == null || json.size() == 0) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Loaded data is: " + json + ". Should be of size equal to rounds");
         }
         Stream<JsonNode> stream = StreamSupport.stream(json.spliterator(), false);
         List<JsonNode> list = stream.collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
@@ -190,8 +193,9 @@ public class ResponseData {
         // find the middle of the ring
         var mx = ring.stream().mapToDouble(node -> node.get(0).asDouble()).average().getAsDouble();
         var my = ring.stream().mapToDouble(node -> node.get(1).asDouble()).average().getAsDouble();
-       
-        double[][] ringArray = ring.stream().map(node -> new double[] {node.get(0).asDouble(), node.get(1).asDouble()}).toArray(double[][]::new);
+
+        double[][] ringArray = ring.stream()
+                .map(node -> new double[] { node.get(0).asDouble(), node.get(1).asDouble() }).toArray(double[][]::new);
         double area = calculateArea(ringArray);
 
         // add a field to the json node
@@ -208,8 +212,6 @@ public class ResponseData {
 
         return json;
     }
-    
-    
 
     public static double calculateArea(double[][] points) {
         int n = points.length;
@@ -226,7 +228,7 @@ public class ResponseData {
     public int size() {
         return data.size();
     }
-    
+
     public String getFilterLog() {
         return filterLog;
     }

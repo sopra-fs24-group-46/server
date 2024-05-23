@@ -66,7 +66,7 @@ public class APIServiceTest {
         assertEquals(points.get(0).get("geometry").get("points").get(0).size(), 2);
         assertEquals(0, rings.size());
     }
-    
+
     @Test
     public void loadLakes() {
         var settings = Settings.defaultSettings();
@@ -75,7 +75,7 @@ public class APIServiceTest {
         var questions = APIService.getQuestions(settings);
         assertEquals(10, questions.size());
     }
-    
+
     @Test
     public void correctEncodingLakes() {
         var settings = Settings.defaultSettings();
@@ -95,6 +95,7 @@ public class APIServiceTest {
         var questions = APIService.getQuestions(settings);
         assertEquals(1, questions.size());
     }
+
     @Test
     public void correctEncodingMountains() {
         var settings = Settings.defaultSettings();
@@ -104,13 +105,13 @@ public class APIServiceTest {
         var questions = APIService.getQuestions(settings);
         assertEquals(1, questions.size());
     }
-    
-    @Test 
+
+    @Test
     public void noLocationTypes() {
         var settings = new Settings();
         assertThrows(ResponseStatusException.class, () -> APIService.getQuestions(settings));
     }
-    
+
     @Test
     void filterByPolygon() {
         var settings = Settings.defaultSettings();
@@ -121,16 +122,16 @@ public class APIServiceTest {
                 { 8.0, 46.0 },
                 { 7.0, 46.0 } };
 
-        //more than 10 questions
+        // more than 10 questions
         settings.setRounds(10);
         settings.setRegionAsPolygon(polygon);
         APIService.getQuestions(settings);
 
-        //less than 20
+        // less than 20
         settings.setRounds(20);
         assertThrows(ResponseStatusException.class, () -> APIService.getQuestions(settings));
     }
-    
+
     @Test
     void filterByRegionName() {
         var settings = Settings.defaultSettings();
@@ -143,5 +144,17 @@ public class APIServiceTest {
         assertThrows(ResponseStatusException.class, () -> APIService.getQuestions(settings));
     }
 
+    @Test
+    void filterHillsByRegion() {
+        var settings = Settings.defaultSettings();
+        settings.setRounds(10);
+        settings.setLocationTypes(List.of(LocationTypes.HILL));
+        settings.setRegionType(RegionType.CANTON);
+        settings.setRegion("Bern");
+        var question = APIService.getQuestions(settings);
+        assertEquals(10, question.size());
+        settings.setRounds(700);
+        assertThrows(ResponseStatusException.class, () -> APIService.getQuestions(settings));
+    }
 
 }
