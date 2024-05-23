@@ -1,11 +1,13 @@
 //Endpoints for Game
 package ch.uzh.ifi.hase.soprafs24.endpoint.controller;
 
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameResponseDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameStateDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.JoinPostDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.NextGameDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PlayerIdDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PostGuessDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PowerUpDTO;

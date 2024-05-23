@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs24.endpoint.controller;
+package ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto;
 
 public class CreateGameDTO {
 
@@ -15,7 +15,7 @@ public class CreateGameDTO {
     }
 
     public CreateGameDTO() {
-        
+
     }
 
     public Long getId() {
@@ -34,4 +34,3 @@ public class CreateGameDTO {
         this.token = token;
     }
 }
-

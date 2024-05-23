@@ -20,11 +20,11 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ch.uzh.ifi.hase.soprafs24.endpoint.controller.CreateGameDTO;
-import ch.uzh.ifi.hase.soprafs24.endpoint.controller.NextGameDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameResponseDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameStateDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.NextGameDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.GameState;
 import ch.uzh.ifi.hase.soprafs24.game.Enum.PowerUp;

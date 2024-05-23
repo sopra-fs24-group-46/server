@@ -1,8 +1,10 @@
 package ch.uzh.ifi.hase.soprafs24.endpoint.controller;
 
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameSettingsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameStateDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.NextGameDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PostGuessDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.PowerUpDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.mapper.DTOMapper;
@@ -132,7 +134,7 @@ public class GameControllerUnitTest {
         @Test
         public void createGameTest() throws Exception {
                 // Arrange
-                CredentialsDTO credentialsDTO = new CredentialsDTO();
+                CreateGameDTO credentialsDTO = new CreateGameDTO();
                 credentialsDTO.setId(1L);
                 credentialsDTO.setToken("1");
                 String jsonPayload = new ObjectMapper().writeValueAsString(credentialsDTO);

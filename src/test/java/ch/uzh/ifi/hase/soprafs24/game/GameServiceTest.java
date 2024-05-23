@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import ch.uzh.ifi.hase.soprafs24.endpoint.controller.CreateGameDTO;
+import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CreateGameResponseDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.CredentialsDTO;
 import ch.uzh.ifi.hase.soprafs24.endpoint.rest.dto.GameStateDTO;
@@ -213,7 +213,7 @@ public class GameServiceTest {
         Answer answer = new Answer(location);
 
         // Act
-        gameService.startGame(gameId, null);
+        gameService.startGame(gameId, new CredentialsDTO());
         assertThrows(ResponseStatusException.class, () -> gameService.submitAnswer(gameId, playerId, answer));
         waitFor(RoundState.GUESSING);
         gameService.submitAnswer(gameId, playerId, answer);
