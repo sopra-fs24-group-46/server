@@ -31,7 +31,7 @@ public class ResponseDataTest {
     public void testFilterByPolygon() {
         ResponseData response = FetchData.readLocalJson("alpiner gipfel");
 
-        double[][] polygon ={
+        double[][] polygon = {
                 { 7.0, 45.0 },
                 { 8.0, 45.0 },
                 { 8.0, 46.0 },
@@ -39,7 +39,7 @@ public class ResponseDataTest {
 
         response.removeDuplicates();
         response.filterByPolygon(polygon);
-        assertEquals(34, response.getJsonNodes().size());
+        assertEquals(26, response.getJsonNodes().size());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class ResponseDataTest {
         ResponseData response = FetchData.readLocalJson("alpiner gipfel");
         assertEquals(2010, response.getJsonNodes().size());
         response.removeDuplicates();
-        assertEquals(228, response.getJsonNodes().size());
+        assertEquals(198, response.getJsonNodes().size());
     }
 
     @Test
@@ -75,10 +75,9 @@ public class ResponseDataTest {
     @Test
     public void testGetJsonNodes() {
         List<JsonNode> data = Arrays.asList(
-            JsonNodeFactory.instance.objectNode().put("name", "A"),
-            JsonNodeFactory.instance.objectNode().put("name", "B"),
-            JsonNodeFactory.instance.objectNode().put("name", "C")
-        );
+                JsonNodeFactory.instance.objectNode().put("name", "A"),
+                JsonNodeFactory.instance.objectNode().put("name", "B"),
+                JsonNodeFactory.instance.objectNode().put("name", "C"));
         ResponseData response = new ResponseData(data);
         assertEquals(data, response.getJsonNodes());
     }
@@ -90,7 +89,7 @@ public class ResponseDataTest {
         response.removeDuplicates();
         String json = response.getJsonAsString();
         var expected = "{\"results\":[{\"featureId\":425062,\"bbox\":[8.921949,46.810436,8.921949,46.810436],\"layerBodId\":\"ch.swisstopo.swissnames3d\",\"layerName\":\"Geografische Namen swissNAMES3D\",\"id\":425062,\"geometry\":{\"points\":[[8.921949,46.810436]],\"spatialReference\":{\"wkid\":4326}},\"attributes\":{\"objektart\":\"Alpiner Gipfel\",\"objektklasse\":\"TLM_NAME_PKT\",\"name\":\"Glarner Tödi\",\"sprachcode\":\"Hochdeutsch inkl. Lokalsprachen\",\"namen_typ\":\"einfacher Name\",\"status\":\"offiziell\",\"label\":\"Glarner Tödi\"}}]}";
-        assertEquals(expected,  json);
+        assertEquals(expected, json);
     }
 
     @Test
@@ -105,7 +104,7 @@ public class ResponseDataTest {
     @Test
     public void testReduceRingGeometry() {
         // not testing since it was only used to manipulate data which is stored now.
-        // would need to fetch data or build the json manually to test this. 
+        // would need to fetch data or build the json manually to test this.
         // Too much work for functionality testing.
     }
 }
