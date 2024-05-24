@@ -86,6 +86,25 @@
 | 9    |Serafin|[#131](https://github.com/sopra-fs24-group-46/server/issues/131)|closed|
 | 9    |Daniel|[#90](https://github.com/sopra-fs24-group-46/client/issues/90)|closed|
 | 9    |Daniel|[#93](https://github.com/sopra-fs24-group-46/client/issues/93)|closed|
+| 1    | Rolando  | [#2](https://github.com/sopra-fs24-group-46/client/issues/2)| closed                                          |
+| 1    | Rolando  | [#6](https://github.com/sopra-fs24-group-46/client/issues/6)| closed                                          |
+| 1    | Rolando  | [#7](https://github.com/sopra-fs24-group-46/client/issues/7)     | closed                                          |
+| 2    | Rolando  | [#16](https://github.com/sopra-fs24-group-46/client/issues/16)    | closed                                          |
+| 2    | Rolando  | [#26](https://github.com/sopra-fs24-group-46/client/issues/26)  | closed|
+| 3    | Rolando  | [#4](https://github.com/sopra-fs24-group-46/client/issues/6)| closed                                          |
+| 3    | Rolando  | [#37](https://github.com/sopra-fs24-group-46/client/issues/37)| closed                                          |
+| 4    | Rolando  | [#5](https://github.com/sopra-fs24-group-46/server/issues/5)| closed                                          |
+| 4    | Rolando  | [#3](https://github.com/sopra-fs24-group-46/server/issues/3)| closed                                          |
+| 5    | Rolando  | [#67](https://github.com/sopra-fs24-group-46/client/issues/67)| closed                                          |
+| 5    | Rolando  | [#62](https://github.com/sopra-fs24-group-46/client/issues/62)| closed                                          |
+| 6    | Rolando  | [#68](https://github.com/sopra-fs24-group-46/client/issues/68)| closed                                          |
+| 6    | Rolando  | [#29](https://github.com/sopra-fs24-group-46/client/issues/29)| closed                                          |
+| 7    | Rolando  | [#20](https://github.com/sopra-fs24-group-46/client/issues/20)| closed                                          |
+| 7    | Rolando  | [#31](https://github.com/sopra-fs24-group-46/client/issues/31)| closed                                          |
+| 8    | Rolando  | [#82](https://github.com/sopra-fs24-group-46/client/issues/82)| closed                                          |
+| 8    | Rolando  | [#27](https://github.com/sopra-fs24-group-46/client/issues/27)| closed                                          |
+| 9    | Rolando  | [#99](https://github.com/sopra-fs24-group-46/client/issues/99)   | closed                                          |
+| 9    | Rolando  | [#92](https://github.com/sopra-fs24-group-46/client/issues/92)   | closed                                          |
 
 
 
