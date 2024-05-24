@@ -14,7 +14,7 @@
 |3|Serafin|[#53](sopra-fs24-group-46/server#53)|closed|
 |3|Serafin|[#55](sopra-fs24-group-46/server#55)|closed|
 |3|Serafin|[#120](sopra-fs24-group-46/server#120)|closed|
-|3|Dominic|[#1] (https://github.com/sopra-fs24-group-46/client/issues/1)|closed|
+|3|Dominic|[#1](https://github.com/sopra-fs24-group-46/client/issues/1)|closed|
 |3|Dominic|#13|closed|
 |3|Dominic|#14|closed|
 |3|Dominic|#12|closed|
