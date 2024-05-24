@@ -105,7 +105,14 @@
 | 9    |Daniel|[#93](https://github.com/sopra-fs24-group-46/client/issues/93)|closed|
 | 9    | Rolando  | [#99](https://github.com/sopra-fs24-group-46/client/issues/99)   | closed                                          |
 | 9    | Rolando  | [#92](https://github.com/sopra-fs24-group-46/client/issues/92)   | closed                                          |
-
+| 9    |Dominic|[#96](https://github.com/https://github.com/sopra-fs24-group-46/client/issues/96)|closed|
+| 9    |Dominic|[#90](https://github.com/https://github.com/sopra-fs24-group-46/client/issues/90)|closed|
+| 9    |Dominic|[#93](https://github.com/https://github.com/sopra-fs24-group-46/client/issues/93)|closed|
+| 9    |Dominic|[#91](https://github.com/https://github.com/sopra-fs24-group-46/client/issues/91)|closed|
+| 9    |Dominic|[#86](https://github.com/https://github.com/sopra-fs24-group-46/client/issues/86)|closed|
+| 9    |Dominic|[#35](https://github.com/https://github.com/sopra-fs24-group-46/client/issues/35)|closed|
+| 9    |Dominic|[#98](https://github.com/https://github.com/sopra-fs24-group-46/client/issues/98)|closed|
+| 9    |Dominic|[#97](https://github.com/https://github.com/sopra-fs24-group-46/client/issues/97)|closed|
 
 
 
