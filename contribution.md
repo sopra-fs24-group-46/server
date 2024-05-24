@@ -15,20 +15,20 @@
 |3|Serafin|[#55](sopra-fs24-group-46/server#55)|closed|
 |3|Serafin|[#120](sopra-fs24-group-46/server#120)|closed|
 |3|Dominic|[#1](https://github.com/sopra-fs24-group-46/client/issues/1)|closed|
-|3|Dominic|#13|closed|
-|3|Dominic|#14|closed|
-|3|Dominic|#12|closed|
-|4|Dominic|#62|closed|
-|4|Dominic|#63|closed|
-|5|Dominic|#62|closed|
-|5|Dominic|#63|closed|
-|5|Dominic|#21|closed|
-|5|Dominic|#22|closed|
-|5|Dominic|#36|closed|
-|5|Dominic|#64|closed|
-|5|Dominic|#67|closed|
-|6|Dominic|#81|closed|
-|6|Dominic|#76|closed|
+|3|Dominic|[#13](https://github.com/sopra-fs24-group-46/client/issues/13)|closed|
+|3|Dominic|[#14](https://github.com/sopra-fs24-group-46/client/issues/14)|closed|
+|3|Dominic|[#12](https://github.com/sopra-fs24-group-46/client/issues/12)|closed|
+|4|Dominic|[#62](https://github.com/sopra-fs24-group-46/client/issues/62)|closed|
+|4|Dominic|[#63](https://github.com/sopra-fs24-group-46/client/issues/63)|closed|
+|5|Dominic|[#52](https://github.com/sopra-fs24-group-46/client/issues/52)|closed|
+|5|Dominic|[#63](https://github.com/sopra-fs24-group-46/client/issues/63)|closed|
+|5|Dominic|[#21](https://github.com/sopra-fs24-group-46/client/issues/21)|closed|
+|5|Dominic|[#22](https://github.com/sopra-fs24-group-46/client/issues/22)|closed|
+|5|Dominic|[#36](https://github.com/sopra-fs24-group-46/client/issues/36)|closed|
+|5|Dominic|[#64](https://github.com/sopra-fs24-group-46/client/issues/64)|closed|
+|5|Dominic|[#67](https://github.com/sopra-fs24-group-46/client/issues/67)|closed|
+|6|Dominic|[#81](https://github.com/sopra-fs24-group-46/client/issues/81)|closed|
+|6|Dominic|[#76](https://github.com/sopra-fs24-group-46/client/issues/76)|closed|
 |6|Serafin|[#72](sopra-fs24-group-46/server#72)|closed|
 |6|Serafin|[#49](sopra-fs24-group-46/server#49)|removing duplicate names closed|
 |6|Serafin|[#83](sopra-fs24-group-46/server#83)|closed|
@@ -39,23 +39,23 @@
 |6|Serafin|[#45](sopra-fs24-group-46/client#45)|closed|
 |6|Serafin|[#46](sopra-fs24-group-46/client#46)|closed|
 |6|Serafin|[#44](sopra-fs24-group-46/client#44)|closed|
-|7|Dominic|#74|closed|
-|7|Dominic|#66|always open|
-|7|Dominic|#20|closed|
+|7|Dominic|[#74](https://github.com/sopra-fs24-group-46/client/issues/74)|closed|
+|7|Dominic|[#66](https://github.com/sopra-fs24-group-46/client/issues/66)|closed|
+|7|Dominic|[#20](https://github.com/sopra-fs24-group-46/client/issues/20)|closed|
 |7|Serafin|[#83](sopra-fs24-group-46/client#83)|refactoring and providing basic structure|
 |7|Serafin|[#124](sopra-fs24-group-46/server#124)|closed|
 |7|Serafin|[#77](sopra-fs24-group-46/server#77)|closed|
 |7|Serafin|[#102](sopra-fs24-group-46/client#102)|closed|
-|8|Dominic|#82|closed|
-|8|Dominic|#83|closed|
-|8|Dominic|#48, #49|closed|
-|8|Dominic|#66|always open|
-|8|Dominic|#81|Still components open|
-|8|Dominic|#87|Only needs small changes to close|
-|8|Dominic|#88|Only needs small changes to close|
-|8|Dominic|#86|Buttons and theme need some work still|
-|8|Dominic|#89|small issue with header|
-|8|Dominic|#94|Basic styling done|
+|8|Dominic|[#82](https://github.com/sopra-fs24-group-46/client/issues/82)|closed|
+|8|Dominic|[#83](https://github.com/sopra-fs24-group-46/client/issues/83)|closed|
+|8|Dominic|[#48](https://github.com/sopra-fs24-group-46/client/issues/49),[#49](https://github.com/sopra-fs24-group-46/client/issues/49)|closed|
+|8|Dominic|[#66](https://github.com/sopra-fs24-group-46/client/issues/66)|closed|
+|8|Dominic|[#81](https://github.com/sopra-fs24-group-46/client/issues/81)|closed|
+|8|Dominic|[#87](https://github.com/sopra-fs24-group-46/client/issues/87)|closed|
+|8|Dominic|[#88](https://github.com/sopra-fs24-group-46/client/issues/88)|closed|
+|8|Dominic|[#86](https://github.com/sopra-fs24-group-46/client/issues/86)|closed|
+|8|Dominic|[#89](https://github.com/sopra-fs24-group-46/client/issues/89)|closed|
+|8|Dominic|[#94](https://github.com/sopra-fs24-group-46/client/issues/94)|closed|
 |8|Serafin|[#9](sopra-fs24-group-46/server#9)|closed|
 |8|Serafin|[#20](sopra-fs24-group-46/client#20)|comment| 
 |8|Serafin|[#15](sopra-fs24-group-46/client#15)|closed|
