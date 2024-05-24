@@ -51,6 +51,10 @@ To run the tests for this project, use this command:
 
 This command will execute the test suite and provide feedback on the application's reliability and functionality.
 
+### Roadmap
+- Due to limitaions on the GeoAdmin API not all mountains are part of the data set. Mainly because the API is designed to get the location for a name and not mountain names for a specified region ([Info](https://github.com/sopra-fs24-group-46/server/blob/development/src/main/java/ch/uzh/ifi/hase/soprafs24/geo_admin_api/API_infos.md) about limitations of GeoAdmin API). Switching the API or building a service optimised to get random names for a specific region would expand the set of question from currently around 4000 Mountains/Lakes to all Mountains/Lakes in Switzerland.
+- Dockerizing the application. Dockerizing the App should be a small task and would allow for easy deployment on many different services. Making the App more portable.
+- Adding a player history. On one side the existing User and Server repository should be refactored such that restarting the server won't delet the content of the repository. Further a repository storing the scores and played rounds could be added such that viewing the history of a player is possible. Since player histories are already beeing generated, this should not be a big task.
 ## Authors and Acknowledgment
 
 
