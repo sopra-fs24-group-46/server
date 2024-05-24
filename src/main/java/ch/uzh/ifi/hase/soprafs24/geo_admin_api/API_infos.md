@@ -14,24 +14,17 @@ Further filtering has to be done locally (in java)
 
 ## By Region
 To get featurs from a region use the **identify** service //problem here is we get many buildings and so on. Probbably need
-several API calls to get all the mountains to later filter them.
+several API calls to get all the mountains to later filter them (LayerDefs can't be applied for swissnames3d).
 https://api3.geo.admin.ch/rest/services/api/MapServer/identify?layers=all:ch.swisstopo.swissnames3d&geometryType=esriGeometryPolygon&tolerance=0&geometry={%22rings%22:[[[675000,245000],[670000,255000],[680000,260000],[690000,255000],[685000,240000],[675000,245000]]]}
 geometry={"rings":[[675000,245000],[670000,255000],[680000,260000],[690000,255000],[685000,240000],[675000,245000]]}
 geometryType=esriGeometryPolygon
 tolerance=0
 offset=2 //to get the next 200 features
 
+
 this returns all the names in the ch.swisstopo.swissnames3d layer including buidlings and so on
 
 Further filtering has to be done locally (in java)
-
-## TODO
-Useful tools implemented in Java would be:
-The Union of two sets.
-Randomly selecting elemts of a set.
-Filtering on attributes. //necessary for languages
-Filtering on region. //maybe m2
-
 
 ---------------------------------------------------------------------------------------
 Following are some olde notes these are probbably useless:
