@@ -1,9 +1,11 @@
 Max 20 calls per minute on average over one week
 ---------------------------------------------------------------------------------------
-documentation: https://api3.geo.admin.ch/services/sdiservices.html
-Layers: https://api3.geo.admin.ch/api/faq/index.html#which-layers-are-available
-The only layer we'll be using is: ch.swisstopo.swissnames3d
+documentation: https://api3.geo.admin.ch/services/sdiservices.html  
+Layers: https://api3.geo.admin.ch/api/faq/index.html#which-layers-are-available  
+The only layer we'll be using is: ch.swisstopo.swissnames3d  
 ---------------------------------------------------------------------------------------
+The layer swissnmaes3d is th main layer when working with location names like mountain peaks. No specific mountain peak layer exists. The swissname3d layer also constains buildings, lakes, regions... and many more. Without filtering for mountains or lakes this layer can't be used effectivly.  
+Two main services are provided to ineract with the layers. **Identify** which returns values for a specific layer in a specific region. Some layer support further queries. siwssnames3d is sadly not part of these queryable layers. The other service id **Find** which will search the attributes of enteties on given layer. This way we can retreive enetities of objektart=Gipfel. The response data contains duplicates and cuts off at around 2000 results. Only one attribute at the time can be searched for. This results in incomplete Mountain data.
 ## By objektart
 To filter for Mountains or Lakes use the **find** service 
 https://api3.geo.admin.ch/rest/services/api/MapServer/find?layer=ch.swisstopo.swissnames3d&searchText=Gipfel&searchField=objektart
